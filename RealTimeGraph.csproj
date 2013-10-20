@@ -50,6 +50,18 @@
       <DependentUpon>RTGControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RTGControlMethods.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RTGControlPaint.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RTGControlPrivateFields.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RTGControlProperties.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>

@@ -29,22 +29,22 @@
         private void InitializeComponent()
         {
             this.panelGraph = new System.Windows.Forms.Panel();
-            this.pbAxisY = new System.Windows.Forms.PictureBox();
-            this.pbTitle = new System.Windows.Forms.PictureBox();
-            this.pbRight = new System.Windows.Forms.PictureBox();
+            this.pbCurve = new System.Windows.Forms.PictureBox();
             this.pbAxisX = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pbRight = new System.Windows.Forms.PictureBox();
+            this.pbTitle = new System.Windows.Forms.PictureBox();
+            this.pbAxisY = new System.Windows.Forms.PictureBox();
             this.panelGraph.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbAxisY)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbTitle)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbRight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbCurve)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAxisX)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbRight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbTitle)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbAxisY)).BeginInit();
             this.SuspendLayout();
             // 
             // panelGraph
             // 
-            this.panelGraph.Controls.Add(this.pictureBox1);
+            this.panelGraph.Controls.Add(this.pbCurve);
             this.panelGraph.Controls.Add(this.pbAxisX);
             this.panelGraph.Controls.Add(this.pbRight);
             this.panelGraph.Controls.Add(this.pbTitle);
@@ -57,41 +57,18 @@
             this.panelGraph.Size = new System.Drawing.Size(400, 300);
             this.panelGraph.TabIndex = 0;
             // 
-            // pbAxisY
+            // pbCurve
             // 
-            this.pbAxisY.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.pbAxisY.BackColor = System.Drawing.Color.Red;
-            this.pbAxisY.Location = new System.Drawing.Point(0, 0);
-            this.pbAxisY.Margin = new System.Windows.Forms.Padding(0);
-            this.pbAxisY.Name = "pbAxisY";
-            this.pbAxisY.Size = new System.Drawing.Size(80, 240);
-            this.pbAxisY.TabIndex = 0;
-            this.pbAxisY.TabStop = false;
-            // 
-            // pbTitle
-            // 
-            this.pbTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.pbCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbTitle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.pbTitle.Location = new System.Drawing.Point(80, 0);
-            this.pbTitle.Margin = new System.Windows.Forms.Padding(0);
-            this.pbTitle.Name = "pbTitle";
-            this.pbTitle.Size = new System.Drawing.Size(280, 40);
-            this.pbTitle.TabIndex = 1;
-            this.pbTitle.TabStop = false;
-            // 
-            // pbRight
-            // 
-            this.pbRight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbRight.BackColor = System.Drawing.Color.Yellow;
-            this.pbRight.Location = new System.Drawing.Point(360, 0);
-            this.pbRight.Margin = new System.Windows.Forms.Padding(0);
-            this.pbRight.Name = "pbRight";
-            this.pbRight.Size = new System.Drawing.Size(40, 240);
-            this.pbRight.TabIndex = 2;
-            this.pbRight.TabStop = false;
+            this.pbCurve.BackColor = System.Drawing.Color.Black;
+            this.pbCurve.Location = new System.Drawing.Point(80, 40);
+            this.pbCurve.Margin = new System.Windows.Forms.Padding(0);
+            this.pbCurve.Name = "pbCurve";
+            this.pbCurve.Size = new System.Drawing.Size(280, 200);
+            this.pbCurve.TabIndex = 4;
+            this.pbCurve.TabStop = false;
             // 
             // pbAxisX
             // 
@@ -105,32 +82,55 @@
             this.pbAxisX.TabIndex = 3;
             this.pbAxisX.TabStop = false;
             // 
-            // pictureBox1
+            // pbRight
             // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.pbRight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.BackColor = System.Drawing.Color.Black;
-            this.pictureBox1.Location = new System.Drawing.Point(80, 40);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(280, 200);
-            this.pictureBox1.TabIndex = 4;
-            this.pictureBox1.TabStop = false;
+            this.pbRight.BackColor = System.Drawing.Color.Yellow;
+            this.pbRight.Location = new System.Drawing.Point(360, 0);
+            this.pbRight.Margin = new System.Windows.Forms.Padding(0);
+            this.pbRight.Name = "pbRight";
+            this.pbRight.Size = new System.Drawing.Size(40, 240);
+            this.pbRight.TabIndex = 2;
+            this.pbRight.TabStop = false;
+            // 
+            // pbTitle
+            // 
+            this.pbTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbTitle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.pbTitle.Location = new System.Drawing.Point(80, 0);
+            this.pbTitle.Margin = new System.Windows.Forms.Padding(0);
+            this.pbTitle.Name = "pbTitle";
+            this.pbTitle.Size = new System.Drawing.Size(280, 40);
+            this.pbTitle.TabIndex = 1;
+            this.pbTitle.TabStop = false;
+            // 
+            // pbAxisY
+            // 
+            this.pbAxisY.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.pbAxisY.BackColor = System.Drawing.Color.Red;
+            this.pbAxisY.Location = new System.Drawing.Point(0, 0);
+            this.pbAxisY.Margin = new System.Windows.Forms.Padding(0);
+            this.pbAxisY.Name = "pbAxisY";
+            this.pbAxisY.Size = new System.Drawing.Size(80, 240);
+            this.pbAxisY.TabIndex = 0;
+            this.pbAxisY.TabStop = false;
             // 
             // RTGControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panelGraph);
             this.Name = "RTGControl";
             this.Size = new System.Drawing.Size(400, 300);
             this.panelGraph.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbAxisY)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbTitle)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbRight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbCurve)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAxisX)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbRight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbTitle)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbAxisY)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -140,7 +140,7 @@
         private System.Windows.Forms.Panel panelGraph;
         private System.Windows.Forms.PictureBox pbTitle;
         private System.Windows.Forms.PictureBox pbAxisY;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pbCurve;
         private System.Windows.Forms.PictureBox pbAxisX;
         private System.Windows.Forms.PictureBox pbRight;
     }
