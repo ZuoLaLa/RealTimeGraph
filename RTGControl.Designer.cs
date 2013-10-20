@@ -52,7 +52,7 @@
             this.panelGraph.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelGraph.Location = new System.Drawing.Point(0, 0);
             this.panelGraph.Margin = new System.Windows.Forms.Padding(0);
-            this.panelGraph.MaximumSize = new System.Drawing.Size(400, 300);
+            this.panelGraph.MinimumSize = new System.Drawing.Size(400, 300);
             this.panelGraph.Name = "panelGraph";
             this.panelGraph.Size = new System.Drawing.Size(400, 300);
             this.panelGraph.TabIndex = 0;
@@ -61,6 +61,7 @@
             // 
             this.pbAxisY.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.pbAxisY.BackColor = System.Drawing.Color.Red;
             this.pbAxisY.Location = new System.Drawing.Point(0, 0);
             this.pbAxisY.Margin = new System.Windows.Forms.Padding(0);
             this.pbAxisY.Name = "pbAxisY";
@@ -70,6 +71,9 @@
             // 
             // pbTitle
             // 
+            this.pbTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbTitle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.pbTitle.Location = new System.Drawing.Point(80, 0);
             this.pbTitle.Margin = new System.Windows.Forms.Padding(0);
             this.pbTitle.Name = "pbTitle";
@@ -81,6 +85,7 @@
             // 
             this.pbRight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbRight.BackColor = System.Drawing.Color.Yellow;
             this.pbRight.Location = new System.Drawing.Point(360, 0);
             this.pbRight.Margin = new System.Windows.Forms.Padding(0);
             this.pbRight.Name = "pbRight";
@@ -92,6 +97,7 @@
             // 
             this.pbAxisX.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbAxisX.BackColor = System.Drawing.Color.Blue;
             this.pbAxisX.Location = new System.Drawing.Point(0, 240);
             this.pbAxisX.Margin = new System.Windows.Forms.Padding(0);
             this.pbAxisX.Name = "pbAxisX";
@@ -104,6 +110,7 @@
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox1.BackColor = System.Drawing.Color.Black;
             this.pictureBox1.Location = new System.Drawing.Point(80, 40);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
             this.pictureBox1.Name = "pictureBox1";
