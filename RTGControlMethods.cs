@@ -19,10 +19,7 @@ namespace RealTimeGraph
             yStartInitial = 0;
             yEndInitial = 1;
 
-            xStartCurrent = xStartInitial;
-            xEndCurrent = xEndInitial;
-            yStartCurrent = yStartInitial;
-            yEndCurrent = yEndInitial;
+            ResetAxis();
 
             // 默认初始处于滚动模式
             graphType = GraphTypes.FixedMoveMode;
@@ -81,6 +78,23 @@ namespace RealTimeGraph
 
 
             return false;
+        }
+        /// <summary>清空显示的曲线
+        /// </summary>
+        public void GraphClear()
+        {
+            XDataList.Clear();
+            YDataList.Clear();
+            pbCurve.Refresh();
+        }
+        /// <summary>重置坐标轴，回到初始设置。
+        /// </summary>
+        public void ResetAxis()
+        {
+            xStartCurrent = xStartInitial;
+            xEndCurrent = xEndInitial;
+            yStartCurrent = yStartInitial;
+            yEndCurrent = yEndInitial;
         }
     }
 }

@@ -89,7 +89,7 @@ namespace RealTimeGraph
             {
                 if (pointsList.Count > 1)
                 {
-                    Pen p = new Pen(Color.White, 1);
+                    Pen p = new Pen(Color.Yellow, 1);
                     p.LineJoin = LineJoin.Bevel;
                     g.DrawLines(p, pointsList.ToArray());
                     p.Dispose();
