@@ -35,6 +35,10 @@ namespace RealTimeGraph
             yDataAccuracy = 0.1f;
 
             pointsList = new List<PointF>();
+
+            penBorder = new Pen(Color.Black, 2);
+            fontBorder = new Font("Verdana", 10, FontStyle.Bold);
+            borderLength = 15;
         }
 
         /// <summary>数据转换为待绘制区域上的点集

@@ -82,6 +82,7 @@
             this.pbAxisX.Size = new System.Drawing.Size(400, 60);
             this.pbAxisX.TabIndex = 3;
             this.pbAxisX.TabStop = false;
+            this.pbAxisX.Paint += new System.Windows.Forms.PaintEventHandler(this.pbAxisX_Paint);
             // 
             // pbRight
             // 

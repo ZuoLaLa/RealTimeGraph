@@ -97,5 +97,25 @@ namespace RealTimeGraph
             }
             #endregion
         }
+
+        private void pbAxisX_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+
+            // 绘制边界坐标线
+            g.DrawLine(penBorder, pbAxisY.Width, 0,
+                pbAxisY.Width, borderLength);
+            g.DrawLine(penBorder, pbAxisY.Width + pbCurve.Width, 0,
+                pbAxisY.Width + pbCurve.Width, borderLength);
+
+            // 标识边界坐标值
+            StringFormat centerFormat = new StringFormat();
+            
+            centerFormat.Alignment = StringAlignment.Center;
+            g.DrawString(xStartCurrent.ToString(), fontBorder, Brushes.Black,
+                pbAxisY.Width, borderLength, centerFormat);
+            g.DrawString(xEndCurrent.ToString(), fontBorder, Brushes.Black,
+                pbAxisY.Width + pbCurve.Width, borderLength, centerFormat);
+        }
     }
 }

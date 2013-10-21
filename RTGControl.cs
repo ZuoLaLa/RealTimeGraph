@@ -14,6 +14,7 @@ namespace RealTimeGraph
         public RTGControl()
         {
             InitializeComponent();
+            initialGraph();
         }
     }
 }

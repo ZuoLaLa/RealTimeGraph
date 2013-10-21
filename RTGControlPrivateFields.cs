@@ -39,5 +39,9 @@ namespace RealTimeGraph
         /// <summary>待绘制的数据点集
         /// </summary>
         private List<PointF> pointsList;
+
+        Pen penBorder;    // 边界刻度所用钢笔
+        Font fontBorder;    // 边界刻度值字体
+        private int borderLength;  // 坐标边界刻度线的长度
     }
 }
