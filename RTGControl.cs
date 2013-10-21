@@ -16,5 +16,11 @@ namespace RealTimeGraph
             InitializeComponent();
             initialGraph();
         }
+
+        private void RTGControl_Resize(object sender, EventArgs e)
+        {
+            pbCurve.Refresh();
+            pbTitle.Refresh();
+        }
     }
 }

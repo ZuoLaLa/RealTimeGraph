@@ -129,6 +129,7 @@
             this.Controls.Add(this.panelGraph);
             this.Name = "RTGControl";
             this.Size = new System.Drawing.Size(400, 300);
+            this.Resize += new System.EventHandler(this.RTGControl_Resize);
             this.panelGraph.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbCurve)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAxisX)).EndInit();
