@@ -119,6 +119,7 @@
             this.pbAxisY.Size = new System.Drawing.Size(80, 240);
             this.pbAxisY.TabIndex = 0;
             this.pbAxisY.TabStop = false;
+            this.pbAxisY.Paint += new System.Windows.Forms.PaintEventHandler(this.pbAxisY_Paint);
             // 
             // RTGControl
             // 
