@@ -39,6 +39,11 @@ namespace RealTimeGraph
             penBorder = new Pen(Color.Black, 2);
             fontBorder = new Font("Verdana", 10, FontStyle.Bold);
             borderLength = 15;
+
+            fontTitle = new Font("宋体", 14, FontStyle.Bold);
+            fontAxis = new Font("宋体", 10);
+            GraphTitle = "位移实时显示曲线";
+            GraphYTitle = "距离(mm)";
         }
 
         /// <summary>数据转换为待绘制区域上的点集

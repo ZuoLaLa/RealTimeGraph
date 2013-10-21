@@ -43,5 +43,8 @@ namespace RealTimeGraph
         Pen penBorder;    // 边界刻度所用钢笔
         Font fontBorder;    // 边界刻度值字体
         private int borderLength;  // 坐标边界刻度线的长度
+
+        private Font fontTitle; // 曲线标题字体
+        private Font fontAxis;  // 坐标轴标题字体
     }
 }

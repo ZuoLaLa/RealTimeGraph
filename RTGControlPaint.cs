@@ -139,5 +139,20 @@ namespace RealTimeGraph
                 pbAxisY.Width - borderLength, pbTitle.Height,
                 borderYFormat);
         }
+
+        private void pbTitle_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+
+            // 绘制标题           
+            StringFormat titleFormat = new StringFormat();
+            titleFormat.Alignment = StringAlignment.Center;
+            g.DrawString(GraphTitle, fontTitle, Brushes.Black,
+                pbTitle.Width / 2F, pbTitle.Height / 2F - fontTitle.Height / 5F,
+                titleFormat);
+            // 绘制Y轴标签
+            g.DrawString(GraphYTitle, fontAxis, Brushes.Black,
+                fontAxis.Height / 5F, pbTitle.Height - fontAxis.Height * 1.2F);
+        }
     }
 }

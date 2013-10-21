@@ -100,13 +100,14 @@
             // 
             this.pbTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbTitle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.pbTitle.BackColor = System.Drawing.SystemColors.Control;
             this.pbTitle.Location = new System.Drawing.Point(80, 0);
             this.pbTitle.Margin = new System.Windows.Forms.Padding(0);
             this.pbTitle.Name = "pbTitle";
             this.pbTitle.Size = new System.Drawing.Size(280, 40);
             this.pbTitle.TabIndex = 1;
             this.pbTitle.TabStop = false;
+            this.pbTitle.Paint += new System.Windows.Forms.PaintEventHandler(this.pbTitle_Paint);
             // 
             // pbAxisY
             // 
