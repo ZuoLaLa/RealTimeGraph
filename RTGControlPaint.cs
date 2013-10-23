@@ -21,10 +21,11 @@ namespace RealTimeGraph
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
             #region **根据画图模式和数据调整坐标显示**
-            switch (GraphType)
+            if (XDataList != null)
             {
-                case GraphTypes.GlobalMode:
-                    if (XDataList != null)
+                if (isAutoMove)
+                {
+                    if (isAutoScale)    // 此即为 GlobalMode 模式
                     {
                         for (int i = 0; i < XDataList.Count; i++)
                         {
@@ -47,9 +48,7 @@ namespace RealTimeGraph
                             }
                         }
                     }
-                    break;
-                case GraphTypes.FixedMoveMode:
-                    if (XDataList != null)
+                    else    // 此即为 FixedMoveMode 模式
                     {
                         for (int i = 0; i < XDataList.Count; i++)
                         {
@@ -69,14 +68,7 @@ namespace RealTimeGraph
                             }
                         }
                     }
-                    break;
-                case GraphTypes.ZoomInMode:
-                    {
-                        // TODO: 放大模式下的 Paint 事件处理
-                    }
-                    break;
-                default:
-                    break;
+                }
             }
             #endregion
 
@@ -110,7 +102,7 @@ namespace RealTimeGraph
 
             // 标识边界坐标值
             StringFormat centerFormat = new StringFormat();
-            
+
             centerFormat.Alignment = StringAlignment.Center;
             g.DrawString(xStartCurrent.ToString(), fontBorder, Brushes.Black,
                 pbAxisY.Width, borderLength, centerFormat);
