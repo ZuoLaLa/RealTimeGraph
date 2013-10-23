@@ -17,7 +17,7 @@ namespace RealTimeGraph
             xStartInitial = 0;
             xEndInitial = 100;
             yStartInitial = 0;
-            yEndInitial = 1;
+            yEndInitial = 200;
 
             ResetAxis();
 
@@ -95,6 +95,12 @@ namespace RealTimeGraph
             xEndCurrent = xEndInitial;
             yStartCurrent = yStartInitial;
             yEndCurrent = yEndInitial;
+        }
+        /// <summary>重置 X 轴为初始数据宽度（即显示多少个数据点）
+        /// </summary>
+        public void ResetAxisXWidth()
+        {
+            xStartCurrent = xEndCurrent - (xEndInitial - xStartInitial);
         }
     }
 }

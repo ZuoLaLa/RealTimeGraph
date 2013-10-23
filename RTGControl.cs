@@ -19,8 +19,8 @@ namespace RealTimeGraph
 
         private void RTGControl_Resize(object sender, EventArgs e)
         {
-            pbCurve.Refresh();
             pbTitle.Refresh();
+            pbCurve.Refresh();
         }
     }
 }
