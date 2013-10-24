@@ -85,7 +85,7 @@ namespace RealTimeGraph
         /// <param name="x">转换后的 X 值</param>
         /// <param name="y">转换后的 Y 值</param>
         /// <returns></returns>
-        private bool pointToData(Point p, ref float x, ref float y)
+        private bool pointToData(Point p, out float x, out float y)
         {
             try
             {
@@ -98,6 +98,8 @@ namespace RealTimeGraph
             }
             catch (Exception)
             {
+                x = 0;
+                y = 0;
                 return false;
             }
         }
@@ -108,7 +110,7 @@ namespace RealTimeGraph
         /// <param name="x">转换后的 X 值</param>
         /// <param name="y">转换后的 Y 值</param>
         /// <returns></returns>
-        private bool pointToData(float pX, float pY, ref float x, ref float y)
+        private bool pointToData(float pX, float pY, out float x, out float y)
         {
             try
             {
@@ -121,6 +123,8 @@ namespace RealTimeGraph
             }
             catch (Exception)
             {
+                x = 0;
+                y = 0;
                 return false;
             }
         }
@@ -226,6 +230,17 @@ namespace RealTimeGraph
         public void ResetAxisXWidth()
         {
             xStartCurrent = xEndCurrent - (xEndInitial - xStartInitial);
+        }
+
+        private void dragMove(float xD, float yD)
+        {
+            float xM = xD * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
+            float yM = yD * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
+
+            xStartCurrent -= xM;
+            xEndCurrent -= xM;
+            yStartCurrent += yM;
+            yEndCurrent += yM;
         }
     }
 }

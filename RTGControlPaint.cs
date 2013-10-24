@@ -103,10 +103,9 @@ namespace RealTimeGraph
             if (graphType == GraphTypes.DragMode &&
                 e.Button == MouseButtons.Left)
             {
-                float xD = startPoint.X - e.X;
-                float yD = startPoint.Y - e.Y;
-                rectPointsToData(xD, yD, pbCurve.Width + xD, pbCurve.Height + yD,
-                    ref xStartCurrent, ref yEndCurrent, ref xEndCurrent, ref yStartCurrent);
+                float xD = e.X - startPoint.X;
+                float yD = e.Y - startPoint.Y;
+                dragMove(xD, yD);
                 startPoint = e.Location;
                 pbCurve.Refresh();
             }
