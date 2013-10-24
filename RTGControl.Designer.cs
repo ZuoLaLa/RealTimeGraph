@@ -70,6 +70,8 @@
             this.pbCurve.TabIndex = 4;
             this.pbCurve.TabStop = false;
             this.pbCurve.Paint += new System.Windows.Forms.PaintEventHandler(this.pbCurve_Paint);
+            this.pbCurve.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseDown);
+            this.pbCurve.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseMove);
             // 
             // pbAxisX
             // 
@@ -124,7 +126,7 @@
             // 
             // RTGControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panelGraph);
             this.Name = "RTGControl";

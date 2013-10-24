@@ -46,5 +46,7 @@ namespace RealTimeGraph
 
         private Font fontTitle; // 曲线标题字体
         private Font fontAxis;  // 坐标轴标题字体
+
+        private Point startPoint; // 用于记录拖动操作时鼠标按下的位置
     }
 }

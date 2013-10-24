@@ -90,6 +90,28 @@ namespace RealTimeGraph
             #endregion
         }
 
+        private void pbCurve_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                startPoint = e.Location;
+            }
+        }
+
+        private void pbCurve_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (graphType == GraphTypes.DragMode &&
+                e.Button == MouseButtons.Left)
+            {
+                float xD = startPoint.X - e.X;
+                float yD = startPoint.Y - e.Y;
+                rectPointsToData(xD, yD, pbCurve.Width + xD, pbCurve.Height + yD,
+                    ref xStartCurrent, ref yEndCurrent, ref xEndCurrent, ref yStartCurrent);
+                startPoint = e.Location;
+                pbCurve.Refresh();
+            }
+        }
+
         private void pbAxisX_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;

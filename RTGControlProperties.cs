@@ -43,12 +43,22 @@ namespace RealTimeGraph
         /// </summary>
         public enum GraphTypes
         {
-            // 全局实时显示模式
+            /// <summary>
+            /// 全局实时显示模式
+            /// </summary>
             GlobalMode,
-            // 固定坐标尺度的滚动实时显示模式
+            /// <summary>
+            /// 固定坐标尺度的滚动实时显示模式
+            /// </summary>
             FixedMoveMode,
-            // 框选放大模式
-            ZoomInMode,
+            /// <summary>
+            /// 框选放大模式
+            /// </summary>
+            RectZoomInMode,
+            /// <summary>
+            /// 拖动模式
+            /// </summary>
+            DragMode,
         }
 
         private GraphTypes graphType;
@@ -56,7 +66,7 @@ namespace RealTimeGraph
         public GraphTypes GraphType
         {
             get { return graphType; }
-            set 
+            set
             {
                 graphType = value;
 
@@ -70,7 +80,8 @@ namespace RealTimeGraph
                         isAutoMove = true;
                         isAutoScale = false;
                         break;
-                    case GraphTypes.ZoomInMode:
+                    case GraphTypes.RectZoomInMode:
+                    case GraphTypes.DragMode:
                         isAutoMove = false;
                         isAutoScale = false;
                         break;

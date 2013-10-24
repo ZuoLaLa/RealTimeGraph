@@ -79,6 +79,131 @@ namespace RealTimeGraph
 
             return false;
         }
+        /// <summary>将显示画布上的一个坐标点转化成相应的数据
+        /// </summary>
+        /// <param name="p">待转换的坐标点</param>
+        /// <param name="x">转换后的 X 值</param>
+        /// <param name="y">转换后的 Y 值</param>
+        /// <returns></returns>
+        private bool pointToData(Point p, ref float x, ref float y)
+        {
+            try
+            {
+                x = xStartCurrent +
+                    p.X * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
+                // Y 轴坐标点是从上到下的
+                y = yEndCurrent -
+                    p.Y * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        /// <summary>将显示画布上的一个坐标点转化成相应的数据
+        /// </summary>
+        /// <param name="pX">待转换的坐标点 X 像素值</param>
+        /// <param name="pY">待转换的坐标点 Y 像素值</param>
+        /// <param name="x">转换后的 X 值</param>
+        /// <param name="y">转换后的 Y 值</param>
+        /// <returns></returns>
+        private bool pointToData(float pX, float pY, ref float x, ref float y)
+        {
+            try
+            {
+                x = xStartCurrent +
+                    pX * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
+                // Y 轴坐标点是从上到下的
+                y = yEndCurrent -
+                    pY * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        /// <summary>将矩形区域的坐标点转换成对应的数据对。
+        /// 用于框选放大模式，也可变形用于拖动模式。
+        /// </summary>
+        /// <param name="pS">矩形区域的左上角点</param>
+        /// <param name="pE">矩形区域的右下角点</param>
+        /// <param name="xS">左上角点转换后的 X 值</param>
+        /// <param name="yS">左上角点转换后的 Y 值</param>
+        /// <param name="xE">右下角点转换后的 X 值</param>
+        /// <param name="yE">右下角点转换后的 Y 值</param>
+        /// <returns></returns>
+        private bool rectPointsToData(Point pS, Point pE,
+            ref float xS, ref float yS, ref float xE, ref float yE)
+        {
+            try
+            {
+                // 建立几个临时变量，防止转换过程中对 XStartCurrent 等修改
+                float xST, yST, xET, yET;
+
+                xST = xStartCurrent +
+                    pS.X * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
+                yST = yEndCurrent -
+                    pS.Y * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
+                xET = xStartCurrent +
+                    pE.X * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
+                yET = yEndCurrent -
+                    pE.Y * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
+
+                xS = xST;
+                yS = yST;
+                xE = xET;
+                yE = yET;
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        /// <summary>将矩形区域的坐标点转换成对应的数据对。
+        /// 用于框选放大模式，也可变形用于拖动模式。
+        /// </summary>
+        /// <param name="pSX">矩形区域的左上角点 X 像素值</param>
+        /// <param name="pSY">矩形区域的左上角点 Y 像素值</param>
+        /// <param name="pEX">矩形区域的右下角点 X 像素值</param>
+        /// <param name="pEY">矩形区域的右下角点 Y 像素值</param>
+        /// <param name="xS">左上角点转换后的 X 值</param>
+        /// <param name="yS">左上角点转换后的 Y 值</param>
+        /// <param name="xE">右下角点转换后的 X 值</param>
+        /// <param name="yE">右下角点转换后的 Y 值</param>
+        /// <returns></returns>
+        private bool rectPointsToData(float pSX, float pSY, float pEX, float pEY,
+            ref float xS, ref float yS, ref float xE, ref float yE)
+        {
+            try
+            {
+                // 建立几个临时变量，防止转换过程中对 XStartCurrent 等修改
+                float xST, yST, xET, yET;
+
+                xST = xStartCurrent +
+                    pSX * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
+                yST = yEndCurrent -
+                    pSY * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
+                xET = xStartCurrent +
+                    pEX * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
+                yET = yEndCurrent -
+                    pEY * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
+
+                xS = xST;
+                yS = yST;
+                xE = xET;
+                yE = yET;
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         /// <summary>清空显示的曲线
         /// </summary>
         public void GraphClear()
