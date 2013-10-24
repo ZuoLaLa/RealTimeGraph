@@ -27,7 +27,9 @@ namespace RealTimeGraph
                 {
                     if (isAutoScale)    // 此即为 GlobalMode 模式
                     {
-                        for (int i = 0; i < XDataList.Count; i++)
+                        ResetAxis();
+
+                        for (int i = 1; i < XDataList.Count; i++)
                         {
                             if (XDataList[i] < xStartCurrent)
                             {
@@ -50,6 +52,9 @@ namespace RealTimeGraph
                     }
                     else    // 此即为 FixedMoveMode 模式
                     {
+                        yStartCurrent = yStartInitial;
+                        yEndCurrent = yEndInitial;
+
                         for (int i = 0; i < XDataList.Count; i++)
                         {
                             if (XDataList[i] > xEndCurrent)
