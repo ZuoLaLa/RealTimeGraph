@@ -8,7 +8,7 @@ namespace RealTimeGraph
 {
     public partial class RTGControl : UserControl
     {
-        private string graphTitle = "";
+        private string graphTitle;
         /// <summary>
         /// 曲线标题
         /// </summary>
@@ -18,7 +18,7 @@ namespace RealTimeGraph
             set { graphTitle = value; }
         }
 
-        private string graphXTitle = "Time";
+        private string graphXTitle;
         /// <summary>
         /// X轴标题
         /// </summary>
@@ -28,7 +28,7 @@ namespace RealTimeGraph
             set { graphXTitle = value; }
         }
 
-        private string graphYTitle = "";
+        private string graphYTitle;
         /// <summary>
         /// Y轴标题
         /// </summary>
@@ -89,6 +89,26 @@ namespace RealTimeGraph
                         break;
                 }
             }
+        }
+
+        private float xDataAccuracy;
+        /// <summary>
+        /// X 数据精度
+        /// </summary>
+        public float XDataAccuracy
+        {
+            get { return xDataAccuracy; }
+            set { xDataAccuracy = value; }
+        }
+
+        private float yDataAccuracy;
+        /// <summary>
+        /// Y 数据精度
+        /// </summary>
+        public float YDataAccuracy
+        {
+            get { return yDataAccuracy; }
+            set { yDataAccuracy = value; }
         }
 
         public List<float> XDataList;

@@ -34,8 +34,6 @@ namespace RealTimeGraph
         /// </summary>
         private bool isAutoScale;
 
-        private float xDataAccuracy;
-        private float yDataAccuracy;
         /// <summary>待绘制的数据点集
         /// </summary>
         private List<PointF> pointsList;

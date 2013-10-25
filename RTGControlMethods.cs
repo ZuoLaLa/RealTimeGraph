@@ -28,8 +28,8 @@ namespace RealTimeGraph
 
             XDataList = new List<float>();
             YDataList = new List<float>();
-            xDataAccuracy = 0.5f;
-            yDataAccuracy = 0.1f;
+            XDataAccuracy = 1f;
+            YDataAccuracy = 0.1f;
 
             pointsList = new List<PointF>();
 
@@ -51,8 +51,8 @@ namespace RealTimeGraph
         private bool dataToPoints(int width, int height)
         {
             // 坐标起始和结束值之差小于精度范围则返回false
-            if ((xEndCurrent - xStartCurrent) > xDataAccuracy &&
-                (yEndCurrent - yStartCurrent) > yDataAccuracy)
+            if ((xEndCurrent - xStartCurrent) > XDataAccuracy &&
+                (yEndCurrent - yStartCurrent) > YDataAccuracy)
             {
                 if (XDataList != null)
                 {
