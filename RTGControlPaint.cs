@@ -112,6 +112,8 @@ namespace RealTimeGraph
                     this.Cursor = Cursors.Default;
                     break;
             }
+
+            pbCurve.Focus();
         }
 
         private void pbCurve_MouseDown(object sender, MouseEventArgs e)
@@ -190,6 +192,18 @@ namespace RealTimeGraph
             {
                 pbZoom.Visible = false;
                 rectZoomIn();
+                pbCurve.Refresh();
+            }
+        }
+
+        private void pbCurve_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (GraphType == GraphTypes.FixedMoveMode)
+            {
+                float xDiff = xEndCurrent - xStartCurrent;
+                float xDelta = e.Delta / 1200F;
+                xStartCurrent -= xDiff * xDelta;
+                xEndCurrent += xDiff * xDelta;
                 pbCurve.Refresh();
             }
         }
