@@ -136,6 +136,7 @@
             this.pbCurve.TabIndex = 4;
             this.pbCurve.TabStop = false;
             this.pbCurve.Paint += new System.Windows.Forms.PaintEventHandler(this.pbCurve_Paint);
+            this.pbCurve.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseDoubleClick);
             this.pbCurve.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseDown);
             this.pbCurve.MouseEnter += new System.EventHandler(this.pbCurve_MouseEnter);
             this.pbCurve.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseMove);

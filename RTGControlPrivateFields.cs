@@ -52,5 +52,10 @@ namespace RealTimeGraph
 
         private float xDataAccuracyDefault = 1F;
         private float yDataAccuracyDefault = 0.1F;
+
+        private float xDataMin;
+        private float xDataMax;
+        private float yDataMin;
+        private float yDataMax;
     }
 }

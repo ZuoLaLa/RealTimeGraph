@@ -27,51 +27,27 @@ namespace RealTimeGraph
                 {
                     if (isAutoScale)    // 此即为 GlobalMode 模式
                     {
-                        ResetAxis();
-
-                        for (int i = 1; i < XDataList.Count; i++)
-                        {
-                            if (XDataList[i] < xStartCurrent)
-                            {
-                                xStartCurrent = XDataList[i];
-                            }
-                            else if (XDataList[i] > xEndCurrent)
-                            {
-                                xEndCurrent = XDataList[i];
-                            }
-
-                            if (YDataList[i] < yStartCurrent)
-                            {
-                                yStartCurrent = YDataList[i];
-                            }
-                            else if (YDataList[i] > yEndCurrent)
-                            {
-                                yEndCurrent = YDataList[i];
-                            }
-                        }
+                        xStartCurrent = (xDataMin < xStartInitial)
+                            ? xDataMin : xStartInitial;
+                        xEndCurrent = (xDataMax > xEndInitial)
+                            ? xDataMax : xEndInitial;
+                        yStartCurrent = (yDataMin < yStartInitial)
+                            ? yDataMin : yStartInitial;
+                        yEndCurrent = (yDataMax > yEndInitial)
+                            ? yDataMax : yEndInitial;
                     }
                     else    // 此即为 FixedMoveMode 模式
                     {
-                        yStartCurrent = yStartInitial;
-                        yEndCurrent = yEndInitial;
-
-                        for (int i = 0; i < XDataList.Count; i++)
+                        if (xDataMax > xEndCurrent)
                         {
-                            if (XDataList[i] > xEndCurrent)
-                            {
-                                xStartCurrent += XDataList[i] - xEndCurrent;
-                                xEndCurrent = XDataList[i];
-                            }
-
-                            if (YDataList[i] < yStartCurrent)
-                            {
-                                yStartCurrent = YDataList[i];
-                            }
-                            else if (YDataList[i] > yEndCurrent)
-                            {
-                                yEndCurrent = YDataList[i];
-                            }
+                            xStartCurrent += xDataMax - xEndCurrent;
+                            xEndCurrent = xDataMax;
                         }
+
+                        yStartCurrent = (yDataMin < yStartInitial)
+                            ? yDataMin : yStartInitial;
+                        yEndCurrent = (yDataMax > yEndInitial)
+                            ? yDataMax : yEndInitial;
                     }
                 }
             }
@@ -205,6 +181,17 @@ namespace RealTimeGraph
                 xStartCurrent -= xDiff * xDelta;
                 xEndCurrent += xDiff * xDelta;
                 pbCurve.Refresh();
+            }
+        }
+
+        private void pbCurve_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (GraphType == GraphTypes.FixedMoveMode
+                && e.Button == MouseButtons.Middle)
+            {
+                xEndCurrent = xDataMax;
+                xStartCurrent = ((xEndCurrent - (xEndInitial - xStartInitial)) > xStartInitial)
+                    ? (xEndCurrent - (xEndInitial - xStartInitial)) : xStartInitial;
             }
         }
 

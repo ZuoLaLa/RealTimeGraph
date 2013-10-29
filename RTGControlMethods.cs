@@ -56,7 +56,7 @@ namespace RealTimeGraph
         private bool dataToPoints(int width, int height)
         {
             // 坐标起始和结束值之差小于精度范围则返回false
-            if ((xEndCurrent - xStartCurrent) > 0.9F * XDataAccuracy &&
+            if ((xEndCurrent - xStartCurrent) > 0.9F * XDataAccuracy ||
                 (yEndCurrent - yStartCurrent) > 0.9F * YDataAccuracy)
             {
                 if (XDataList != null)
@@ -236,6 +236,14 @@ namespace RealTimeGraph
                     (yD + yU + YDataAccuracy) / 2F);
                 MsgOutput = "Zoom in to all data accuracy";
             }
+        }
+
+        public void UpdateDataLimits(float xMin, float xMax, float yMin, float yMax)
+        {
+            xDataMin = xMin;
+            xDataMax = xMax;
+            yDataMin = yMin;
+            yDataMax = yMax;
         }
     }
 }
