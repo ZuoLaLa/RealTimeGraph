@@ -94,12 +94,39 @@ namespace RealTimeGraph
             }
             #endregion
         }
+        // 鼠标进入绘图区域时，根据绘图模式改变鼠标形态
+        private void pbCurve_MouseEnter(object sender, EventArgs e)
+        {
+            switch (GraphType)
+            {
+
+                case GraphTypes.RectZoomInMode:
+                    this.Cursor = Cursors.Cross;
+                    break;
+                case GraphTypes.DragMode:
+                    this.Cursor = Cursors.Hand;
+                    break;
+                case GraphTypes.GlobalMode:
+                case GraphTypes.FixedMoveMode:
+                default:
+                    this.Cursor = Cursors.Default;
+                    break;
+            }
+        }
 
         private void pbCurve_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (graphType == GraphTypes.DragMode &&
+                e.Button == MouseButtons.Left)
             {
                 startPoint = e.Location;
+            }
+            else if (graphType == GraphTypes.RectZoomInMode &&
+                e.Button == MouseButtons.Left)
+            {
+                pbZoom.Parent = pbCurve;
+                pbZoom.Visible = false;
+                pbZoomStart = e.Location;
             }
         }
 
@@ -112,6 +139,57 @@ namespace RealTimeGraph
                 float yD = e.Y - startPoint.Y;
                 dragMove(xD, yD);
                 startPoint = e.Location;
+                pbCurve.Refresh();
+            }
+            else if (graphType == GraphTypes.RectZoomInMode &&
+                e.Button == MouseButtons.Left)
+            {
+                if (e.Location.X < 0)
+                {
+                    pbZoomEnd.X = 0;
+                }
+                else if (e.Location.X > pbCurve.Width - 1)
+                {
+                    pbZoomEnd.X = pbCurve.Width - 1;
+                }
+                else
+                {
+                    pbZoomEnd.X = e.Location.X;
+                }
+
+                if (e.Location.Y < 0)
+                {
+                    pbZoomEnd.Y = 0;
+                }
+                else if (e.Location.Y > pbCurve.Height - 1)
+                {
+                    pbZoomEnd.Y = pbCurve.Height - 1;
+                }
+                else
+                {
+                    pbZoomEnd.Y = e.Location.Y;
+                }
+
+                Point pbZoomLoc = new Point();
+                pbZoomLoc.X = (pbZoomStart.X < pbZoomEnd.X) ?
+                    pbZoomStart.X : pbZoomEnd.X;
+                pbZoomLoc.Y = (pbZoomStart.Y < pbZoomEnd.Y) ?
+                    pbZoomStart.Y : pbZoomEnd.Y;
+                // 无法直接对 pbZoom.Location.X 进行赋值，故通过 pbZoomLoc 过渡。
+                pbZoom.Location = pbZoomLoc;
+                pbZoom.Width = Math.Abs(pbZoomEnd.X - pbZoomStart.X);
+                pbZoom.Height = Math.Abs(pbZoomEnd.Y - pbZoomStart.Y);
+                pbZoom.Visible = true;
+            }
+        }
+
+        private void pbCurve_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (graphType == GraphTypes.RectZoomInMode &&
+                e.Button == MouseButtons.Left)
+            {
+                pbZoom.Visible = false;
+                rectZoomIn();
                 pbCurve.Refresh();
             }
         }

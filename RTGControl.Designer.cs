@@ -29,26 +29,29 @@
         private void InitializeComponent()
         {
             this.panelGraph = new System.Windows.Forms.Panel();
-            this.pbCurve = new System.Windows.Forms.PictureBox();
+            this.pbZoom = new System.Windows.Forms.PictureBox();
             this.pbAxisX = new System.Windows.Forms.PictureBox();
             this.pbRight = new System.Windows.Forms.PictureBox();
             this.pbTitle = new System.Windows.Forms.PictureBox();
             this.pbAxisY = new System.Windows.Forms.PictureBox();
+            this.pbCurve = new System.Windows.Forms.PictureBox();
             this.panelGraph.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbCurve)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbZoom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAxisX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbRight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbTitle)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAxisY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbCurve)).BeginInit();
             this.SuspendLayout();
             // 
             // panelGraph
             // 
-            this.panelGraph.Controls.Add(this.pbCurve);
+            this.panelGraph.Controls.Add(this.pbZoom);
             this.panelGraph.Controls.Add(this.pbAxisX);
             this.panelGraph.Controls.Add(this.pbRight);
             this.panelGraph.Controls.Add(this.pbTitle);
             this.panelGraph.Controls.Add(this.pbAxisY);
+            this.panelGraph.Controls.Add(this.pbCurve);
             this.panelGraph.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelGraph.Location = new System.Drawing.Point(0, 0);
             this.panelGraph.Margin = new System.Windows.Forms.Padding(0);
@@ -57,25 +60,21 @@
             this.panelGraph.Size = new System.Drawing.Size(400, 300);
             this.panelGraph.TabIndex = 0;
             // 
-            // pbCurve
+            // pbZoom
             // 
-            this.pbCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbCurve.BackColor = System.Drawing.Color.Black;
-            this.pbCurve.Location = new System.Drawing.Point(80, 40);
-            this.pbCurve.Margin = new System.Windows.Forms.Padding(0);
-            this.pbCurve.Name = "pbCurve";
-            this.pbCurve.Size = new System.Drawing.Size(280, 200);
-            this.pbCurve.TabIndex = 4;
-            this.pbCurve.TabStop = false;
-            this.pbCurve.Paint += new System.Windows.Forms.PaintEventHandler(this.pbCurve_Paint);
-            this.pbCurve.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseDown);
-            this.pbCurve.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseMove);
+            this.pbZoom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(128)))));
+            this.pbZoom.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pbZoom.InitialImage = null;
+            this.pbZoom.Location = new System.Drawing.Point(237, 146);
+            this.pbZoom.Name = "pbZoom";
+            this.pbZoom.Size = new System.Drawing.Size(100, 50);
+            this.pbZoom.TabIndex = 5;
+            this.pbZoom.TabStop = false;
+            this.pbZoom.Visible = false;
             // 
             // pbAxisX
             // 
-            this.pbAxisX.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.pbAxisX.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pbAxisX.BackColor = System.Drawing.Color.Blue;
             this.pbAxisX.Location = new System.Drawing.Point(0, 240);
@@ -88,7 +87,7 @@
             // 
             // pbRight
             // 
-            this.pbRight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.pbRight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pbRight.BackColor = System.Drawing.Color.Yellow;
             this.pbRight.Location = new System.Drawing.Point(360, 0);
@@ -100,7 +99,7 @@
             // 
             // pbTitle
             // 
-            this.pbTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.pbTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pbTitle.BackColor = System.Drawing.SystemColors.Control;
             this.pbTitle.Location = new System.Drawing.Point(80, 0);
@@ -113,7 +112,7 @@
             // 
             // pbAxisY
             // 
-            this.pbAxisY.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.pbAxisY.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.pbAxisY.BackColor = System.Drawing.Color.Red;
             this.pbAxisY.Location = new System.Drawing.Point(0, 0);
@@ -124,6 +123,24 @@
             this.pbAxisY.TabStop = false;
             this.pbAxisY.Paint += new System.Windows.Forms.PaintEventHandler(this.pbAxisY_Paint);
             // 
+            // pbCurve
+            // 
+            this.pbCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbCurve.BackColor = System.Drawing.Color.Black;
+            this.pbCurve.Location = new System.Drawing.Point(80, 40);
+            this.pbCurve.Margin = new System.Windows.Forms.Padding(0);
+            this.pbCurve.Name = "pbCurve";
+            this.pbCurve.Size = new System.Drawing.Size(280, 200);
+            this.pbCurve.TabIndex = 4;
+            this.pbCurve.TabStop = false;
+            this.pbCurve.Paint += new System.Windows.Forms.PaintEventHandler(this.pbCurve_Paint);
+            this.pbCurve.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseDown);
+            this.pbCurve.MouseEnter += new System.EventHandler(this.pbCurve_MouseEnter);
+            this.pbCurve.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseMove);
+            this.pbCurve.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseUp);
+            // 
             // RTGControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -133,11 +150,12 @@
             this.Size = new System.Drawing.Size(400, 300);
             this.Resize += new System.EventHandler(this.RTGControl_Resize);
             this.panelGraph.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbCurve)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbZoom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAxisX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbRight)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbTitle)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAxisY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbCurve)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -150,5 +168,6 @@
         private System.Windows.Forms.PictureBox pbCurve;
         private System.Windows.Forms.PictureBox pbAxisX;
         private System.Windows.Forms.PictureBox pbRight;
+        private System.Windows.Forms.PictureBox pbZoom;
     }
 }

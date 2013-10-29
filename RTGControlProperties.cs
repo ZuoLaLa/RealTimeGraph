@@ -92,26 +92,46 @@ namespace RealTimeGraph
         }
 
         private float xDataAccuracy;
-        /// <summary>
-        /// X 数据精度
+        /// <summary>X 数据精度
         /// </summary>
         public float XDataAccuracy
         {
             get { return xDataAccuracy; }
-            set { xDataAccuracy = value; }
+            set
+            {
+                if (value > 0)
+                {
+                    xDataAccuracy = value;
+                }
+                else
+                {
+                    xDataAccuracy = xDataAccuracyDefault;
+                }
+            }
         }
 
         private float yDataAccuracy;
-        /// <summary>
-        /// Y 数据精度
+        /// <summary>Y 数据精度
         /// </summary>
         public float YDataAccuracy
         {
             get { return yDataAccuracy; }
-            set { yDataAccuracy = value; }
+            set
+            {
+                if (value > 0)
+                {
+                    yDataAccuracy = value;
+                }
+                else
+                {
+                    yDataAccuracy = yDataAccuracyDefault;
+                }
+            }
         }
 
         public List<float> XDataList;
         public List<float> YDataList;
+
+        public string MsgOutput;
     }
 }
