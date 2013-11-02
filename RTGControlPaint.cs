@@ -276,6 +276,50 @@ namespace RealTimeGraph
             g.DrawString(yEndCurrent.ToString("#0.###"), fontBorder, Brushes.Black,
                 pbAxisY.Width - borderLength, pbTitle.Height,
                 borderYFormat);
+
+            // 绘制其他各级刻度线， 以及1级刻度值
+            float yScale1Min;
+            float yScale1Max;
+            float yScale1;
+            getScale1Limits(yStartCurrent, yEndCurrent, out yScale1Min,
+                out yScale1Max, out yScale1);
+
+            int scale1Num = getScaleNum(pbCurve.Height * yScale1 / (yEndCurrent - yStartCurrent), scale1Interval);
+            int scale1Sum = (int)(scale1Num * (yScale1Max - yScale1Min) / yScale1);
+            float yScale1Length = (float)(pbCurve.Height * yScale1 / ((yEndCurrent - yStartCurrent) * scale1Num));
+            int scale2Num = getScaleNum((int)yScale1Length, scale2Interval);
+            float yScale2Length = yScale1Length / scale2Num;
+            float yScale1Pos;   // 1级刻度坐标位置
+            float yScale2Pos;
+            double yScale1Value;  // 1级刻度处坐标值
+            StringFormat scaleYFormat = new StringFormat();
+            scaleYFormat.Alignment = StringAlignment.Far;
+            scaleYFormat.LineAlignment = StringAlignment.Center;
+            float scaleY = pbCurve.Height / (yEndCurrent - yStartCurrent);
+
+            for (int i = 0; i < scale1Sum; i++)
+            {
+                yScale1Pos = (float)(pbAxisY.Height - (yScale1Min - yStartCurrent) * scaleY
+                    - yScale1Length * i);
+                if (isInGraphY(yScale1Pos))
+                {
+                    g.DrawLine(penScale1, pbAxisY.Width - 1 - scale1Length, yScale1Pos,
+                    pbAxisY.Width - 1, yScale1Pos);
+                    yScale1Value = yScale1Min + yScale1 * i / scale1Num;
+                    g.DrawString(yScale1Value.ToString("#0.##"), fontScale1, Brushes.Black,
+                        pbAxisY.Width - 1 - scale1Length, yScale1Pos, scaleYFormat);
+                }
+
+                for (int j = 1; j < scale2Num; j++)
+                {
+                    yScale2Pos = yScale1Pos - yScale2Length * j;
+                    if (isInGraphY(yScale2Pos))
+                    {
+                        g.DrawLine(penScale2, pbAxisY.Width - 1, yScale2Pos,
+                            pbAxisY.Width - 1 - scale2Length, yScale2Pos);
+                    }
+                }
+            }
         }
 
         private void pbTitle_Paint(object sender, PaintEventArgs e)
