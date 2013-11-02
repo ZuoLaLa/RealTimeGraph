@@ -40,8 +40,8 @@ namespace RealTimeGraph
             penScale2 = new Pen(Color.Black, 1);
             fontBorder = new Font("Verdana", 10, FontStyle.Bold);
             fontScale1 = new Font("Verdana", 8);
-            penGrid1 = new Pen(Color.FromArgb(200, Color.White), 1);
-            penGrid2 = new Pen(Color.FromArgb(100, Color.White), 1);
+            penGrid1 = new Pen(Color.FromArgb(160, Color.White), 1);
+            penGrid2 = new Pen(Color.FromArgb(60, Color.White), 1);
 
             fontTitle = new Font("SimHei", 14);
             fontAxis = new Font("FangSong", 10);

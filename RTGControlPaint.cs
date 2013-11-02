@@ -23,8 +23,8 @@ namespace RealTimeGraph
             updateAxisCurrent();
             updateAxisScale();
 
-            // TODO: 绘制网格 gridding()
-            float xScale1Pos;   // 1级刻度坐标位置
+            // 绘制网格 gridding()
+            float xScale1Pos;
             float xScale2Pos;
 
             for (int i = 0; i < xScale1Sum; i++)
@@ -35,7 +35,7 @@ namespace RealTimeGraph
                 if (isInCurveX(xScale1Pos))
                 {
                     g.DrawLine(penGrid1, xScale1Pos, 0,
-                    xScale1Pos, pbCurve.Height);
+                        xScale1Pos, pbCurve.Height);
                 }
 
 
@@ -45,7 +45,29 @@ namespace RealTimeGraph
                     if (isInCurveX(xScale2Pos))
                     {
                         g.DrawLine(penGrid2, xScale2Pos, 0,
-                        xScale2Pos, pbCurve.Height);
+                            xScale2Pos, pbCurve.Height);
+                    }
+                }
+            }
+
+            float yScale1Pos;
+            float yScale2Pos;
+            for (int i = 0; i < yScale1Sum; i++)
+            {
+                yScale1Pos = yScale1Start - yScale1Length * i - pbTitle.Height;
+                if (isInCurveY(yScale1Pos))
+                {
+                    g.DrawLine(penGrid1, 0, yScale1Pos,
+                        pbCurve.Width, yScale1Pos);
+                }
+
+                for (int j = 1; j < yScale2Num; j++)
+                {
+                    yScale2Pos = yScale1Pos - yScale2Length * j;
+                    if (isInCurveY(yScale2Pos))
+                    {
+                        g.DrawLine(penGrid1, 0, yScale2Pos,
+                            pbCurve.Width, yScale2Pos);
                     }
                 }
             }
