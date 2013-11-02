@@ -335,7 +335,7 @@ namespace RealTimeGraph
 
         /// <summary>根据画图模式和数据调整坐标显示
         /// </summary>
-        private void UpdateAxisCurrent()
+        private void updateAxisCurrent()
         {
             if (XDataList != null)
             {
@@ -367,6 +367,34 @@ namespace RealTimeGraph
                     }
                 }
             }
+        }
+        /// <summary>根据坐标范围调整坐标刻度参数。
+        /// </summary>
+        private void updateAxisScale()
+        {
+            scaleX = pbCurve.Width / (xEndCurrent - xStartCurrent);
+            getScale1Limits(xStartCurrent, xEndCurrent,
+                out xScale1Min, out xScale1Max, out xScale1);
+            xScale1Start = pbAxisY.Width + (xScale1Min - xStartCurrent) * scaleX;
+            xScale1Num = getScaleNum(pbCurve.Width * xScale1 / (xEndCurrent - xStartCurrent),
+                scale1Interval);
+            xScale1Sum = (int)((xScale1Max - xScale1Min) / xScale1 * xScale1Num);
+            xScale1Length = pbCurve.Width * xScale1
+                / ((xEndCurrent - xStartCurrent) * xScale1Num);
+            xScale2Num = getScaleNum((int)xScale1Length, scale2Interval);
+            xScale2Length = xScale1Length / xScale2Num;
+
+            scaleY = pbCurve.Height / (yEndCurrent - yStartCurrent);
+            getScale1Limits(yStartCurrent, yEndCurrent, out yScale1Min,
+                out yScale1Max, out yScale1);
+            yScale1Start = pbAxisY.Height - (yScale1Min - yStartCurrent) * scaleY;
+            yScale1Num = getScaleNum(pbCurve.Height * yScale1 / (yEndCurrent - yStartCurrent),
+                scale1Interval);
+            yScale1Sum = (int)(yScale1Num * (yScale1Max - yScale1Min) / yScale1);
+            yScale1Length = pbCurve.Height * yScale1
+                / ((yEndCurrent - yStartCurrent) * yScale1Num);
+            yScale2Num = getScaleNum((int)yScale1Length, scale2Interval);
+            yScale2Length = yScale1Length / yScale2Num;
         }
     }
 }
