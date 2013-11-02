@@ -9,8 +9,7 @@ namespace RealTimeGraph
 {
     public partial class RTGControl : UserControl
     {
-        /// <summary>
-        /// 初始化曲线控件
+        /// <summary>初始化控件参数
         /// </summary>
         private void initialGraph()
         {

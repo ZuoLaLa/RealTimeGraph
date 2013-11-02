@@ -9,8 +9,7 @@ namespace RealTimeGraph
     public partial class RTGControl : UserControl
     {
         private string graphTitle;
-        /// <summary>
-        /// 曲线标题
+        /// <summary>曲线标题
         /// </summary>
         public string GraphTitle
         {
@@ -19,8 +18,7 @@ namespace RealTimeGraph
         }
 
         private string graphXTitle;
-        /// <summary>
-        /// X轴标题
+        /// <summary>X轴标题
         /// </summary>
         public string GraphXTitle
         {
@@ -29,8 +27,7 @@ namespace RealTimeGraph
         }
 
         private string graphYTitle;
-        /// <summary>
-        /// Y轴标题
+        /// <summary>Y轴标题
         /// </summary>
         public string GraphYTitle
         {
@@ -38,25 +35,20 @@ namespace RealTimeGraph
             set { graphYTitle = value; }
         }
 
-        /// <summary>
-        /// 可设定的曲线显示模式类型
+        /// <summary>可设定的曲线显示模式枚举类型
         /// </summary>
         public enum GraphTypes
         {
-            /// <summary>
-            /// 全局实时显示模式
+            /// <summary>全局实时显示模式
             /// </summary>
             GlobalMode,
-            /// <summary>
-            /// 固定坐标尺度的滚动实时显示模式
+            /// <summary>固定坐标尺度的滚动实时显示模式
             /// </summary>
             FixedMoveMode,
-            /// <summary>
-            /// 框选放大模式
+            /// <summary>框选放大模式
             /// </summary>
             RectZoomInMode,
-            /// <summary>
-            /// 拖动模式
+            /// <summary>拖动模式
             /// </summary>
             DragMode,
         }

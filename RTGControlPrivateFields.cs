@@ -50,7 +50,7 @@ namespace RealTimeGraph
         private int scale1Length = 10;  // 一级坐标刻度线的长度
         private int scale2Length = 8;
         private int scale1Interval = 100;   // 一级坐标刻度线的最小间隔
-        private int scale2Interval = 10;
+        private int scale2Interval = 15;
 
         private Font fontTitle; // 曲线标题字体
         private Font fontAxis;  // 坐标轴标题字体
