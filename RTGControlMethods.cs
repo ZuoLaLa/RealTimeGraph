@@ -396,7 +396,6 @@ namespace RealTimeGraph
             scaleX = pbCurve.Width / (xEndCurrent - xStartCurrent);
             getScale1Limits(xStartCurrent, xEndCurrent,
                 out xScale1Min, out xScale1Max, out xScale1);
-            xScale1Start = pbAxisY.Width + (xScale1Min - xStartCurrent) * scaleX;
             xScale1Num = getScaleNum(pbCurve.Width * xScale1 / (xEndCurrent - xStartCurrent),
                 scale1Interval);
             xScale1Sum = (int)((xScale1Max - xScale1Min) / xScale1 * xScale1Num);
@@ -408,7 +407,6 @@ namespace RealTimeGraph
             scaleY = pbCurve.Height / (yEndCurrent - yStartCurrent);
             getScale1Limits(yStartCurrent, yEndCurrent, out yScale1Min,
                 out yScale1Max, out yScale1);
-            yScale1Start = pbAxisY.Height - (yScale1Min - yStartCurrent) * scaleY;
             yScale1Num = getScaleNum(pbCurve.Height * yScale1 / (yEndCurrent - yStartCurrent),
                 scale1Interval);
             yScale1Sum = (int)(yScale1Num * (yScale1Max - yScale1Min) / yScale1);

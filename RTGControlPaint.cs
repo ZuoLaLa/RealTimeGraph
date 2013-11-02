@@ -51,50 +51,51 @@ namespace RealTimeGraph
         /// <param name="g"></param>
         private void gridding(Graphics g)
         {
-            float xScale1Pos;
-            float xScale2Pos;
+            float xGrid1Pos;
+            float xGrid2Pos;
+            float xGrid1Start = (xScale1Min - xStartCurrent) * scaleX;
 
             for (int i = 0; i < xScale1Sum; i++)
             {
-                // 注意此时位置在 pbCurve 中，与 pbAxisX 中不同
-                xScale1Pos = xScale1Start + xScale1Length * i
-                    - pbAxisY.Width;
-                if (isInCurveX(xScale1Pos))
+                xGrid1Pos = xGrid1Start + xScale1Length * i;
+                if (isInCurveX(xGrid1Pos))
                 {
-                    g.DrawLine(penGrid1, xScale1Pos, 0,
-                        xScale1Pos, pbCurve.Height);
+                    g.DrawLine(penGrid1, xGrid1Pos, 0,
+                        xGrid1Pos, pbCurve.Height);
                 }
 
 
                 for (int j = 1; j < xScale2Num; j++)
                 {
-                    xScale2Pos = xScale1Pos + xScale2Length * j;
-                    if (isInCurveX(xScale2Pos))
+                    xGrid2Pos = xGrid1Pos + xScale2Length * j;
+                    if (isInCurveX(xGrid2Pos))
                     {
-                        g.DrawLine(penGrid2, xScale2Pos, 0,
-                            xScale2Pos, pbCurve.Height);
+                        g.DrawLine(penGrid2, xGrid2Pos, 0,
+                            xGrid2Pos, pbCurve.Height);
                     }
                 }
             }
 
-            float yScale1Pos;
-            float yScale2Pos;
+            float yGrid1Pos;
+            float yGrid2Pos;
+            float yGrid1Start = pbAxisY.Height - pbTitle.Height
+                - (yScale1Min - yStartCurrent) * scaleY;
             for (int i = 0; i < yScale1Sum; i++)
             {
-                yScale1Pos = yScale1Start - yScale1Length * i - pbTitle.Height;
-                if (isInCurveY(yScale1Pos))
+                yGrid1Pos = yGrid1Start - yScale1Length * i;
+                if (isInCurveY(yGrid1Pos))
                 {
-                    g.DrawLine(penGrid1, 0, yScale1Pos,
-                        pbCurve.Width, yScale1Pos);
+                    g.DrawLine(penGrid1, 0, yGrid1Pos,
+                        pbCurve.Width, yGrid1Pos);
                 }
 
                 for (int j = 1; j < yScale2Num; j++)
                 {
-                    yScale2Pos = yScale1Pos - yScale2Length * j;
-                    if (isInCurveY(yScale2Pos))
+                    yGrid2Pos = yGrid1Pos - yScale2Length * j;
+                    if (isInCurveY(yGrid2Pos))
                     {
-                        g.DrawLine(penGrid1, 0, yScale2Pos,
-                            pbCurve.Width, yScale2Pos);
+                        g.DrawLine(penGrid1, 0, yGrid2Pos,
+                            pbCurve.Width, yGrid2Pos);
                     }
                 }
             }
@@ -255,7 +256,7 @@ namespace RealTimeGraph
             float xScale1Pos;   // 1级刻度坐标位置
             float xScale2Pos;
             float xScale1Value;  // 1级刻度处坐标值
-
+            float xScale1Start = pbAxisY.Width + (xScale1Min - xStartCurrent) * scaleX;
             for (int i = 0; i < xScale1Sum; i++)
             {
                 xScale1Pos = xScale1Start + xScale1Length * i;
@@ -310,7 +311,7 @@ namespace RealTimeGraph
             StringFormat scaleYFormat = new StringFormat();
             scaleYFormat.Alignment = StringAlignment.Far;
             scaleYFormat.LineAlignment = StringAlignment.Center;
-
+            float yScale1Start = pbAxisY.Height - (yScale1Min - yStartCurrent) * scaleY;
             for (int i = 0; i < yScale1Sum; i++)
             {
                 yScale1Pos = yScale1Start - yScale1Length * i;
