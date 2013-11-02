@@ -23,7 +23,31 @@ namespace RealTimeGraph
             updateAxisCurrent();
             updateAxisScale();
 
-            // 绘制网格 gridding()
+            gridding(g);
+
+            pbAxisX.Refresh();
+            pbAxisY.Refresh();
+
+            #region **绘制曲线**
+            pointsList.Clear();
+            if (dataToPoints(width, height))
+            {
+                if (pointsList.Count > 1)
+                {
+                    Pen p = new Pen(Color.Yellow, 1);
+                    p.LineJoin = LineJoin.Bevel;
+                    g.DrawLines(p, pointsList.ToArray());
+                    p.Dispose();
+                }
+            }
+            #endregion
+        }
+        /// <summary>
+        /// 绘制网格
+        /// </summary>
+        /// <param name="g"></param>
+        private void gridding(Graphics g)
+        {
             float xScale1Pos;
             float xScale2Pos;
 
@@ -71,23 +95,6 @@ namespace RealTimeGraph
                     }
                 }
             }
-
-            pbAxisX.Refresh();
-            pbAxisY.Refresh();
-
-            #region **绘制曲线**
-            pointsList.Clear();
-            if (dataToPoints(width, height))
-            {
-                if (pointsList.Count > 1)
-                {
-                    Pen p = new Pen(Color.Yellow, 1);
-                    p.LineJoin = LineJoin.Bevel;
-                    g.DrawLines(p, pointsList.ToArray());
-                    p.Dispose();
-                }
-            }
-            #endregion
         }
 
         // 鼠标进入绘图区域时，根据绘图模式改变鼠标形态
