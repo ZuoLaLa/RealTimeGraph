@@ -205,6 +205,14 @@ namespace RealTimeGraph
             g.DrawLine(penBorder, pbAxisY.Width + pbCurve.Width, 0,
                 pbAxisY.Width + pbCurve.Width, borderLength);
 
+            // 绘制 X 轴标题
+            StringFormat titleFormat = new StringFormat();
+            titleFormat.Alignment = StringAlignment.Center;
+            g.DrawString(GraphXTitle, fontAxis, Brushes.Black,
+                pbAxisY.Width + pbCurve.Width / 2F,
+                pbAxisX.Height / 2F + fontTitle.Height / 5F,
+                titleFormat);
+
             // 标识边界坐标值
             StringFormat centerFormat = new StringFormat();
 
