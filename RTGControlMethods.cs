@@ -41,9 +41,10 @@ namespace RealTimeGraph
             fontBorder = new Font("Verdana", 10, FontStyle.Bold);
             fontScale1 = new Font("Verdana", 8);
 
-            fontTitle = new Font("宋体", 14, FontStyle.Bold);
-            fontAxis = new Font("宋体", 10);
+            fontTitle = new Font("SimHei", 14);
+            fontAxis = new Font("FangSong", 10);
             GraphTitle = "位移实时显示曲线";
+            GraphXTitle = "时间(s)";
             GraphYTitle = "距离(mm)";
 
             pbZoom.BackColor = Color.FromArgb(50, 0, 64, 128);
