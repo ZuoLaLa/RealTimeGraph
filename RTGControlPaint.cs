@@ -213,6 +213,47 @@ namespace RealTimeGraph
                 pbAxisY.Width, borderLength, centerFormat);
             g.DrawString(xEndCurrent.ToString(), fontBorder, Brushes.Black,
                 pbAxisY.Width + pbCurve.Width, borderLength, centerFormat);
+
+            float xScale1Min;
+            float xScale1Max;
+            float xScale1;
+            getScale1Limits(xStartCurrent, xEndCurrent, out xScale1Min, out xScale1Max, out xScale1);
+            // 绘制其他各级刻度线， 以及1级刻度值
+            int scale1Num = getScaleNum((int)(pbCurve.Width * xScale1 / (xEndCurrent - xStartCurrent)), scale1Interval);
+            int scale1Sum = (int)((xScale1Max - xScale1Min) / xScale1 * scale1Num);
+            float xScale1Length = (float)(pbCurve.Width * xScale1 / ((xEndCurrent - xStartCurrent) * scale1Num));
+            int scale2Num = getScaleNum((int)xScale1Length, scale2Interval);
+            float xScale2Length = xScale1Length / scale2Num;
+
+            float scaleX = pbCurve.Width / (xEndCurrent - xStartCurrent);
+            float xScale1Pos = (float)(pbAxisY.Width + (xScale1Min - xStartCurrent) * scaleX);   // 1级刻度坐标位置
+            float xScale2Pos;
+            float xScale1Value;  // 1级刻度处坐标值
+
+            for (int i = 0; i < scale1Sum; i++)
+            {
+                xScale1Pos = (float)(pbAxisY.Width + (xScale1Min - xStartCurrent) * scaleX)
+                    + xScale1Length * i;
+                if (isInGraphX(xScale1Pos))
+                {
+                    g.DrawLine(penScale1, xScale1Pos, 0,
+                    xScale1Pos, scale1Length);
+                    xScale1Value = xScale1Min + xScale1 * i / scale1Num;
+                    g.DrawString(xScale1Value.ToString(), fontScale1, Brushes.Black,
+                        xScale1Pos, borderLength, centerFormat);
+                }
+
+
+                for (int j = 1; j < scale2Num; j++)
+                {
+                    xScale2Pos = xScale1Pos + xScale2Length * j;
+                    if (isInGraphX(xScale2Pos))
+                    {
+                        g.DrawLine(penScale2, xScale2Pos, 0,
+                        xScale2Pos, scale2Length);
+                    }
+                }
+            }
         }
 
         private void pbAxisY_Paint(object sender, PaintEventArgs e)

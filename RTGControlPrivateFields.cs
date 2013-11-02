@@ -40,7 +40,15 @@ namespace RealTimeGraph
 
         Pen penBorder;    // 边界刻度所用钢笔
         Font fontBorder;    // 边界刻度值字体
+        Pen penScale1;    // 一级刻度所用钢笔
+        Font fontScale1;    // 一级刻度值字体
+        Pen penScale2;
+
         private int borderLength;  // 坐标边界刻度线的长度
+        private int scale1Length = 10;  // 一级坐标刻度线的长度
+        private int scale2Length = 8;
+        private int scale1Interval = 100;   // 一级坐标刻度线的最小间隔
+        private int scale2Interval = 10;
 
         private Font fontTitle; // 曲线标题字体
         private Font fontAxis;  // 坐标轴标题字体

@@ -36,6 +36,10 @@ namespace RealTimeGraph
             penBorder = new Pen(Color.Black, 2);
             fontBorder = new Font("Verdana", 10, FontStyle.Bold);
             borderLength = 15;
+            penScale1 = new Pen(Color.Black, 2);
+            penScale2 = new Pen(Color.Black, 1);
+            fontBorder = new Font("Verdana", 10, FontStyle.Bold);
+            fontScale1 = new Font("Verdana", 8);
 
             fontTitle = new Font("宋体", 14, FontStyle.Bold);
             fontAxis = new Font("宋体", 10);
