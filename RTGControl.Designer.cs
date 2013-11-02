@@ -78,6 +78,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pbAxisX.BackColor = System.Drawing.Color.Blue;
             this.pbAxisX.Location = new System.Drawing.Point(0, 240);
+            this.pbAxisX.BackColor = System.Drawing.Color.Gainsboro;
             this.pbAxisX.Margin = new System.Windows.Forms.Padding(0);
             this.pbAxisX.Name = "pbAxisX";
             this.pbAxisX.Size = new System.Drawing.Size(400, 60);
@@ -90,6 +91,7 @@
             this.pbRight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pbRight.BackColor = System.Drawing.Color.Yellow;
+            this.pbRight.BackColor = System.Drawing.Color.Gainsboro;
             this.pbRight.Location = new System.Drawing.Point(360, 0);
             this.pbRight.Margin = new System.Windows.Forms.Padding(0);
             this.pbRight.Name = "pbRight";
@@ -102,6 +104,7 @@
             this.pbTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pbTitle.BackColor = System.Drawing.SystemColors.Control;
+            this.pbTitle.BackColor = System.Drawing.Color.Gainsboro;
             this.pbTitle.Location = new System.Drawing.Point(80, 0);
             this.pbTitle.Margin = new System.Windows.Forms.Padding(0);
             this.pbTitle.Name = "pbTitle";
@@ -115,6 +118,7 @@
             this.pbAxisY.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.pbAxisY.BackColor = System.Drawing.Color.Red;
+            this.pbAxisY.BackColor = System.Drawing.Color.Gainsboro;
             this.pbAxisY.Location = new System.Drawing.Point(0, 0);
             this.pbAxisY.Margin = new System.Windows.Forms.Padding(0);
             this.pbAxisY.Name = "pbAxisY";
