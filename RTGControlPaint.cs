@@ -23,7 +23,10 @@ namespace RealTimeGraph
             updateAxisCurrent();
             updateAxisScale();
 
-            gridding(g);
+            if (ShowGrid)
+            {
+                gridding(g);
+            }
 
             pbAxisX.Refresh();
             pbAxisY.Refresh();
