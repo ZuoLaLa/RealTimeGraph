@@ -332,5 +332,41 @@ namespace RealTimeGraph
             return scalePos > pbAxisY.Height - pbCurve.Height + 1 &&
                                 scalePos < pbAxisY.Height - 1;
         }
+
+        /// <summary>根据画图模式和数据调整坐标显示
+        /// </summary>
+        private void UpdateAxisCurrent()
+        {
+            if (XDataList != null)
+            {
+                if (isAutoMove)
+                {
+                    if (isAutoScale)    // 此即为 GlobalMode 模式
+                    {
+                        xStartCurrent = (xDataMin < xStartInitial)
+                            ? xDataMin : xStartInitial;
+                        xEndCurrent = (xDataMax > xEndInitial)
+                            ? xDataMax : xEndInitial;
+                        yStartCurrent = (yDataMin < yStartInitial)
+                            ? yDataMin : yStartInitial;
+                        yEndCurrent = (yDataMax > yEndInitial)
+                            ? yDataMax : yEndInitial;
+                    }
+                    else    // 此即为 FixedMoveMode 模式
+                    {
+                        if (xDataMax > xEndCurrent)
+                        {
+                            xStartCurrent += xDataMax - xEndCurrent;
+                            xEndCurrent = xDataMax;
+                        }
+
+                        yStartCurrent = (yDataMin < yStartInitial)
+                            ? yDataMin : yStartInitial;
+                        yEndCurrent = (yDataMax > yEndInitial)
+                            ? yDataMax : yEndInitial;
+                    }
+                }
+            }
+        }
     }
 }

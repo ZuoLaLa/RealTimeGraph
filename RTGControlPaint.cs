@@ -20,38 +20,20 @@ namespace RealTimeGraph
             g.ScaleTransform(1, -1);
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            #region **根据画图模式和数据调整坐标显示**
-            if (XDataList != null)
-            {
-                if (isAutoMove)
-                {
-                    if (isAutoScale)    // 此即为 GlobalMode 模式
-                    {
-                        xStartCurrent = (xDataMin < xStartInitial)
-                            ? xDataMin : xStartInitial;
-                        xEndCurrent = (xDataMax > xEndInitial)
-                            ? xDataMax : xEndInitial;
-                        yStartCurrent = (yDataMin < yStartInitial)
-                            ? yDataMin : yStartInitial;
-                        yEndCurrent = (yDataMax > yEndInitial)
-                            ? yDataMax : yEndInitial;
-                    }
-                    else    // 此即为 FixedMoveMode 模式
-                    {
-                        if (xDataMax > xEndCurrent)
-                        {
-                            xStartCurrent += xDataMax - xEndCurrent;
-                            xEndCurrent = xDataMax;
-                        }
+            UpdateAxisCurrent();
 
-                        yStartCurrent = (yDataMin < yStartInitial)
-                            ? yDataMin : yStartInitial;
-                        yEndCurrent = (yDataMax > yEndInitial)
-                            ? yDataMax : yEndInitial;
-                    }
-                }
-            }
-            #endregion
+            // UpdateAxisScale()
+            scaleX = pbCurve.Width / (xEndCurrent - xStartCurrent);
+            getScale1Limits(xStartCurrent, xEndCurrent,
+                out xScale1Min, out xScale1Max, out xScale1);
+            xScale1Start = pbAxisY.Width + (xScale1Min - xStartCurrent) * scaleX;
+            scale1Num = getScaleNum(pbCurve.Width * xScale1 / (xEndCurrent - xStartCurrent),
+                scale1Interval);
+            scale1Sum = (int)((xScale1Max - xScale1Min) / xScale1 * scale1Num);
+            xScale1Length = pbCurve.Width * xScale1
+                / ((xEndCurrent - xStartCurrent) * scale1Num);
+            scale2Num = getScaleNum((int)xScale1Length, scale2Interval);
+            xScale2Length = xScale1Length / scale2Num;
 
             pbAxisX.Refresh();
             pbAxisY.Refresh();
@@ -70,6 +52,7 @@ namespace RealTimeGraph
             }
             #endregion
         }
+
         // 鼠标进入绘图区域时，根据绘图模式改变鼠标形态
         private void pbCurve_MouseEnter(object sender, EventArgs e)
         {
@@ -215,33 +198,20 @@ namespace RealTimeGraph
 
             // 标识边界坐标值
             StringFormat centerFormat = new StringFormat();
-
             centerFormat.Alignment = StringAlignment.Center;
             g.DrawString(xStartCurrent.ToString(), fontBorder, Brushes.Black,
                 pbAxisY.Width, borderLength, centerFormat);
             g.DrawString(xEndCurrent.ToString(), fontBorder, Brushes.Black,
                 pbAxisY.Width + pbCurve.Width, borderLength, centerFormat);
 
-            float xScale1Min;
-            float xScale1Max;
-            float xScale1;
-            getScale1Limits(xStartCurrent, xEndCurrent, out xScale1Min, out xScale1Max, out xScale1);
             // 绘制其他各级刻度线， 以及1级刻度值
-            int scale1Num = getScaleNum((int)(pbCurve.Width * xScale1 / (xEndCurrent - xStartCurrent)), scale1Interval);
-            int scale1Sum = (int)((xScale1Max - xScale1Min) / xScale1 * scale1Num);
-            float xScale1Length = (float)(pbCurve.Width * xScale1 / ((xEndCurrent - xStartCurrent) * scale1Num));
-            int scale2Num = getScaleNum((int)xScale1Length, scale2Interval);
-            float xScale2Length = xScale1Length / scale2Num;
-
-            float scaleX = pbCurve.Width / (xEndCurrent - xStartCurrent);
-            float xScale1Pos = (float)(pbAxisY.Width + (xScale1Min - xStartCurrent) * scaleX);   // 1级刻度坐标位置
+            float xScale1Pos;   // 1级刻度坐标位置
             float xScale2Pos;
             float xScale1Value;  // 1级刻度处坐标值
 
             for (int i = 0; i < scale1Sum; i++)
             {
-                xScale1Pos = (float)(pbAxisY.Width + (xScale1Min - xStartCurrent) * scaleX)
-                    + xScale1Length * i;
+                xScale1Pos = xScale1Start + xScale1Length * i;
                 if (isInGraphX(xScale1Pos))
                 {
                     g.DrawLine(penScale1, xScale1Pos, 0,
