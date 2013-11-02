@@ -23,6 +23,33 @@ namespace RealTimeGraph
             updateAxisCurrent();
             updateAxisScale();
 
+            // TODO: 绘制网格 gridding()
+            float xScale1Pos;   // 1级刻度坐标位置
+            float xScale2Pos;
+
+            for (int i = 0; i < xScale1Sum; i++)
+            {
+                // 注意此时位置在 pbCurve 中，与 pbAxisX 中不同
+                xScale1Pos = xScale1Start + xScale1Length * i
+                    - pbAxisY.Width;
+                if (isInCurveX(xScale1Pos))
+                {
+                    g.DrawLine(penGrid1, xScale1Pos, 0,
+                    xScale1Pos, pbCurve.Height);
+                }
+
+
+                for (int j = 1; j < xScale2Num; j++)
+                {
+                    xScale2Pos = xScale1Pos + xScale2Length * j;
+                    if (isInCurveX(xScale2Pos))
+                    {
+                        g.DrawLine(penGrid2, xScale2Pos, 0,
+                        xScale2Pos, pbCurve.Height);
+                    }
+                }
+            }
+
             pbAxisX.Refresh();
             pbAxisY.Refresh();
 
@@ -200,7 +227,7 @@ namespace RealTimeGraph
             for (int i = 0; i < xScale1Sum; i++)
             {
                 xScale1Pos = xScale1Start + xScale1Length * i;
-                if (isInGraphX(xScale1Pos))
+                if (isInAxisX(xScale1Pos))
                 {
                     g.DrawLine(penScale1, xScale1Pos, 0,
                     xScale1Pos, scale1Length);
@@ -213,7 +240,7 @@ namespace RealTimeGraph
                 for (int j = 1; j < xScale2Num; j++)
                 {
                     xScale2Pos = xScale1Pos + xScale2Length * j;
-                    if (isInGraphX(xScale2Pos))
+                    if (isInAxisX(xScale2Pos))
                     {
                         g.DrawLine(penScale2, xScale2Pos, 0,
                         xScale2Pos, scale2Length);
@@ -255,7 +282,7 @@ namespace RealTimeGraph
             for (int i = 0; i < yScale1Sum; i++)
             {
                 yScale1Pos = yScale1Start - yScale1Length * i;
-                if (isInGraphY(yScale1Pos))
+                if (isInAxisY(yScale1Pos))
                 {
                     g.DrawLine(penScale1, pbAxisY.Width - 1 - scale1Length, yScale1Pos,
                     pbAxisY.Width - 1, yScale1Pos);
@@ -267,7 +294,7 @@ namespace RealTimeGraph
                 for (int j = 1; j < yScale2Num; j++)
                 {
                     yScale2Pos = yScale1Pos - yScale2Length * j;
-                    if (isInGraphY(yScale2Pos))
+                    if (isInAxisY(yScale2Pos))
                     {
                         g.DrawLine(penScale2, pbAxisY.Width - 1, yScale2Pos,
                             pbAxisY.Width - 1 - scale2Length, yScale2Pos);

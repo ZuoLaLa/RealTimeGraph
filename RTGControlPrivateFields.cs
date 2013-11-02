@@ -43,6 +43,8 @@ namespace RealTimeGraph
         Pen penScale1;    // 一级刻度所用钢笔
         Font fontScale1;    // 一级刻度值字体
         Pen penScale2;
+        Pen penGrid1;       // 一级网格所用钢笔
+        Pen penGrid2;
 
         private int borderLength;  // 坐标边界刻度线的长度
         private int scale1Length = 10;  // 一级坐标刻度线的长度

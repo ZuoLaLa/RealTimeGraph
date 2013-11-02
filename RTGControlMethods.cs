@@ -40,6 +40,8 @@ namespace RealTimeGraph
             penScale2 = new Pen(Color.Black, 1);
             fontBorder = new Font("Verdana", 10, FontStyle.Bold);
             fontScale1 = new Font("Verdana", 8);
+            penGrid1 = new Pen(Color.FromArgb(200, Color.White), 1);
+            penGrid2 = new Pen(Color.FromArgb(100, Color.White), 1);
 
             fontTitle = new Font("SimHei", 14);
             fontAxis = new Font("FangSong", 10);
@@ -317,7 +319,7 @@ namespace RealTimeGraph
         /// </summary>
         /// <param name="scalePos">x刻度坐标位置</param>
         /// <returns>若坐标位置位于X轴可绘制区域内，则返回true.</returns>
-        private bool isInGraphX(float scalePos)
+        private bool isInAxisX(float scalePos)
         {
             return scalePos > pbAxisY.Width + 1 &&
                                 scalePos < pbAxisY.Width + pbCurve.Width - 1;
@@ -327,10 +329,28 @@ namespace RealTimeGraph
         /// </summary>
         /// <param name="scalePos">Y刻度坐标位置</param>
         /// <returns>若坐标位置位于X轴可绘制区域内，则返回true.</returns>
-        private bool isInGraphY(float scalePos)
+        private bool isInAxisY(float scalePos)
         {
             return scalePos > pbAxisY.Height - pbCurve.Height + 1 &&
                                 scalePos < pbAxisY.Height - 1;
+        }
+
+        /// <summary>判断纵向网格位置是否位于可绘制区域内
+        /// </summary>
+        /// <param name="scalePos">纵向网格位置</param>
+        /// <returns>若坐标位置位于可绘制区域内，则返回true.</returns>
+        private bool isInCurveX(float scalePos)
+        {
+            return scalePos > 0 && scalePos < pbCurve.Width - 1;
+        }
+
+        /// <summary>判断横向网格位置是否位于可绘制区域内
+        /// </summary>
+        /// <param name="scalePos">横向网格位置</param>
+        /// <returns>若坐标位置位于可绘制区域内，则返回true.</returns>
+        private bool isInCurveY(float scalePos)
+        {
+            return scalePos > 0 && scalePos < pbCurve.Height - 1;
         }
 
         /// <summary>根据画图模式和数据调整坐标显示
