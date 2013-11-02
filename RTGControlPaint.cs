@@ -45,8 +45,7 @@ namespace RealTimeGraph
             }
             #endregion
         }
-        /// <summary>
-        /// 绘制网格
+        /// <summary>绘制网格
         /// </summary>
         /// <param name="g"></param>
         private void gridding(Graphics g)
