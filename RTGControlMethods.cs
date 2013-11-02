@@ -40,6 +40,9 @@ namespace RealTimeGraph
             penScale2 = new Pen(Color.Black, 1);
             fontBorder = new Font("Verdana", 10, FontStyle.Bold);
             fontScale1 = new Font("Verdana", 8);
+            penGrid1 = new Pen(Color.FromArgb(160, Color.White), 1);
+            penGrid2 = new Pen(Color.FromArgb(60, Color.White), 1);
+            ShowGrid = false;
 
             fontTitle = new Font("SimHei", 14);
             fontAxis = new Font("FangSong", 10);
@@ -317,7 +320,7 @@ namespace RealTimeGraph
         /// </summary>
         /// <param name="scalePos">x刻度坐标位置</param>
         /// <returns>若坐标位置位于X轴可绘制区域内，则返回true.</returns>
-        private bool isInGraphX(float scalePos)
+        private bool isInAxisX(float scalePos)
         {
             return scalePos > pbAxisY.Width + 1 &&
                                 scalePos < pbAxisY.Width + pbCurve.Width - 1;
@@ -327,10 +330,92 @@ namespace RealTimeGraph
         /// </summary>
         /// <param name="scalePos">Y刻度坐标位置</param>
         /// <returns>若坐标位置位于X轴可绘制区域内，则返回true.</returns>
-        private bool isInGraphY(float scalePos)
+        private bool isInAxisY(float scalePos)
         {
             return scalePos > pbAxisY.Height - pbCurve.Height + 1 &&
                                 scalePos < pbAxisY.Height - 1;
+        }
+
+        /// <summary>判断纵向网格位置是否位于可绘制区域内
+        /// </summary>
+        /// <param name="scalePos">纵向网格位置</param>
+        /// <returns>若坐标位置位于可绘制区域内，则返回true.</returns>
+        private bool isInCurveX(float scalePos)
+        {
+            return scalePos > 0 && scalePos < pbCurve.Width - 1;
+        }
+
+        /// <summary>判断横向网格位置是否位于可绘制区域内
+        /// </summary>
+        /// <param name="scalePos">横向网格位置</param>
+        /// <returns>若坐标位置位于可绘制区域内，则返回true.</returns>
+        private bool isInCurveY(float scalePos)
+        {
+            return scalePos > 0 && scalePos < pbCurve.Height - 1;
+        }
+
+        /// <summary>根据画图模式和数据调整坐标显示
+        /// </summary>
+        private void updateAxisCurrent()
+        {
+            if (XDataList != null)
+            {
+                if (isAutoMove)
+                {
+                    if (isAutoScale)    // 此即为 GlobalMode 模式
+                    {
+                        xStartCurrent = (xDataMin < xStartInitial)
+                            ? xDataMin : xStartInitial;
+                        xEndCurrent = (xDataMax > xEndInitial)
+                            ? xDataMax : xEndInitial;
+                        yStartCurrent = (yDataMin < yStartInitial)
+                            ? yDataMin : yStartInitial;
+                        yEndCurrent = (yDataMax > yEndInitial)
+                            ? yDataMax : yEndInitial;
+                    }
+                    else    // 此即为 FixedMoveMode 模式
+                    {
+                        if (xDataMax > xEndCurrent)
+                        {
+                            xStartCurrent += xDataMax - xEndCurrent;
+                            xEndCurrent = xDataMax;
+                        }
+
+                        yStartCurrent = (yDataMin < yStartInitial)
+                            ? yDataMin : yStartInitial;
+                        yEndCurrent = (yDataMax > yEndInitial)
+                            ? yDataMax : yEndInitial;
+                    }
+                }
+            }
+        }
+        /// <summary>根据坐标范围调整坐标刻度参数。
+        /// </summary>
+        private void updateAxisScale()
+        {
+            scaleX = pbCurve.Width / (xEndCurrent - xStartCurrent);
+            getScale1Limits(xStartCurrent, xEndCurrent,
+                out xScale1Min, out xScale1Max, out xScale1);
+            xScale1Start = pbAxisY.Width + (xScale1Min - xStartCurrent) * scaleX;
+            xScale1Num = getScaleNum(pbCurve.Width * xScale1 / (xEndCurrent - xStartCurrent),
+                scale1Interval);
+            xScale1Sum = (int)((xScale1Max - xScale1Min) / xScale1 * xScale1Num);
+            xScale1Length = pbCurve.Width * xScale1
+                / ((xEndCurrent - xStartCurrent) * xScale1Num);
+            xScale2Num = getScaleNum((int)xScale1Length, scale2Interval);
+            xScale2Length = xScale1Length / xScale2Num;
+
+            scaleY = pbCurve.Height / (yEndCurrent - yStartCurrent);
+            getScale1Limits(yStartCurrent, yEndCurrent, out yScale1Min,
+                out yScale1Max, out yScale1);
+            yScale1Start = pbAxisY.Height - (yScale1Min - yStartCurrent) * scaleY;
+            yScale1Num = getScaleNum(pbCurve.Height * yScale1 / (yEndCurrent - yStartCurrent),
+                scale1Interval);
+            yScale1Sum = (int)(yScale1Num * (yScale1Max - yScale1Min) / yScale1);
+            yScale1Length = pbCurve.Height * yScale1
+                / ((yEndCurrent - yStartCurrent) * yScale1Num);
+            yScale2Num = getScaleNum((int)yScale1Length, scale2Interval);
+            yScale2Length = yScale1Length / yScale2Num;
         }
     }
 }

@@ -133,5 +133,7 @@ namespace RealTimeGraph
         public List<float> YDataList;
 
         public string MsgOutput;
+
+        public bool ShowGrid;
     }
 }
