@@ -27,13 +27,25 @@ namespace RealTimeGraph
             getScale1Limits(xStartCurrent, xEndCurrent,
                 out xScale1Min, out xScale1Max, out xScale1);
             xScale1Start = pbAxisY.Width + (xScale1Min - xStartCurrent) * scaleX;
-            scale1Num = getScaleNum(pbCurve.Width * xScale1 / (xEndCurrent - xStartCurrent),
+            xScale1Num = getScaleNum(pbCurve.Width * xScale1 / (xEndCurrent - xStartCurrent),
                 scale1Interval);
-            scale1Sum = (int)((xScale1Max - xScale1Min) / xScale1 * scale1Num);
+            xScale1Sum = (int)((xScale1Max - xScale1Min) / xScale1 * xScale1Num);
             xScale1Length = pbCurve.Width * xScale1
-                / ((xEndCurrent - xStartCurrent) * scale1Num);
-            scale2Num = getScaleNum((int)xScale1Length, scale2Interval);
-            xScale2Length = xScale1Length / scale2Num;
+                / ((xEndCurrent - xStartCurrent) * xScale1Num);
+            xScale2Num = getScaleNum((int)xScale1Length, scale2Interval);
+            xScale2Length = xScale1Length / xScale2Num;
+
+            scaleY = pbCurve.Height / (yEndCurrent - yStartCurrent);
+            getScale1Limits(yStartCurrent, yEndCurrent, out yScale1Min,
+                out yScale1Max, out yScale1);
+            yScale1Start = pbAxisY.Height - (yScale1Min - yStartCurrent) * scaleY;
+            yScale1Num = getScaleNum(pbCurve.Height * yScale1 / (yEndCurrent - yStartCurrent),
+                scale1Interval);
+            yScale1Sum = (int)(yScale1Num * (yScale1Max - yScale1Min) / yScale1);
+            yScale1Length = pbCurve.Height * yScale1
+                / ((yEndCurrent - yStartCurrent) * yScale1Num);
+            yScale2Num = getScaleNum((int)yScale1Length, scale2Interval);
+            yScale2Length = yScale1Length / yScale2Num;
 
             pbAxisX.Refresh();
             pbAxisY.Refresh();
@@ -209,20 +221,20 @@ namespace RealTimeGraph
             float xScale2Pos;
             float xScale1Value;  // 1级刻度处坐标值
 
-            for (int i = 0; i < scale1Sum; i++)
+            for (int i = 0; i < xScale1Sum; i++)
             {
                 xScale1Pos = xScale1Start + xScale1Length * i;
                 if (isInGraphX(xScale1Pos))
                 {
                     g.DrawLine(penScale1, xScale1Pos, 0,
                     xScale1Pos, scale1Length);
-                    xScale1Value = xScale1Min + xScale1 * i / scale1Num;
+                    xScale1Value = xScale1Min + xScale1 * i / xScale1Num;
                     g.DrawString(xScale1Value.ToString(), fontScale1, Brushes.Black,
                         xScale1Pos, borderLength, centerFormat);
                 }
 
 
-                for (int j = 1; j < scale2Num; j++)
+                for (int j = 1; j < xScale2Num; j++)
                 {
                     xScale2Pos = xScale1Pos + xScale2Length * j;
                     if (isInGraphX(xScale2Pos))
@@ -256,39 +268,27 @@ namespace RealTimeGraph
                 borderYFormat);
 
             // 绘制其他各级刻度线， 以及1级刻度值
-            float yScale1Min;
-            float yScale1Max;
-            float yScale1;
-            getScale1Limits(yStartCurrent, yEndCurrent, out yScale1Min,
-                out yScale1Max, out yScale1);
 
-            int scale1Num = getScaleNum(pbCurve.Height * yScale1 / (yEndCurrent - yStartCurrent), scale1Interval);
-            int scale1Sum = (int)(scale1Num * (yScale1Max - yScale1Min) / yScale1);
-            float yScale1Length = (float)(pbCurve.Height * yScale1 / ((yEndCurrent - yStartCurrent) * scale1Num));
-            int scale2Num = getScaleNum((int)yScale1Length, scale2Interval);
-            float yScale2Length = yScale1Length / scale2Num;
             float yScale1Pos;   // 1级刻度坐标位置
             float yScale2Pos;
             double yScale1Value;  // 1级刻度处坐标值
             StringFormat scaleYFormat = new StringFormat();
             scaleYFormat.Alignment = StringAlignment.Far;
             scaleYFormat.LineAlignment = StringAlignment.Center;
-            float scaleY = pbCurve.Height / (yEndCurrent - yStartCurrent);
 
-            for (int i = 0; i < scale1Sum; i++)
+            for (int i = 0; i < yScale1Sum; i++)
             {
-                yScale1Pos = (float)(pbAxisY.Height - (yScale1Min - yStartCurrent) * scaleY
-                    - yScale1Length * i);
+                yScale1Pos = yScale1Start - yScale1Length * i;
                 if (isInGraphY(yScale1Pos))
                 {
                     g.DrawLine(penScale1, pbAxisY.Width - 1 - scale1Length, yScale1Pos,
                     pbAxisY.Width - 1, yScale1Pos);
-                    yScale1Value = yScale1Min + yScale1 * i / scale1Num;
+                    yScale1Value = yScale1Min + yScale1 * i / yScale1Num;
                     g.DrawString(yScale1Value.ToString("#0.##"), fontScale1, Brushes.Black,
                         pbAxisY.Width - 1 - scale1Length, yScale1Pos, scaleYFormat);
                 }
 
-                for (int j = 1; j < scale2Num; j++)
+                for (int j = 1; j < yScale2Num; j++)
                 {
                     yScale2Pos = yScale1Pos - yScale2Length * j;
                     if (isInGraphY(yScale2Pos))

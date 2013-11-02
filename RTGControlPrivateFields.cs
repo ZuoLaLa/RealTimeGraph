@@ -67,15 +67,26 @@ namespace RealTimeGraph
         private float yDataMax;
 
         float scaleX;       // X 轴比例尺（单位长度的像素数）
+        float scaleY;
 
         float xScale1Min;   // X 轴上一级刻度的最小值
         float xScale1Max;
         float xScale1;      // X 轴权值
         float xScale1Start; // X 轴一级刻度的起始位置
-        int scale1Num;      // 单位权值内的一级刻度划分数
-        int scale1Sum;      // 一级刻度划分总数
+        int xScale1Num;      // 单位权值内的一级刻度划分数
+        int xScale1Sum;      // 一级刻度划分总数
         float xScale1Length;// 一级刻度间隔
-        int scale2Num;      // 一级刻度内的二级刻度划分数
+        int xScale2Num;      // 一级刻度内的二级刻度划分数
         float xScale2Length;
+
+        float yScale1Min;
+        float yScale1Max;
+        float yScale1;
+        float yScale1Start;
+        int yScale1Num;
+        int yScale1Sum;
+        float yScale1Length;
+        int yScale2Num;
+        float yScale2Length;
     }
 }
