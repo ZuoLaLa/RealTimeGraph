@@ -36,6 +36,10 @@ namespace RealTimeGraph
             penBorder = new Pen(Color.Black, 2);
             fontBorder = new Font("Verdana", 10, FontStyle.Bold);
             borderLength = 15;
+            penScale1 = new Pen(Color.Black, 2);
+            penScale2 = new Pen(Color.Black, 1);
+            fontBorder = new Font("Verdana", 10, FontStyle.Bold);
+            fontScale1 = new Font("Verdana", 8);
 
             fontTitle = new Font("宋体", 14, FontStyle.Bold);
             fontAxis = new Font("宋体", 10);
@@ -244,6 +248,88 @@ namespace RealTimeGraph
             xDataMax = xMax;
             yDataMin = yMin;
             yDataMax = yMax;
+        }
+
+        /// <summary>获取友好坐标系统下的一级坐标显示范围。
+        /// 显示坐标的最小值不大于显示数据点的最小值，
+        /// 最大值不小于显示数据点的最大值，且均取整（广义上的）。
+        /// </summary>
+        /// <param name="dataMin">待绘制的数据最小值</param>
+        /// <param name="dataMax">待绘制的数据最大值</param>
+        /// <param name="scale1Min">计算得到的一级坐标最小值</param>
+        /// <param name="scale1Max">计算得到的一级坐标最大值</param>
+        /// <param name="scale1">计算得到的一级坐标的分度值</param>
+        private void getScale1Limits(double dataMin, double dataMax,
+            out float scale1Min, out float scale1Max, out float scale1)
+        {
+            decimal dataDiff = Convert.ToDecimal(dataMax - dataMin);
+            decimal scale = 1;
+
+            if (dataDiff >= 1)
+            {
+                while ((dataDiff /= 10) >= 1)
+                {
+                    scale *= 10;
+                }
+            }
+            else if (dataDiff > 0 && dataDiff < 1)
+            {
+                do
+                {
+                    scale /= 10;
+                    dataDiff *= 10;
+                } while (dataDiff < 1);
+            }
+
+            scale1Max = Convert.ToSingle(
+                Math.Ceiling(Convert.ToDecimal(dataMax) / scale) * scale);
+            scale1Min = Convert.ToSingle(
+                Math.Floor(Convert.ToDecimal(dataMin) / scale) * scale);
+            scale1 = Convert.ToSingle(scale);
+        }
+
+        /// <summary>获取刻度划分数
+        /// </summary>
+        /// <param name="totalWidth">待划分的上级刻度长度</param>
+        /// <param name="scaleInterval">本级刻度最小间隔</param>
+        /// <returns>刻度划分数（10，5，2，1）</returns>
+        private int getScaleNum(double totalWidth, int scaleInterval)
+        {
+            int scaleNum = 1;
+            if (totalWidth / 10 >= scaleInterval)
+            {
+                scaleNum = 10;
+            }
+            else if (totalWidth / 5 >= scaleInterval)
+            {
+                scaleNum = 5;
+            }
+            else if (totalWidth / 2 >= scaleInterval)
+            {
+                scaleNum = 2;
+            }
+
+            return scaleNum;
+        }
+
+        /// <summary>判断坐标位置是否位于X轴可绘制区域内
+        /// </summary>
+        /// <param name="scalePos">x刻度坐标位置</param>
+        /// <returns>若坐标位置位于X轴可绘制区域内，则返回true.</returns>
+        private bool isInGraphX(float scalePos)
+        {
+            return scalePos > pbAxisY.Width + 1 &&
+                                scalePos < pbAxisY.Width + pbCurve.Width - 1;
+        }
+
+        /// <summary>判断坐标位置是否位于Y轴可绘制区域内
+        /// </summary>
+        /// <param name="scalePos">Y刻度坐标位置</param>
+        /// <returns>若坐标位置位于X轴可绘制区域内，则返回true.</returns>
+        private bool isInGraphY(float scalePos)
+        {
+            return scalePos > pbAxisY.Height - pbCurve.Height + 1 &&
+                                scalePos < pbAxisY.Height - 1;
         }
     }
 }
