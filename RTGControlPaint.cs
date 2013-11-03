@@ -243,14 +243,8 @@ namespace RealTimeGraph
                 pbAxisX.Height / 2F + fontTitle.Height / 5F,
                 titleFormat);
 
-            // 标识边界坐标值
             StringFormat centerFormat = new StringFormat();
             centerFormat.Alignment = StringAlignment.Center;
-            g.DrawString(xStartCurrent.ToString(), fontBorder, Brushes.Black,
-                pbAxisY.Width, borderLength, centerFormat);
-            g.DrawString(xEndCurrent.ToString(), fontBorder, Brushes.Black,
-                pbAxisY.Width + pbCurve.Width, borderLength, centerFormat);
-
             // 绘制其他各级刻度线， 以及1级刻度值
             float xScale1Pos;   // 1级刻度坐标位置
             float xScale2Pos;
@@ -279,6 +273,23 @@ namespace RealTimeGraph
                     }
                 }
             }
+
+            // 标识边界坐标值
+            SolidBrush b = new SolidBrush(pbAxisX.BackColor);
+
+            String str = xStartCurrent.ToString("#0.##");
+            SizeF sf = g.MeasureString(str, fontBorder);
+            g.FillRectangle(b, pbAxisY.Width - sf.Width / 2, borderLength,
+                sf.Width, sf.Height);   // 防止坐标的重叠
+            g.DrawString(str, fontBorder, Brushes.Black,
+                pbAxisY.Width, borderLength, centerFormat);
+
+            str = xEndCurrent.ToString("#0.##");
+            sf = g.MeasureString(str, fontBorder);
+            g.FillRectangle(b, pbAxisY.Width + pbCurve.Width - sf.Width / 2, borderLength,
+                sf.Width, sf.Height);
+            g.DrawString(str, fontBorder, Brushes.Black,
+                pbAxisY.Width + pbCurve.Width, borderLength, centerFormat);
         }
 
         private void pbAxisY_Paint(object sender, PaintEventArgs e)
@@ -291,19 +302,7 @@ namespace RealTimeGraph
             g.DrawLine(penBorder, pbAxisY.Width - borderLength, pbTitle.Height,
                 pbAxisY.Width, pbTitle.Height);
 
-            // 标识边界坐标值
-            StringFormat borderYFormat = new StringFormat();
-            borderYFormat.Alignment = StringAlignment.Far;
-            borderYFormat.LineAlignment = StringAlignment.Far;
-            g.DrawString(yStartCurrent.ToString("#0.###"), fontBorder, Brushes.Black,
-                pbAxisY.Width - borderLength, pbAxisY.Height,
-                borderYFormat);
-            g.DrawString(yEndCurrent.ToString("#0.###"), fontBorder, Brushes.Black,
-                pbAxisY.Width - borderLength, pbTitle.Height,
-                borderYFormat);
-
             // 绘制其他各级刻度线， 以及1级刻度值
-
             float yScale1Pos;   // 1级刻度坐标位置
             float yScale2Pos;
             double yScale1Value;  // 1级刻度处坐标值
@@ -333,6 +332,29 @@ namespace RealTimeGraph
                     }
                 }
             }
+
+            // 标识边界坐标值
+            StringFormat borderYFormat = new StringFormat();
+            borderYFormat.Alignment = StringAlignment.Far;
+            borderYFormat.LineAlignment = StringAlignment.Far;
+            SolidBrush b = new SolidBrush(pbAxisY.BackColor);
+
+            String str = yStartCurrent.ToString("#0.###");
+            SizeF sf = g.MeasureString(str, fontBorder);
+            g.FillRectangle(b, pbAxisY.Width - borderLength - sf.Width,
+                pbTitle.Height + pbCurve.Height - sf.Height,
+                sf.Width, sf.Height);
+            g.DrawString(str, fontBorder, Brushes.Black,
+                pbAxisY.Width - borderLength, pbAxisY.Height,
+                borderYFormat);
+
+            str = yEndCurrent.ToString("#0.###");
+            sf = g.MeasureString(str, fontBorder);
+            g.FillRectangle(b, pbAxisY.Width - borderLength - sf.Width,
+                pbTitle.Height - sf.Height, sf.Width, sf.Height);
+            g.DrawString(str, fontBorder, Brushes.Black,
+                pbAxisY.Width - borderLength, pbTitle.Height,
+                borderYFormat);
         }
 
         private void pbTitle_Paint(object sender, PaintEventArgs e)
