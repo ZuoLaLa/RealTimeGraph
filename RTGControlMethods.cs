@@ -53,7 +53,6 @@ namespace RealTimeGraph
 
             MsgOutput = "Ready";
         }
-
         /// <summary>数据转换为待绘制区域上的点集
         /// </summary>
         /// <param name="width">待绘制区域的宽度</param>
@@ -139,7 +138,6 @@ namespace RealTimeGraph
                 return false;
             }
         }
-
         /// <summary>将矩形区域的坐标点转换成对应的数据对。
         /// 用于框选放大模式，也可变形用于拖动模式。
         /// </summary>
@@ -199,7 +197,10 @@ namespace RealTimeGraph
         {
             xStartCurrent = xEndCurrent - (xEndInitial - xStartInitial);
         }
-
+        /// <summary>曲线拖动
+        /// </summary>
+        /// <param name="xD">X 轴方向上的拖动量</param>
+        /// <param name="yD">Y 轴方向上的拖动量</param>
         private void dragMove(float xD, float yD)
         {
             float xM = xD * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
@@ -210,7 +211,8 @@ namespace RealTimeGraph
             yStartCurrent += yM;
             yEndCurrent += yM;
         }
-
+        /// <summary>矩形框选放大
+        /// </summary>
         private void rectZoomIn()
         {
             float xL, yU, xR, yD;
@@ -243,7 +245,12 @@ namespace RealTimeGraph
                 MsgOutput = "Zoom in to all data accuracy";
             }
         }
-
+        /// <summary>更新数据最值。
+        /// </summary>
+        /// <param name="xMin">外部数据 X 的最小值</param>
+        /// <param name="xMax">外部数据 X 的最大值</param>
+        /// <param name="yMin">外部数据 Y 的最小值</param>
+        /// <param name="yMax">外部数据 Y 的最大值</param>
         public void UpdateDataLimits(float xMin, float xMax, float yMin, float yMax)
         {
             xDataMin = xMin;
@@ -251,7 +258,6 @@ namespace RealTimeGraph
             yDataMin = yMin;
             yDataMax = yMax;
         }
-
         /// <summary>获取友好坐标系统下的一级坐标显示范围。
         /// 显示坐标的最小值不大于显示数据点的最小值，
         /// 最大值不小于显示数据点的最大值，且均取整（广义上的）。
@@ -289,7 +295,6 @@ namespace RealTimeGraph
                 Math.Floor(Convert.ToDecimal(dataMin) / scale) * scale);
             scale1 = Convert.ToSingle(scale);
         }
-
         /// <summary>获取刻度划分数
         /// </summary>
         /// <param name="totalWidth">待划分的上级刻度长度</param>
@@ -313,7 +318,6 @@ namespace RealTimeGraph
 
             return scaleNum;
         }
-
         /// <summary>判断坐标位置是否位于X轴可绘制区域内
         /// </summary>
         /// <param name="scalePos">x刻度坐标位置</param>
@@ -323,7 +327,6 @@ namespace RealTimeGraph
             return scalePos > pbAxisY.Width + 1 &&
                                 scalePos < pbAxisY.Width + pbCurve.Width - 1;
         }
-
         /// <summary>判断坐标位置是否位于Y轴可绘制区域内
         /// </summary>
         /// <param name="scalePos">Y刻度坐标位置</param>
@@ -333,7 +336,6 @@ namespace RealTimeGraph
             return scalePos > pbAxisY.Height - pbCurve.Height + 1 &&
                                 scalePos < pbAxisY.Height - 1;
         }
-
         /// <summary>判断纵向网格位置是否位于可绘制区域内
         /// </summary>
         /// <param name="scalePos">纵向网格位置</param>
@@ -342,7 +344,6 @@ namespace RealTimeGraph
         {
             return scalePos > 0 && scalePos < pbCurve.Width - 1;
         }
-
         /// <summary>判断横向网格位置是否位于可绘制区域内
         /// </summary>
         /// <param name="scalePos">横向网格位置</param>
@@ -351,7 +352,6 @@ namespace RealTimeGraph
         {
             return scalePos > 0 && scalePos < pbCurve.Height - 1;
         }
-
         /// <summary>根据画图模式和数据调整坐标显示
         /// </summary>
         private void updateAxisCurrent()
