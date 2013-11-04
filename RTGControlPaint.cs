@@ -14,15 +14,11 @@ namespace RealTimeGraph
         {
             int width = pbCurve.Width;
             int height = pbCurve.Height;
-            // 绘图原点坐标变换到控件的左下角
-            Graphics g = e.Graphics;
-            g.TranslateTransform(0, height - 1);
-            g.ScaleTransform(1, -1);
-            g.SmoothingMode = SmoothingMode.AntiAlias;
 
             updateAxisCurrent();
             updateAxisScale();
 
+            Graphics g = e.Graphics;
             if (ShowGrid)
             {
                 gridding(g);
@@ -33,6 +29,10 @@ namespace RealTimeGraph
 
             #region **绘制曲线**
             pointsList.Clear();
+            // 绘图原点坐标变换到控件的左下角，转换为通常的笛卡尔坐标系，以方便画曲线。
+            g.TranslateTransform(0, height - 1);
+            g.ScaleTransform(1, -1);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
             if (dataToPoints(width, height))
             {
                 if (pointsList.Count > 1)
