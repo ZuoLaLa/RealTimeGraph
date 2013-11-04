@@ -24,7 +24,13 @@ namespace RealTimeGraph
             pbAxisX.Refresh();
             pbAxisY.Refresh();
 
-            #region **绘制曲线**
+            drawCurve(g);
+        }
+        /// <summary>绘制曲线
+        /// </summary>
+        /// <param name="g"></param>
+        private void drawCurve(Graphics g)
+        {
             pointsList.Clear();
             // 绘图原点坐标变换到控件的左下角，转换为通常的笛卡尔坐标系，以方便画曲线。
             g.TranslateTransform(0, pbCurve.Height - 1);
@@ -40,7 +46,6 @@ namespace RealTimeGraph
                     p.Dispose();
                 }
             }
-            #endregion
         }
         /// <summary>绘制网格
         /// </summary>
