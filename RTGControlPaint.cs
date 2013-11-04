@@ -12,9 +12,6 @@ namespace RealTimeGraph
     {
         private void pbCurve_Paint(object sender, PaintEventArgs e)
         {
-            int width = pbCurve.Width;
-            int height = pbCurve.Height;
-
             updateAxisCurrent();
             updateAxisScale();
 
@@ -30,10 +27,10 @@ namespace RealTimeGraph
             #region **绘制曲线**
             pointsList.Clear();
             // 绘图原点坐标变换到控件的左下角，转换为通常的笛卡尔坐标系，以方便画曲线。
-            g.TranslateTransform(0, height - 1);
+            g.TranslateTransform(0, pbCurve.Height - 1);
             g.ScaleTransform(1, -1);
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            if (dataToPoints(width, height))
+            if (dataToPoints(pbCurve.Width, pbCurve.Height))
             {
                 if (pointsList.Count > 1)
                 {
