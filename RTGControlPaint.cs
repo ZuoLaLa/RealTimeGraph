@@ -93,7 +93,7 @@ namespace RealTimeGraph
                     yGrid2Pos = yGrid1Pos - yScale2Length * j;
                     if (isInCurveY(yGrid2Pos))
                     {
-                        g.DrawLine(penGrid1, 0, yGrid2Pos,
+                        g.DrawLine(penGrid2, 0, yGrid2Pos,
                             pbCurve.Width, yGrid2Pos);
                     }
                 }
