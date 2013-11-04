@@ -12,17 +12,10 @@ namespace RealTimeGraph
     {
         private void pbCurve_Paint(object sender, PaintEventArgs e)
         {
-            int width = pbCurve.Width;
-            int height = pbCurve.Height;
-            // 绘图原点坐标变换到控件的左下角
-            Graphics g = e.Graphics;
-            g.TranslateTransform(0, height - 1);
-            g.ScaleTransform(1, -1);
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-
             updateAxisCurrent();
             updateAxisScale();
 
+            Graphics g = e.Graphics;
             if (ShowGrid)
             {
                 gridding(g);
@@ -31,9 +24,19 @@ namespace RealTimeGraph
             pbAxisX.Refresh();
             pbAxisY.Refresh();
 
-            #region **绘制曲线**
+            drawCurve(g);
+        }
+        /// <summary>绘制曲线
+        /// </summary>
+        /// <param name="g"></param>
+        private void drawCurve(Graphics g)
+        {
             pointsList.Clear();
-            if (dataToPoints(width, height))
+            // 绘图原点坐标变换到控件的左下角，转换为通常的笛卡尔坐标系，以方便画曲线。
+            g.TranslateTransform(0, pbCurve.Height - 1);
+            g.ScaleTransform(1, -1);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            if (dataToPoints(pbCurve.Width, pbCurve.Height))
             {
                 if (pointsList.Count > 1)
                 {
@@ -43,7 +46,6 @@ namespace RealTimeGraph
                     p.Dispose();
                 }
             }
-            #endregion
         }
         /// <summary>绘制网格
         /// </summary>
@@ -93,7 +95,7 @@ namespace RealTimeGraph
                     yGrid2Pos = yGrid1Pos - yScale2Length * j;
                     if (isInCurveY(yGrid2Pos))
                     {
-                        g.DrawLine(penGrid1, 0, yGrid2Pos,
+                        g.DrawLine(penGrid2, 0, yGrid2Pos,
                             pbCurve.Width, yGrid2Pos);
                     }
                 }

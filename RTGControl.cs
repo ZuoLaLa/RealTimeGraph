@@ -22,9 +22,5 @@ namespace RealTimeGraph
             pbTitle.Refresh();
             pbCurve.Refresh();
         }
-
-        
-
-        
     }
 }

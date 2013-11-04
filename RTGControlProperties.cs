@@ -127,5 +127,34 @@ namespace RealTimeGraph
         public string MsgOutput;
 
         public bool ShowGrid;
+
+        // 初始状态下的 X, Y 起始和终止坐标
+        private float xStartInitial;
+        public float XStartInitial
+        {
+            get { return xStartInitial; }
+            set { xStartInitial = value; }
+        }
+
+        private float xEndInitial;
+        public float XEndInitial
+        {
+            get { return xEndInitial; }
+            set { xEndInitial = value; }
+        }
+
+        private float yStartInitial;
+        public float YStartInitial
+        {
+            get { return yStartInitial; }
+            set { yStartInitial = value; }
+        }
+        
+        private float yEndInitial;
+        public float YEndInitial
+        {
+            get { return yEndInitial; }
+            set { yEndInitial = value; }
+        }
     }
 }
