@@ -9,12 +9,6 @@ namespace RealTimeGraph
 {
     public partial class RTGControl : UserControl
     {
-        // 初始状态下的 X, Y 起始和终止坐标
-        private float xStartInitial;
-        private float xEndInitial;
-        private float yStartInitial;
-        private float yEndInitial;
-
         // 当前显示波形的 X, Y 起始和终止坐标
         private float xStartCurrent;
         private float xEndCurrent;

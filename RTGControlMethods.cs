@@ -13,15 +13,15 @@ namespace RealTimeGraph
         /// </summary>
         private void initialGraph()
         {
-            xStartInitial = 0;
-            xEndInitial = 100;
-            yStartInitial = 0;
-            yEndInitial = 200;
+            XStartInitial = 0;
+            XEndInitial = 100;
+            YStartInitial = 0;
+            YEndInitial = 200;
 
             ResetAxis();
 
             // 默认初始处于滚动模式
-            graphType = GraphTypes.FixedMoveMode;
+            GraphType = GraphTypes.FixedMoveMode;
             isAutoMove = true;
             isAutoScale = false;
 
@@ -46,7 +46,7 @@ namespace RealTimeGraph
             fontAxis = new Font("FangSong", 10);
             GraphTitle = "位移实时显示曲线";
             GraphXTitle = "时间(s)";
-            GraphYTitle = "距离(mm)";
+            GraphYTitle = "位移(mm)";
 
             pbZoom.BackColor = Color.FromArgb(50, 0, 64, 128);
             pbZoom.Visible = false;
