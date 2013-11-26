@@ -333,8 +333,8 @@ namespace RealTimeGraph
         /// <returns>若坐标位置位于X轴可绘制区域内，则返回true.</returns>
         private bool isInAxisY(float scalePos)
         {
-            return scalePos > pbAxisY.Height - pbCurve.Height + 1 &&
-                                scalePos < pbAxisY.Height - 1;
+            return scalePos > pbAxisY.Height - pbCurve.Height + CURVE_HEIGHT_MARGIN + 1 &&
+                                scalePos < pbAxisY.Height - CURVE_HEIGHT_MARGIN - 1;
         }
         /// <summary>判断纵向网格位置是否位于可绘制区域内
         /// </summary>
@@ -350,7 +350,8 @@ namespace RealTimeGraph
         /// <returns>若坐标位置位于可绘制区域内，则返回true.</returns>
         private bool isInCurveY(float scalePos)
         {
-            return scalePos > 0 && scalePos < pbCurve.Height - 1;
+            return scalePos >= 1 &&
+                scalePos <= pbCurve.Height - 1;
         }
         /// <summary>根据画图模式和数据调整坐标显示
         /// </summary>
@@ -391,24 +392,24 @@ namespace RealTimeGraph
         /// </summary>
         private void updateAxisScale()
         {
-            scaleX = pbCurve.Width / (xEndCurrent - xStartCurrent);
+            scaleX = curveWidth / (xEndCurrent - xStartCurrent);
             getScale1Limits(xStartCurrent, xEndCurrent,
                 out xScale1Min, out xScale1Max, out xScale1);
-            xScale1Num = getScaleNum(pbCurve.Width * xScale1 / (xEndCurrent - xStartCurrent),
+            xScale1Num = getScaleNum(curveWidth * xScale1 / (xEndCurrent - xStartCurrent),
                 scale1Interval);
             xScale1Sum = (int)((xScale1Max - xScale1Min) / xScale1 * xScale1Num);
-            xScale1Length = pbCurve.Width * xScale1
+            xScale1Length = curveWidth * xScale1
                 / ((xEndCurrent - xStartCurrent) * xScale1Num);
             xScale2Num = getScaleNum(xScale1Length, scale2Interval);
             xScale2Length = xScale1Length / xScale2Num;
 
-            scaleY = pbCurve.Height / (yEndCurrent - yStartCurrent);
+            scaleY = curveHeight / (yEndCurrent - yStartCurrent);
             getScale1Limits(yStartCurrent, yEndCurrent, out yScale1Min,
                 out yScale1Max, out yScale1);
-            yScale1Num = getScaleNum(pbCurve.Height * yScale1 / (yEndCurrent - yStartCurrent),
+            yScale1Num = getScaleNum(curveHeight * yScale1 / (yEndCurrent - yStartCurrent),
                 scale1Interval);
             yScale1Sum = (int)(yScale1Num * (yScale1Max - yScale1Min) / yScale1);
-            yScale1Length = pbCurve.Height * yScale1
+            yScale1Length = curveHeight * yScale1
                 / ((yEndCurrent - yStartCurrent) * yScale1Num);
             yScale2Num = getScaleNum(yScale1Length, scale2Interval);
             yScale2Length = yScale1Length / yScale2Num;
