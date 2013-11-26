@@ -14,6 +14,7 @@ namespace RealTimeGraph
         {
             updateAxisCurrent();
             updateAxisScale();
+            updateCurveSize();
 
             Graphics g = e.Graphics;
             if (ShowGrid)
@@ -26,6 +27,12 @@ namespace RealTimeGraph
 
             drawCurve(g);
         }
+
+        private void updateCurveSize()
+        {
+            curveHeight = pbCurve.Height - 2 * CURVE_HEIGHT_MARGIN;
+            curveWidth = pbCurve.Width;
+        }
         /// <summary>绘制曲线
         /// </summary>
         /// <param name="g"></param>
@@ -33,10 +40,10 @@ namespace RealTimeGraph
         {
             pointsList.Clear();
             // 绘图原点坐标变换到控件的左下角，转换为通常的笛卡尔坐标系，以方便画曲线。
-            g.TranslateTransform(0, pbCurve.Height - 1);
+            g.TranslateTransform(0, pbCurve.Height - 1 - CURVE_HEIGHT_MARGIN);
             g.ScaleTransform(1, -1);
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            if (dataToPoints(pbCurve.Width, pbCurve.Height))
+            if (dataToPoints(curveWidth, curveHeight))
             {
                 if (pointsList.Count > 1)
                 {

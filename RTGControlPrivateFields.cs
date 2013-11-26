@@ -82,5 +82,9 @@ namespace RealTimeGraph
         float yScale1Length;
         int yScale2Num;
         float yScale2Length;
+
+        private const int CURVE_HEIGHT_MARGIN = 10;
+        private int curveHeight;
+        private int curveWidth;
     }
 }
