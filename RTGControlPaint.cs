@@ -86,9 +86,9 @@ namespace RealTimeGraph
 
             float yGrid1Pos;
             float yGrid2Pos;
-            float yGrid1Start = pbAxisY.Height - pbTitle.Height
+            float yGrid1Start = pbCurve.Height-CURVE_HEIGHT_MARGIN
                 - (yScale1Min - yStartCurrent) * scaleY;
-            for (int i = 0; i < yScale1Sum; i++)
+            for (int i = 0; i <= yScale1Sum; i++)
             {
                 yGrid1Pos = yGrid1Start - yScale1Length * i;
                 if (isInCurveY(yGrid1Pos))

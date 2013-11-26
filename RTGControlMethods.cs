@@ -350,7 +350,8 @@ namespace RealTimeGraph
         /// <returns>若坐标位置位于可绘制区域内，则返回true.</returns>
         private bool isInCurveY(float scalePos)
         {
-            return scalePos > 0 && scalePos < pbCurve.Height - 1;
+            return scalePos >= 1 &&
+                scalePos <= pbCurve.Height - 1;
         }
         /// <summary>根据画图模式和数据调整坐标显示
         /// </summary>
