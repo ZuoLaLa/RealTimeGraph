@@ -306,10 +306,12 @@ namespace RealTimeGraph
             Graphics g = e.Graphics;
 
             // 绘制边界坐标线
-            g.DrawLine(penBorder, pbAxisY.Width - borderLength, pbAxisY.Height - 1,
-                pbAxisY.Width, pbAxisY.Height - 1);
-            g.DrawLine(penBorder, pbAxisY.Width - borderLength, pbTitle.Height,
-                pbAxisY.Width, pbTitle.Height);
+            g.DrawLine(penBorder, pbAxisY.Width - borderLength,
+                pbAxisY.Height - 1 - CURVE_HEIGHT_MARGIN,
+                pbAxisY.Width, pbAxisY.Height - 1 - CURVE_HEIGHT_MARGIN);
+            g.DrawLine(penBorder, pbAxisY.Width - borderLength,
+                pbTitle.Height + CURVE_HEIGHT_MARGIN,
+                pbAxisY.Width, pbTitle.Height + CURVE_HEIGHT_MARGIN);
 
             // 绘制其他各级刻度线， 以及1级刻度值
             float yScale1Pos;   // 1级刻度坐标位置
@@ -318,7 +320,8 @@ namespace RealTimeGraph
             StringFormat scaleYFormat = new StringFormat();
             scaleYFormat.Alignment = StringAlignment.Far;
             scaleYFormat.LineAlignment = StringAlignment.Center;
-            float yScale1Start = pbAxisY.Height - (yScale1Min - yStartCurrent) * scaleY;
+            float yScale1Start = pbAxisY.Height - CURVE_HEIGHT_MARGIN
+                - (yScale1Min - yStartCurrent) * scaleY;
             for (int i = 0; i < yScale1Sum; i++)
             {
                 yScale1Pos = yScale1Start - yScale1Length * i;
@@ -328,7 +331,7 @@ namespace RealTimeGraph
                     pbAxisY.Width - 1, yScale1Pos);
                     yScale1Value = yScale1Min + yScale1 * i / yScale1Num;
                     g.DrawString(yScale1Value.ToString("#0.##"), fontScale1, Brushes.Black,
-                        pbAxisY.Width - 1 - scale1Length, yScale1Pos, scaleYFormat);
+                        pbAxisY.Width - 1 - borderLength, yScale1Pos, scaleYFormat);
                 }
 
                 for (int j = 1; j < yScale2Num; j++)
@@ -345,24 +348,25 @@ namespace RealTimeGraph
             // 标识边界坐标值
             StringFormat borderYFormat = new StringFormat();
             borderYFormat.Alignment = StringAlignment.Far;
-            borderYFormat.LineAlignment = StringAlignment.Far;
+            borderYFormat.LineAlignment = StringAlignment.Center;
             SolidBrush b = new SolidBrush(pbAxisY.BackColor);
 
             String str = yStartCurrent.ToString("#0.###");
             SizeF sf = g.MeasureString(str, fontBorder);
             g.FillRectangle(b, pbAxisY.Width - borderLength - sf.Width,
-                pbTitle.Height + pbCurve.Height - sf.Height,
+                pbTitle.Height + pbCurve.Height - CURVE_HEIGHT_MARGIN - sf.Height / 2F,
                 sf.Width, sf.Height);
             g.DrawString(str, fontBorder, Brushes.Black,
-                pbAxisY.Width - borderLength, pbAxisY.Height,
+                pbAxisY.Width - borderLength, pbAxisY.Height - CURVE_HEIGHT_MARGIN,
                 borderYFormat);
 
             str = yEndCurrent.ToString("#0.###");
             sf = g.MeasureString(str, fontBorder);
             g.FillRectangle(b, pbAxisY.Width - borderLength - sf.Width,
-                pbTitle.Height - sf.Height, sf.Width, sf.Height);
+                pbTitle.Height + CURVE_HEIGHT_MARGIN - sf.Height / 2F,
+                sf.Width, sf.Height);
             g.DrawString(str, fontBorder, Brushes.Black,
-                pbAxisY.Width - borderLength, pbTitle.Height,
+                pbAxisY.Width - borderLength, pbTitle.Height + CURVE_HEIGHT_MARGIN,
                 borderYFormat);
         }
 
