@@ -48,23 +48,23 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RTGControl.cs">
+    <Compile Include="GraphControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RTGControl.Designer.cs">
-      <DependentUpon>RTGControl.cs</DependentUpon>
+    <Compile Include="GraphControl.Designer.cs">
+      <DependentUpon>GraphControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RTGControlMethods.cs">
+    <Compile Include="GraphControlMethods.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RTGControlPaint.cs">
+    <Compile Include="GraphControlPaint.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RTGControlPrivateFields.cs">
+    <Compile Include="GraphControlPrivateFields.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RTGControlProperties.cs">
+    <Compile Include="GraphControlProperties.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
@@ -74,8 +74,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="RTGControl.resx">
-      <DependentUpon>RTGControl.cs</DependentUpon>
+    <EmbeddedResource Include="GraphControl.resx">
+      <DependentUpon>GraphControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

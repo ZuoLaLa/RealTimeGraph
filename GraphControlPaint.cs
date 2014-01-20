@@ -1,34 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
 namespace RealTimeGraph
 {
-    public partial class RTGControl : UserControl
+    public partial class GraphControl
     {
         private void pbCurve_Paint(object sender, PaintEventArgs e)
         {
-            updateAxisCurrent();
-            updateAxisScale();
-            updateCurveSize();
+            UpdateAxisCurrent();
+            UpdateAxisScale();
+            UpdateCurveSize();
 
             Graphics g = e.Graphics;
             if (ShowGrid)
             {
-                gridding(g);
+                Gridding(g);
             }
 
             pbAxisX.Refresh();
             pbAxisY.Refresh();
 
-            drawCurve(g);
+            DrawCurve(g);
         }
 
-        private void updateCurveSize()
+        private void UpdateCurveSize()
         {
             curveHeight = pbCurve.Height - 2 * CURVE_HEIGHT_MARGIN;
             curveWidth = pbCurve.Width;
@@ -36,14 +33,14 @@ namespace RealTimeGraph
         /// <summary>绘制曲线
         /// </summary>
         /// <param name="g"></param>
-        private void drawCurve(Graphics g)
+        private void DrawCurve(Graphics g)
         {
             pointsList.Clear();
             // 绘图原点坐标变换到控件的左下角，转换为通常的笛卡尔坐标系，以方便画曲线。
             g.TranslateTransform(0, pbCurve.Height - 1 - CURVE_HEIGHT_MARGIN);
             g.ScaleTransform(1, -1);
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            if (dataToPoints(curveWidth, curveHeight))
+            if (DataToPoints(curveWidth, curveHeight))
             {
                 if (pointsList.Count > 1)
                 {
@@ -57,16 +54,14 @@ namespace RealTimeGraph
         /// <summary>绘制网格
         /// </summary>
         /// <param name="g"></param>
-        private void gridding(Graphics g)
+        private void Gridding(Graphics g)
         {
-            float xGrid1Pos;
-            float xGrid2Pos;
             float xGrid1Start = (xScale1Min - xStartCurrent) * scaleX;
 
             for (int i = 0; i < xScale1Sum; i++)
             {
-                xGrid1Pos = xGrid1Start + xScale1Length * i;
-                if (isInCurveX(xGrid1Pos))
+                float xGrid1Pos = xGrid1Start + xScale1Length * i;
+                if (IsInCurveX(xGrid1Pos))
                 {
                     g.DrawLine(penGrid1, xGrid1Pos, 0,
                         xGrid1Pos, pbCurve.Height);
@@ -75,8 +70,8 @@ namespace RealTimeGraph
 
                 for (int j = 1; j < xScale2Num; j++)
                 {
-                    xGrid2Pos = xGrid1Pos + xScale2Length * j;
-                    if (isInCurveX(xGrid2Pos))
+                    float xGrid2Pos = xGrid1Pos + xScale2Length * j;
+                    if (IsInCurveX(xGrid2Pos))
                     {
                         g.DrawLine(penGrid2, xGrid2Pos, 0,
                             xGrid2Pos, pbCurve.Height);
@@ -84,14 +79,12 @@ namespace RealTimeGraph
                 }
             }
 
-            float yGrid1Pos;
-            float yGrid2Pos;
             float yGrid1Start = pbCurve.Height-CURVE_HEIGHT_MARGIN
                 - (yScale1Min - yStartCurrent) * scaleY;
             for (int i = 0; i <= yScale1Sum; i++)
             {
-                yGrid1Pos = yGrid1Start - yScale1Length * i;
-                if (isInCurveY(yGrid1Pos))
+                float yGrid1Pos = yGrid1Start - yScale1Length * i;
+                if (IsInCurveY(yGrid1Pos))
                 {
                     g.DrawLine(penGrid1, 0, yGrid1Pos,
                         pbCurve.Width, yGrid1Pos);
@@ -99,8 +92,8 @@ namespace RealTimeGraph
 
                 for (int j = 1; j < yScale2Num; j++)
                 {
-                    yGrid2Pos = yGrid1Pos - yScale2Length * j;
-                    if (isInCurveY(yGrid2Pos))
+                    float yGrid2Pos = yGrid1Pos - yScale2Length * j;
+                    if (IsInCurveY(yGrid2Pos))
                     {
                         g.DrawLine(penGrid2, 0, yGrid2Pos,
                             pbCurve.Width, yGrid2Pos);
@@ -121,8 +114,6 @@ namespace RealTimeGraph
                 case GraphTypes.DragMode:
                     this.Cursor = Cursors.Hand;
                     break;
-                case GraphTypes.GlobalMode:
-                case GraphTypes.FixedMoveMode:
                 default:
                     this.Cursor = Cursors.Default;
                     break;
@@ -154,7 +145,7 @@ namespace RealTimeGraph
             {
                 float xD = e.X - startPoint.X;
                 float yD = e.Y - startPoint.Y;
-                dragMove(xD, yD);
+                DragMove(xD, yD);
                 startPoint = e.Location;
                 pbCurve.Refresh();
             }
@@ -206,7 +197,7 @@ namespace RealTimeGraph
                 e.Button == MouseButtons.Left)
             {
                 pbZoom.Visible = false;
-                rectZoomIn();
+                RectZoomIn();
                 pbCurve.Refresh();
             }
         }
@@ -229,8 +220,8 @@ namespace RealTimeGraph
                 && e.Button == MouseButtons.Middle)
             {
                 xEndCurrent = xDataMax;
-                xStartCurrent = ((xEndCurrent - (xEndInitial - xStartInitial)) > xStartInitial)
-                    ? (xEndCurrent - (xEndInitial - xStartInitial)) : xStartInitial;
+                xStartCurrent = ((xEndCurrent - (XEndInitial - XStartInitial)) > XStartInitial)
+                    ? (xEndCurrent - (XEndInitial - XStartInitial)) : XStartInitial;
             }
         }
 
@@ -255,18 +246,15 @@ namespace RealTimeGraph
             StringFormat centerFormat = new StringFormat();
             centerFormat.Alignment = StringAlignment.Center;
             // 绘制其他各级刻度线， 以及1级刻度值
-            float xScale1Pos;   // 1级刻度坐标位置
-            float xScale2Pos;
-            float xScale1Value;  // 1级刻度处坐标值
             float xScale1Start = pbAxisY.Width + (xScale1Min - xStartCurrent) * scaleX;
             for (int i = 0; i < xScale1Sum; i++)
             {
-                xScale1Pos = xScale1Start + xScale1Length * i;
-                if (isInAxisX(xScale1Pos))
+                float xScale1Pos = xScale1Start + xScale1Length * i;   // 1级刻度坐标位置
+                if (IsInAxisX(xScale1Pos))
                 {
                     g.DrawLine(penScale1, xScale1Pos, 0,
-                    xScale1Pos, scale1Length);
-                    xScale1Value = xScale1Min + xScale1 * i / xScale1Num;
+                    xScale1Pos, SCALE1_LENGTH);
+                    float xScale1Value = xScale1Min + xScale1 * i / xScale1Num;  // 1级刻度处坐标值
                     g.DrawString(xScale1Value.ToString(), fontScale1, Brushes.Black,
                         xScale1Pos, borderLength, centerFormat);
                 }
@@ -274,11 +262,11 @@ namespace RealTimeGraph
 
                 for (int j = 1; j < xScale2Num; j++)
                 {
-                    xScale2Pos = xScale1Pos + xScale2Length * j;
-                    if (isInAxisX(xScale2Pos))
+                    float xScale2Pos = xScale1Pos + xScale2Length * j;
+                    if (IsInAxisX(xScale2Pos))
                     {
                         g.DrawLine(penScale2, xScale2Pos, 0,
-                        xScale2Pos, scale2Length);
+                        xScale2Pos, SCALE2_LENGTH);
                     }
                 }
             }
@@ -314,9 +302,6 @@ namespace RealTimeGraph
                 pbAxisY.Width, pbTitle.Height + CURVE_HEIGHT_MARGIN);
 
             // 绘制其他各级刻度线， 以及1级刻度值
-            float yScale1Pos;   // 1级刻度坐标位置
-            float yScale2Pos;
-            double yScale1Value;  // 1级刻度处坐标值
             StringFormat scaleYFormat = new StringFormat();
             scaleYFormat.Alignment = StringAlignment.Far;
             scaleYFormat.LineAlignment = StringAlignment.Center;
@@ -324,23 +309,23 @@ namespace RealTimeGraph
                 - (yScale1Min - yStartCurrent) * scaleY;
             for (int i = 0; i < yScale1Sum; i++)
             {
-                yScale1Pos = yScale1Start - yScale1Length * i;
-                if (isInAxisY(yScale1Pos))
+                float yScale1Pos = yScale1Start - yScale1Length * i;   // 1级刻度坐标位置
+                if (IsInAxisY(yScale1Pos))
                 {
-                    g.DrawLine(penScale1, pbAxisY.Width - 1 - scale1Length, yScale1Pos,
+                    g.DrawLine(penScale1, pbAxisY.Width - 1 - SCALE1_LENGTH, yScale1Pos,
                     pbAxisY.Width - 1, yScale1Pos);
-                    yScale1Value = yScale1Min + yScale1 * i / yScale1Num;
+                    double yScale1Value = yScale1Min + yScale1 * i / yScale1Num;  // 1级刻度处坐标值
                     g.DrawString(yScale1Value.ToString("#0.##"), fontScale1, Brushes.Black,
                         pbAxisY.Width - 1 - borderLength, yScale1Pos, scaleYFormat);
                 }
 
                 for (int j = 1; j < yScale2Num; j++)
                 {
-                    yScale2Pos = yScale1Pos - yScale2Length * j;
-                    if (isInAxisY(yScale2Pos))
+                    float yScale2Pos = yScale1Pos - yScale2Length * j;
+                    if (IsInAxisY(yScale2Pos))
                     {
                         g.DrawLine(penScale2, pbAxisY.Width - 1, yScale2Pos,
-                            pbAxisY.Width - 1 - scale2Length, yScale2Pos);
+                            pbAxisY.Width - 1 - SCALE2_LENGTH, yScale2Pos);
                     }
                 }
             }

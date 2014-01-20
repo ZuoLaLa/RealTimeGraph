@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.Drawing;
 
 namespace RealTimeGraph
 {
-    public partial class RTGControl : UserControl
+    public partial class GraphControl
     {
         /// <summary>初始化控件参数
         /// </summary>
-        private void initialGraph()
+        private void InitialGraph()
         {
             XStartInitial = 0;
             XEndInitial = 100;
@@ -58,7 +55,7 @@ namespace RealTimeGraph
         /// <param name="width">待绘制区域的宽度</param>
         /// <param name="height">待绘制区域的高度</param>
         /// <returns>转换成功，返回 true</returns>
-        private bool dataToPoints(int width, int height)
+        private bool DataToPoints(int width, int height)
         {
             // 坐标起始和结束值之差小于精度范围则返回false
             if ((xEndCurrent - xStartCurrent) > 0.9F * XDataAccuracy ||
@@ -89,77 +86,29 @@ namespace RealTimeGraph
 
             return false;
         }
-        /// <summary>将显示画布上的一个坐标点转化成相应的数据
-        /// </summary>
-        /// <param name="p">待转换的坐标点</param>
-        /// <param name="x">转换后的 X 值</param>
-        /// <param name="y">转换后的 Y 值</param>
-        /// <returns></returns>
-        private bool pointToData(Point p, out float x, out float y)
-        {
-            try
-            {
-                x = xStartCurrent +
-                    p.X * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
-                // Y 轴坐标点是从上到下的
-                y = yEndCurrent -
-                    p.Y * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
-                return true;
-            }
-            catch (Exception)
-            {
-                x = 0;
-                y = 0;
-                return false;
-            }
-        }
-        /// <summary>将显示画布上的一个坐标点转化成相应的数据
-        /// </summary>
-        /// <param name="pX">待转换的坐标点 X 像素值</param>
-        /// <param name="pY">待转换的坐标点 Y 像素值</param>
-        /// <param name="x">转换后的 X 值</param>
-        /// <param name="y">转换后的 Y 值</param>
-        /// <returns></returns>
-        private bool pointToData(float pX, float pY, out float x, out float y)
-        {
-            try
-            {
-                x = xStartCurrent +
-                    pX * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
-                // Y 轴坐标点是从上到下的
-                y = yEndCurrent -
-                    pY * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
-                return true;
-            }
-            catch (Exception)
-            {
-                x = 0;
-                y = 0;
-                return false;
-            }
-        }
+
         /// <summary>将矩形区域的坐标点转换成对应的数据对。
         /// 用于框选放大模式，也可变形用于拖动模式。
         /// </summary>
-        /// <param name="pLX">矩形区域的左上角点 X 像素值</param>
-        /// <param name="pUY">矩形区域的左上角点 Y 像素值</param>
-        /// <param name="pRX">矩形区域的右下角点 X 像素值</param>
-        /// <param name="pDY">矩形区域的右下角点 Y 像素值</param>
+        /// <param name="pLx">矩形区域的左上角点 X 像素值</param>
+        /// <param name="pUy">矩形区域的左上角点 Y 像素值</param>
+        /// <param name="pRx">矩形区域的右下角点 X 像素值</param>
+        /// <param name="pDy">矩形区域的右下角点 Y 像素值</param>
         /// <param name="xL">左上角点转换后的 X 值</param>
         /// <param name="yU">左上角点转换后的 Y 值</param>
         /// <param name="xR">右下角点转换后的 X 值</param>
         /// <param name="yD">右下角点转换后的 Y 值</param>
-        private void rectPointsToData(float pLX, float pUY, float pRX, float pDY,
+        private void RectPointsToData(float pLx, float pUy, float pRx, float pDy,
             out float xL, out float yU, out float xR, out float yD)
         {
             xL = xStartCurrent +
-                pLX * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
+                pLx * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
             yU = yEndCurrent -
-                pUY * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
+                pUy * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
             xR = xStartCurrent +
-                pRX * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
+                pRx * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
             yD = yEndCurrent -
-                pDY * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
+                pDy * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
         }
         /// <summary>清空显示的曲线
         /// </summary>
@@ -173,10 +122,10 @@ namespace RealTimeGraph
         /// </summary>
         public void ResetAxis()
         {
-            xStartCurrent = xStartInitial;
-            xEndCurrent = xEndInitial;
-            yStartCurrent = yStartInitial;
-            yEndCurrent = yEndInitial;
+            xStartCurrent = XStartInitial;
+            xEndCurrent = XEndInitial;
+            yStartCurrent = YStartInitial;
+            yEndCurrent = YEndInitial;
         }
         /// <summary>设置坐标轴范围
         /// </summary>
@@ -184,7 +133,7 @@ namespace RealTimeGraph
         /// <param name="xE">更新后的 X 轴右端点</param>
         /// <param name="yS">更新后的 Y 轴下端点</param>
         /// <param name="yE">更新后的 Y 轴上端点</param>
-        public void ResetAxis(float xS, float xE, float yS, float yE)
+        private void ResetAxis(float xS, float xE, float yS, float yE)
         {
             xStartCurrent = xS;
             xEndCurrent = xE;
@@ -195,13 +144,13 @@ namespace RealTimeGraph
         /// </summary>
         public void ResetAxisXWidth()
         {
-            xStartCurrent = xEndCurrent - (xEndInitial - xStartInitial);
+            xStartCurrent = xEndCurrent - (XEndInitial - XStartInitial);
         }
         /// <summary>曲线拖动
         /// </summary>
         /// <param name="xD">X 轴方向上的拖动量</param>
         /// <param name="yD">Y 轴方向上的拖动量</param>
-        private void dragMove(float xD, float yD)
+        private void DragMove(float xD, float yD)
         {
             float xM = xD * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
             float yM = yD * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
@@ -213,10 +162,10 @@ namespace RealTimeGraph
         }
         /// <summary>矩形框选放大
         /// </summary>
-        private void rectZoomIn()
+        private void RectZoomIn()
         {
             float xL, yU, xR, yD;
-            rectPointsToData(pbZoom.Location.X, pbZoom.Location.Y,
+            RectPointsToData(pbZoom.Location.X, pbZoom.Location.Y,
                 pbZoom.Location.X + pbZoom.Width, pbZoom.Location.Y + pbZoom.Height,
                 out xL, out yU, out xR, out yD);
 
@@ -322,7 +271,7 @@ namespace RealTimeGraph
         /// </summary>
         /// <param name="scalePos">x刻度坐标位置</param>
         /// <returns>若坐标位置位于X轴可绘制区域内，则返回true.</returns>
-        private bool isInAxisX(float scalePos)
+        private bool IsInAxisX(float scalePos)
         {
             return scalePos > pbAxisY.Width + 1 &&
                                 scalePos < pbAxisY.Width + pbCurve.Width - 1;
@@ -331,7 +280,7 @@ namespace RealTimeGraph
         /// </summary>
         /// <param name="scalePos">Y刻度坐标位置</param>
         /// <returns>若坐标位置位于X轴可绘制区域内，则返回true.</returns>
-        private bool isInAxisY(float scalePos)
+        private bool IsInAxisY(float scalePos)
         {
             return scalePos > pbAxisY.Height - pbCurve.Height + CURVE_HEIGHT_MARGIN + 1 &&
                                 scalePos < pbAxisY.Height - CURVE_HEIGHT_MARGIN - 1;
@@ -340,7 +289,7 @@ namespace RealTimeGraph
         /// </summary>
         /// <param name="scalePos">纵向网格位置</param>
         /// <returns>若坐标位置位于可绘制区域内，则返回true.</returns>
-        private bool isInCurveX(float scalePos)
+        private bool IsInCurveX(float scalePos)
         {
             return scalePos > 0 && scalePos < pbCurve.Width - 1;
         }
@@ -348,14 +297,14 @@ namespace RealTimeGraph
         /// </summary>
         /// <param name="scalePos">横向网格位置</param>
         /// <returns>若坐标位置位于可绘制区域内，则返回true.</returns>
-        private bool isInCurveY(float scalePos)
+        private bool IsInCurveY(float scalePos)
         {
             return scalePos >= 1 &&
                 scalePos <= pbCurve.Height - 1;
         }
         /// <summary>根据画图模式和数据调整坐标显示
         /// </summary>
-        private void updateAxisCurrent()
+        private void UpdateAxisCurrent()
         {
             if (XDataList != null)
             {
@@ -363,14 +312,14 @@ namespace RealTimeGraph
                 {
                     if (isAutoScale)    // 此即为 GlobalMode 模式
                     {
-                        xStartCurrent = (xDataMin < xStartInitial)
-                            ? xDataMin : xStartInitial;
-                        xEndCurrent = (xDataMax > xEndInitial)
-                            ? xDataMax : xEndInitial;
-                        yStartCurrent = (yDataMin < yStartInitial)
-                            ? yDataMin : yStartInitial;
-                        yEndCurrent = (yDataMax > yEndInitial)
-                            ? yDataMax : yEndInitial;
+                        xStartCurrent = (xDataMin < XStartInitial)
+                            ? xDataMin : XStartInitial;
+                        xEndCurrent = (xDataMax > XEndInitial)
+                            ? xDataMax : XEndInitial;
+                        yStartCurrent = (yDataMin < YStartInitial)
+                            ? yDataMin : YStartInitial;
+                        yEndCurrent = (yDataMax > YEndInitial)
+                            ? yDataMax : YEndInitial;
                     }
                     else    // 此即为 FixedMoveMode 模式
                     {
@@ -380,38 +329,38 @@ namespace RealTimeGraph
                             xEndCurrent = xDataMax;
                         }
 
-                        yStartCurrent = (yDataMin < yStartInitial)
-                            ? yDataMin : yStartInitial;
-                        yEndCurrent = (yDataMax > yEndInitial)
-                            ? yDataMax : yEndInitial;
+                        yStartCurrent = (yDataMin < YStartInitial)
+                            ? yDataMin : YStartInitial;
+                        yEndCurrent = (yDataMax > YEndInitial)
+                            ? yDataMax : YEndInitial;
                     }
                 }
             }
         }
         /// <summary>根据坐标范围调整坐标刻度参数。
         /// </summary>
-        private void updateAxisScale()
+        private void UpdateAxisScale()
         {
             scaleX = curveWidth / (xEndCurrent - xStartCurrent);
             getScale1Limits(xStartCurrent, xEndCurrent,
                 out xScale1Min, out xScale1Max, out xScale1);
             xScale1Num = getScaleNum(curveWidth * xScale1 / (xEndCurrent - xStartCurrent),
-                scale1Interval);
+                SCALE1_INTERVAL);
             xScale1Sum = (int)((xScale1Max - xScale1Min) / xScale1 * xScale1Num);
             xScale1Length = curveWidth * xScale1
                 / ((xEndCurrent - xStartCurrent) * xScale1Num);
-            xScale2Num = getScaleNum(xScale1Length, scale2Interval);
+            xScale2Num = getScaleNum(xScale1Length, SCALE2_INTERVAL);
             xScale2Length = xScale1Length / xScale2Num;
 
             scaleY = curveHeight / (yEndCurrent - yStartCurrent);
             getScale1Limits(yStartCurrent, yEndCurrent, out yScale1Min,
                 out yScale1Max, out yScale1);
             yScale1Num = getScaleNum(curveHeight * yScale1 / (yEndCurrent - yStartCurrent),
-                scale1Interval);
+                SCALE1_INTERVAL);
             yScale1Sum = (int)(yScale1Num * (yScale1Max - yScale1Min) / yScale1);
             yScale1Length = curveHeight * yScale1
                 / ((yEndCurrent - yStartCurrent) * yScale1Num);
-            yScale2Num = getScaleNum(yScale1Length, scale2Interval);
+            yScale2Num = getScaleNum(yScale1Length, SCALE2_INTERVAL);
             yScale2Length = yScale1Length / yScale2Num;
         }
     }
