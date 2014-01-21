@@ -27,7 +27,7 @@ namespace RealTimeGraph
 
         private void UpdateCurveSize()
         {
-            curveHeight = pbCurve.Height - 2 * CURVE_HEIGHT_MARGIN;
+            curveHeight = pbCurve.Height - 2 * graphProperties.CurveHeightPadding;
             curveWidth = pbCurve.Width;
         }
         /// <summary>绘制曲线
@@ -37,7 +37,7 @@ namespace RealTimeGraph
         {
             pointsList.Clear();
             // 绘图原点坐标变换到控件的左下角，转换为通常的笛卡尔坐标系，以方便画曲线。
-            g.TranslateTransform(0, pbCurve.Height - 1 - CURVE_HEIGHT_MARGIN);
+            g.TranslateTransform(0, pbCurve.Height - 1 - graphProperties.CurveHeightPadding);
             g.ScaleTransform(1, -1);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             if (DataToPoints(curveWidth, curveHeight))
@@ -63,7 +63,7 @@ namespace RealTimeGraph
                 float xGrid1Pos = xGrid1Start + xScale1Length * i;
                 if (IsInCurveX(xGrid1Pos))
                 {
-                    g.DrawLine(penGrid1, xGrid1Pos, 0,
+                    g.DrawLine(graphProperties.FirstGridPen, xGrid1Pos, 0,
                         xGrid1Pos, pbCurve.Height);
                 }
 
@@ -73,20 +73,20 @@ namespace RealTimeGraph
                     float xGrid2Pos = xGrid1Pos + xScale2Length * j;
                     if (IsInCurveX(xGrid2Pos))
                     {
-                        g.DrawLine(penGrid2, xGrid2Pos, 0,
+                        g.DrawLine(graphProperties.SecondGridPen, xGrid2Pos, 0,
                             xGrid2Pos, pbCurve.Height);
                     }
                 }
             }
 
-            float yGrid1Start = pbCurve.Height - CURVE_HEIGHT_MARGIN
+            float yGrid1Start = pbCurve.Height - graphProperties.CurveHeightPadding
                 - (yScale1Min - dispalyRect.YMin) * scaleY;
             for (int i = 0; i <= yScale1Sum; i++)
             {
                 float yGrid1Pos = yGrid1Start - yScale1Length * i;
                 if (IsInCurveY(yGrid1Pos))
                 {
-                    g.DrawLine(penGrid1, 0, yGrid1Pos,
+                    g.DrawLine(graphProperties.FirstGridPen, 0, yGrid1Pos,
                         pbCurve.Width, yGrid1Pos);
                 }
 
@@ -95,7 +95,7 @@ namespace RealTimeGraph
                     float yGrid2Pos = yGrid1Pos - yScale2Length * j;
                     if (IsInCurveY(yGrid2Pos))
                     {
-                        g.DrawLine(penGrid2, 0, yGrid2Pos,
+                        g.DrawLine(graphProperties.SecondGridPen, 0, yGrid2Pos,
                             pbCurve.Width, yGrid2Pos);
                     }
                 }
@@ -105,13 +105,13 @@ namespace RealTimeGraph
         // 鼠标进入绘图区域时，根据绘图模式改变鼠标形态
         private void pbCurve_MouseEnter(object sender, EventArgs e)
         {
-            switch (GraphType)
+            switch (GraphStyle)
             {
 
-                case GraphTypes.RectZoomInMode:
+                case GraphMode.RectZoomInMode:
                     this.Cursor = Cursors.Cross;
                     break;
-                case GraphTypes.DragMode:
+                case GraphMode.DragMode:
                     this.Cursor = Cursors.Hand;
                     break;
                 default:
@@ -124,12 +124,12 @@ namespace RealTimeGraph
 
         private void pbCurve_MouseDown(object sender, MouseEventArgs e)
         {
-            if (graphType == GraphTypes.DragMode &&
+            if (graphStyle == GraphMode.DragMode &&
                 e.Button == MouseButtons.Left)
             {
                 startPoint = e.Location;
             }
-            else if (graphType == GraphTypes.RectZoomInMode &&
+            else if (graphStyle == GraphMode.RectZoomInMode &&
                 e.Button == MouseButtons.Left)
             {
                 pbZoom.Parent = pbCurve;
@@ -140,7 +140,7 @@ namespace RealTimeGraph
 
         private void pbCurve_MouseMove(object sender, MouseEventArgs e)
         {
-            if (graphType == GraphTypes.DragMode &&
+            if (graphStyle == GraphMode.DragMode &&
                 e.Button == MouseButtons.Left)
             {
                 float xD = e.X - startPoint.X;
@@ -149,7 +149,7 @@ namespace RealTimeGraph
                 startPoint = e.Location;
                 pbCurve.Refresh();
             }
-            else if (graphType == GraphTypes.RectZoomInMode &&
+            else if (graphStyle == GraphMode.RectZoomInMode &&
                 e.Button == MouseButtons.Left)
             {
                 if (e.Location.X < 0)
@@ -193,7 +193,7 @@ namespace RealTimeGraph
 
         private void pbCurve_MouseUp(object sender, MouseEventArgs e)
         {
-            if (graphType == GraphTypes.RectZoomInMode &&
+            if (graphStyle == GraphMode.RectZoomInMode &&
                 e.Button == MouseButtons.Left)
             {
                 pbZoom.Visible = false;
@@ -204,7 +204,7 @@ namespace RealTimeGraph
 
         private void pbCurve_MouseWheel(object sender, MouseEventArgs e)
         {
-            if (GraphType == GraphTypes.FixedMoveMode)
+            if (GraphStyle == GraphMode.FixMoveMode)
             {
                 float xDiff = dispalyRect.XRange;
                 float xDelta = e.Delta / 1200F;
@@ -216,7 +216,7 @@ namespace RealTimeGraph
 
         private void pbCurve_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (GraphType == GraphTypes.FixedMoveMode
+            if (GraphStyle == GraphMode.FixMoveMode
                 && e.Button == MouseButtons.Middle)
             {
                 dispalyRect.XMax = dataRect.XMax;
@@ -230,17 +230,17 @@ namespace RealTimeGraph
             Graphics g = e.Graphics;
 
             // 绘制边界坐标线
-            g.DrawLine(penBorder, pbAxisY.Width, 0,
-                pbAxisY.Width, borderLength);
-            g.DrawLine(penBorder, pbAxisY.Width + pbCurve.Width, 0,
-                pbAxisY.Width + pbCurve.Width, borderLength);
+            g.DrawLine(graphProperties.BorderPen, pbAxisY.Width, 0,
+                pbAxisY.Width, graphProperties.BorderLength);
+            g.DrawLine(graphProperties.BorderPen, pbAxisY.Width + pbCurve.Width, 0,
+                pbAxisY.Width + pbCurve.Width, graphProperties.BorderLength);
 
             // 绘制 X 轴标题
             StringFormat titleFormat = new StringFormat();
             titleFormat.Alignment = StringAlignment.Center;
-            g.DrawString(AxisXTitle, fontAxis, Brushes.Black,
+            g.DrawString(AxisXTitle, graphProperties.AxisTitleFont, Brushes.Black,
                 pbAxisY.Width + pbCurve.Width / 2F,
-                pbAxisX.Height / 2F + fontTitle.Height / 5F,
+                pbAxisX.Height / 2F + graphProperties.TitleFont.Height / 5F,
                 titleFormat);
 
             StringFormat centerFormat = new StringFormat();
@@ -252,11 +252,11 @@ namespace RealTimeGraph
                 float xScale1Pos = xScale1Start + xScale1Length * i;   // 1级刻度坐标位置
                 if (IsInAxisX(xScale1Pos))
                 {
-                    g.DrawLine(penScale1, xScale1Pos, 0,
-                    xScale1Pos, SCALE1_LENGTH);
+                    g.DrawLine(graphProperties.FirstScalePen, xScale1Pos, 0,
+                    xScale1Pos, graphProperties.FirstScaleLength);
                     float xScale1Value = xScale1Min + xScale1 * i / xScale1Num;  // 1级刻度处坐标值
-                    g.DrawString(xScale1Value.ToString(), fontScale1, Brushes.Black,
-                        xScale1Pos, borderLength, centerFormat);
+                    g.DrawString(xScale1Value.ToString(), graphProperties.FirstScaleFont, Brushes.Black,
+                        xScale1Pos, graphProperties.BorderLength, centerFormat);
                 }
 
 
@@ -265,8 +265,8 @@ namespace RealTimeGraph
                     float xScale2Pos = xScale1Pos + xScale2Length * j;
                     if (IsInAxisX(xScale2Pos))
                     {
-                        g.DrawLine(penScale2, xScale2Pos, 0,
-                        xScale2Pos, SCALE2_LENGTH);
+                        g.DrawLine(graphProperties.SecondScalePen, xScale2Pos, 0,
+                        xScale2Pos, graphProperties.SecondScaleLength);
                     }
                 }
             }
@@ -275,18 +275,18 @@ namespace RealTimeGraph
             SolidBrush b = new SolidBrush(pbAxisX.BackColor);
 
             String str = dispalyRect.XMin.ToString("#0.##");
-            SizeF sf = g.MeasureString(str, fontBorder);
-            g.FillRectangle(b, pbAxisY.Width - sf.Width / 2, borderLength,
+            SizeF sf = g.MeasureString(str, graphProperties.BorderFont);
+            g.FillRectangle(b, pbAxisY.Width - sf.Width / 2, graphProperties.BorderLength,
                 sf.Width, sf.Height);   // 防止坐标的重叠
-            g.DrawString(str, fontBorder, Brushes.Black,
-                pbAxisY.Width, borderLength, centerFormat);
+            g.DrawString(str, graphProperties.BorderFont, Brushes.Black,
+                pbAxisY.Width, graphProperties.BorderLength, centerFormat);
 
             str = dispalyRect.XMax.ToString("#0.##");
-            sf = g.MeasureString(str, fontBorder);
-            g.FillRectangle(b, pbAxisY.Width + pbCurve.Width - sf.Width / 2, borderLength,
+            sf = g.MeasureString(str, graphProperties.BorderFont);
+            g.FillRectangle(b, pbAxisY.Width + pbCurve.Width - sf.Width / 2, graphProperties.BorderLength,
                 sf.Width, sf.Height);
-            g.DrawString(str, fontBorder, Brushes.Black,
-                pbAxisY.Width + pbCurve.Width, borderLength, centerFormat);
+            g.DrawString(str, graphProperties.BorderFont, Brushes.Black,
+                pbAxisY.Width + pbCurve.Width, graphProperties.BorderLength, centerFormat);
         }
 
         private void pbAxisY_Paint(object sender, PaintEventArgs e)
@@ -294,29 +294,29 @@ namespace RealTimeGraph
             Graphics g = e.Graphics;
 
             // 绘制边界坐标线
-            g.DrawLine(penBorder, pbAxisY.Width - borderLength,
-                pbAxisY.Height - 1 - CURVE_HEIGHT_MARGIN,
-                pbAxisY.Width, pbAxisY.Height - 1 - CURVE_HEIGHT_MARGIN);
-            g.DrawLine(penBorder, pbAxisY.Width - borderLength,
-                pbTitle.Height + CURVE_HEIGHT_MARGIN,
-                pbAxisY.Width, pbTitle.Height + CURVE_HEIGHT_MARGIN);
+            g.DrawLine(graphProperties.BorderPen, pbAxisY.Width - graphProperties.BorderLength,
+                pbAxisY.Height - 1 - graphProperties.CurveHeightPadding,
+                pbAxisY.Width, pbAxisY.Height - 1 - graphProperties.CurveHeightPadding);
+            g.DrawLine(graphProperties.BorderPen, pbAxisY.Width - graphProperties.BorderLength,
+                pbTitle.Height + graphProperties.CurveHeightPadding,
+                pbAxisY.Width, pbTitle.Height + graphProperties.CurveHeightPadding);
 
             // 绘制其他各级刻度线， 以及1级刻度值
             StringFormat scaleYFormat = new StringFormat();
             scaleYFormat.Alignment = StringAlignment.Far;
             scaleYFormat.LineAlignment = StringAlignment.Center;
-            float yScale1Start = pbAxisY.Height - CURVE_HEIGHT_MARGIN
+            float yScale1Start = pbAxisY.Height - graphProperties.CurveHeightPadding
                 - (yScale1Min - dispalyRect.YMin) * scaleY;
             for (int i = 0; i < yScale1Sum; i++)
             {
                 float yScale1Pos = yScale1Start - yScale1Length * i;   // 1级刻度坐标位置
                 if (IsInAxisY(yScale1Pos))
                 {
-                    g.DrawLine(penScale1, pbAxisY.Width - 1 - SCALE1_LENGTH, yScale1Pos,
+                    g.DrawLine(graphProperties.FirstScalePen, pbAxisY.Width - 1 - graphProperties.FirstScaleLength, yScale1Pos,
                     pbAxisY.Width - 1, yScale1Pos);
                     double yScale1Value = yScale1Min + yScale1 * i / yScale1Num;  // 1级刻度处坐标值
-                    g.DrawString(yScale1Value.ToString("#0.##"), fontScale1, Brushes.Black,
-                        pbAxisY.Width - 1 - borderLength, yScale1Pos, scaleYFormat);
+                    g.DrawString(yScale1Value.ToString("#0.##"), graphProperties.FirstScaleFont, Brushes.Black,
+                        pbAxisY.Width - 1 - graphProperties.BorderLength, yScale1Pos, scaleYFormat);
                 }
 
                 for (int j = 1; j < yScale2Num; j++)
@@ -324,8 +324,8 @@ namespace RealTimeGraph
                     float yScale2Pos = yScale1Pos - yScale2Length * j;
                     if (IsInAxisY(yScale2Pos))
                     {
-                        g.DrawLine(penScale2, pbAxisY.Width - 1, yScale2Pos,
-                            pbAxisY.Width - 1 - SCALE2_LENGTH, yScale2Pos);
+                        g.DrawLine(graphProperties.SecondScalePen, pbAxisY.Width - 1, yScale2Pos,
+                            pbAxisY.Width - 1 - graphProperties.SecondScaleLength, yScale2Pos);
                     }
                 }
             }
@@ -337,21 +337,21 @@ namespace RealTimeGraph
             SolidBrush b = new SolidBrush(pbAxisY.BackColor);
 
             String str = dispalyRect.YMin.ToString("#0.###");
-            SizeF sf = g.MeasureString(str, fontBorder);
-            g.FillRectangle(b, pbAxisY.Width - borderLength - sf.Width,
-                pbTitle.Height + pbCurve.Height - CURVE_HEIGHT_MARGIN - sf.Height / 2F,
+            SizeF sf = g.MeasureString(str, graphProperties.BorderFont);
+            g.FillRectangle(b, pbAxisY.Width - graphProperties.BorderLength - sf.Width,
+                pbTitle.Height + pbCurve.Height - graphProperties.CurveHeightPadding - sf.Height / 2F,
                 sf.Width, sf.Height);
-            g.DrawString(str, fontBorder, Brushes.Black,
-                pbAxisY.Width - borderLength, pbAxisY.Height - CURVE_HEIGHT_MARGIN,
+            g.DrawString(str, graphProperties.BorderFont, Brushes.Black,
+                pbAxisY.Width - graphProperties.BorderLength, pbAxisY.Height - graphProperties.CurveHeightPadding,
                 borderYFormat);
 
             str = dispalyRect.YMax.ToString("#0.###");
-            sf = g.MeasureString(str, fontBorder);
-            g.FillRectangle(b, pbAxisY.Width - borderLength - sf.Width,
-                pbTitle.Height + CURVE_HEIGHT_MARGIN - sf.Height / 2F,
+            sf = g.MeasureString(str, graphProperties.BorderFont);
+            g.FillRectangle(b, pbAxisY.Width - graphProperties.BorderLength - sf.Width,
+                pbTitle.Height + graphProperties.CurveHeightPadding - sf.Height / 2F,
                 sf.Width, sf.Height);
-            g.DrawString(str, fontBorder, Brushes.Black,
-                pbAxisY.Width - borderLength, pbTitle.Height + CURVE_HEIGHT_MARGIN,
+            g.DrawString(str, graphProperties.BorderFont, Brushes.Black,
+                pbAxisY.Width - graphProperties.BorderLength, pbTitle.Height + graphProperties.CurveHeightPadding,
                 borderYFormat);
         }
 
@@ -362,12 +362,12 @@ namespace RealTimeGraph
             // 绘制标题           
             StringFormat titleFormat = new StringFormat();
             titleFormat.Alignment = StringAlignment.Center;
-            g.DrawString(GraphTitle, fontTitle, Brushes.Black,
-                pbTitle.Width / 2F, pbTitle.Height / 2F - fontTitle.Height / 5F,
+            g.DrawString(GraphTitle, graphProperties.TitleFont, Brushes.Black,
+                pbTitle.Width / 2F, pbTitle.Height / 2F - graphProperties.TitleFont.Height / 5F,
                 titleFormat);
             // 绘制Y轴标签
-            g.DrawString(AxisYTitle, fontAxis, Brushes.Black,
-                fontAxis.Height / 5F, pbTitle.Height - fontAxis.Height * 1.2F);
+            g.DrawString(AxisYTitle, graphProperties.AxisTitleFont, Brushes.Black,
+                graphProperties.AxisTitleFont.Height / 5F, pbTitle.Height - graphProperties.AxisTitleFont.Height * 1.2F);
         }
     }
 }

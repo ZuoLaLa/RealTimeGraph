@@ -10,13 +10,17 @@ namespace RealTimeGraph
         /// </summary>
         private void InitialGraph()
         {
+            graphProperties = new GraphProperties();
             initialRect = new DataRect();
             dispalyRect = new DataRect();
             dataRect = new DataRect();
-            dataAccuracy = new DataPair(1F, 0.1F);
+
+            XDataAccuracy = GraphProperties.DEFAULT_DATA_X_ACCURACY;
+            YDataAccuracy = GraphProperties.DEFAULT_DATA_Y_ACCURACY;
+
 
             // 默认初始处于滚动模式
-            GraphType = GraphTypes.FixedMoveMode;
+            GraphStyle = GraphMode.FixMoveMode;
             isAutoMove = true;
             isAutoScale = false;
 
@@ -25,18 +29,11 @@ namespace RealTimeGraph
 
             pointsList = new List<PointF>();
 
-            penBorder = new Pen(Color.Black, 2);
-            fontBorder = new Font("Verdana", 8, FontStyle.Bold);
-            borderLength = 15;
-            penScale1 = new Pen(Color.Black, 2);
-            penScale2 = new Pen(Color.Black, 1);
-            fontScale1 = new Font("Verdana", 8);
-            penGrid1 = new Pen(Color.FromArgb(160, Color.White), 1);
-            penGrid2 = new Pen(Color.FromArgb(60, Color.White), 1);
+
+
             IsShowGrid = false;
 
-            fontTitle = new Font("SimHei", 14);
-            fontAxis = new Font("FangSong", 10);
+
             GraphTitle = "位移实时显示曲线";
             AxisXTitle = "时间(s)";
             AxisYTitle = "位移(mm)";
@@ -262,8 +259,8 @@ namespace RealTimeGraph
         /// <returns>若坐标位置位于X轴可绘制区域内，则返回true.</returns>
         private bool IsInAxisY(float scalePos)
         {
-            return scalePos > pbAxisY.Height - pbCurve.Height + CURVE_HEIGHT_MARGIN + 1 &&
-                                scalePos < pbAxisY.Height - CURVE_HEIGHT_MARGIN - 1;
+            return scalePos > pbAxisY.Height - pbCurve.Height + graphProperties.CurveHeightPadding + 1 &&
+                                scalePos < pbAxisY.Height - graphProperties.CurveHeightPadding - 1;
         }
         /// <summary>判断纵向网格位置是否位于可绘制区域内
         /// </summary>
@@ -325,22 +322,22 @@ namespace RealTimeGraph
             getScale1Limits(dispalyRect.XMin, dispalyRect.XMax,
                 out xScale1Min, out xScale1Max, out xScale1);
             xScale1Num = getScaleNum(curveWidth * xScale1 / dispalyRect.XRange,
-                SCALE1_INTERVAL);
+                graphProperties.FirstScaleInterval);
             xScale1Sum = (int)((xScale1Max - xScale1Min) / xScale1 * xScale1Num);
             xScale1Length = curveWidth * xScale1
                 / (dispalyRect.XRange * xScale1Num);
-            xScale2Num = getScaleNum(xScale1Length, SCALE2_INTERVAL);
+            xScale2Num = getScaleNum(xScale1Length, graphProperties.SecondScaleInterval);
             xScale2Length = xScale1Length / xScale2Num;
 
             scaleY = curveHeight / dispalyRect.YRange;
             getScale1Limits(dispalyRect.YMin, dispalyRect.YMax, out yScale1Min,
                 out yScale1Max, out yScale1);
             yScale1Num = getScaleNum(curveHeight * yScale1 / dispalyRect.YRange,
-                SCALE1_INTERVAL);
+                graphProperties.FirstScaleInterval);
             yScale1Sum = (int)(yScale1Num * (yScale1Max - yScale1Min) / yScale1);
             yScale1Length = curveHeight * yScale1
                 / (dispalyRect.YRange * yScale1Num);
-            yScale2Num = getScaleNum(yScale1Length, SCALE2_INTERVAL);
+            yScale2Num = getScaleNum(yScale1Length, graphProperties.SecondScaleInterval);
             yScale2Length = yScale1Length / yScale2Num;
         }
     }

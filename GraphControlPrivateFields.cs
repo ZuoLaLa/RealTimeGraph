@@ -28,30 +28,11 @@ namespace RealTimeGraph
         /// </summary>
         private List<PointF> pointsList;
 
-        Pen penBorder;    // 边界刻度所用钢笔
-        Font fontBorder;    // 边界刻度值字体
-        Pen penScale1;    // 一级刻度所用钢笔
-        Font fontScale1;    // 一级刻度值字体
-        Pen penScale2;
-        Pen penGrid1;       // 一级网格所用钢笔
-        Pen penGrid2;
-
-        private int borderLength;  // 坐标边界刻度线的长度
-        private const int SCALE1_LENGTH = 10; // 一级坐标刻度线的长度
-        private const int SCALE2_LENGTH = 8;
-        private const int SCALE1_INTERVAL = 100; // 一级坐标刻度线的最小间隔
-        private const int SCALE2_INTERVAL = 15;
-
-        private Font fontTitle; // 曲线标题字体
-        private Font fontAxis;  // 坐标轴标题字体
 
         private Point startPoint; // 用于记录拖动操作时鼠标按下的位置
 
         private Point pbZoomStart; // 框选放大框的左上角位置
         private Point pbZoomEnd; // 框选放大框的右下角位置
-
-        private const float X_DATA_ACCURACY_DEFAULT = 1F;
-        private const float Y_DATA_ACCURACY_DEFAULT = 0.1F;
 
         float scaleX;       // X 轴比例尺（单位长度的像素数）
         float scaleY;
@@ -74,8 +55,9 @@ namespace RealTimeGraph
         int yScale2Num;
         float yScale2Length;
 
-        private const int CURVE_HEIGHT_MARGIN = 10;
         private int curveHeight;
         private int curveWidth;
+
+        private GraphProperties graphProperties;
     }
 }
