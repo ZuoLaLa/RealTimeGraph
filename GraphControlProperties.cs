@@ -6,15 +6,15 @@ namespace RealTimeGraph
     {
         /// <summary>曲线标题
         /// </summary>
-        public string GraphTitle { private get; set; }
+        public string GraphTitle { get; set; }
 
         /// <summary>X轴标题
         /// </summary>
-        public string GraphXTitle { private get; set; }
+        public string GraphXTitle { get; set; }
 
         /// <summary>Y轴标题
         /// </summary>
-        public string GraphYTitle { private get; set; }
+        public string GraphYTitle { get; set; }
 
         /// <summary>可设定的曲线显示模式枚举类型
         /// </summary>
@@ -67,8 +67,9 @@ namespace RealTimeGraph
         /// </summary>
         public float XDataAccuracy
         {
-            private get { return xDataAccuracy; }
-            set {
+            get { return xDataAccuracy; }
+            set
+            {
                 xDataAccuracy = (value > 0) ? value : X_DATA_ACCURACY_DEFAULT;
             }
         }
@@ -78,8 +79,9 @@ namespace RealTimeGraph
         /// </summary>
         public float YDataAccuracy
         {
-            private get { return yDataAccuracy; }
-            set {
+            get { return yDataAccuracy; }
+            set
+            {
                 yDataAccuracy = (value > 0) ? value : Y_DATA_ACCURACY_DEFAULT;
             }
         }
@@ -92,9 +94,9 @@ namespace RealTimeGraph
         public bool ShowGrid;
 
         // 初始状态下的 X, Y 起始和终止坐标
-        public float XStartInitial { private get; set; }
-        public float XEndInitial { private get; set; }
-        public float YStartInitial { private get; set; }
-        public float YEndInitial { private get; set; }
+        public float XStartInitial { get; set; }
+        public float XEndInitial { get; set; }
+        public float YStartInitial { get; set; }
+        public float YEndInitial { get; set; }
     }
 }

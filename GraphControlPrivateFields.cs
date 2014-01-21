@@ -6,10 +6,7 @@ namespace RealTimeGraph
     public partial class GraphControl
     {
         // 当前显示波形的 X, Y 起始和终止坐标
-        private float xStartCurrent;
-        private float xEndCurrent;
-        private float yStartCurrent;
-        private float yEndCurrent;
+        private DataRect dispalyRect;
 
         /// <summary>波形是否随时间移动（即是否处于实时显示状态）。
         /// 设为 false 时用于“框选放大模式”，

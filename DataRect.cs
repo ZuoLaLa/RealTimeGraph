@@ -13,21 +13,35 @@ namespace RealTimeGraph
         public float XMin
         {
             get { return axisX.Min; }
+            set { axisX.Min = value; }
         }
 
         public float XMax
         {
             get { return axisX.Max; }
+            set { axisX.Max = value; }
         }
 
         public float YMin
         {
             get { return axisY.Min; }
+            set { axisY.Min = value; }
         }
 
         public float YMax
         {
             get { return axisY.Max; }
+            set { axisY.Max = value; }
+        }
+
+        public float XRange
+        {
+            get { return axisX.Range; }
+        }
+
+        public float YRange
+        {
+            get { return axisY.Range; }
         }
 
         public DataRect(float xMin, float xMax, float yMin, float yMax)

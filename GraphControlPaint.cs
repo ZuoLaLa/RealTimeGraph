@@ -56,7 +56,7 @@ namespace RealTimeGraph
         /// <param name="g"></param>
         private void Gridding(Graphics g)
         {
-            float xGrid1Start = (xScale1Min - xStartCurrent) * scaleX;
+            float xGrid1Start = (xScale1Min - dispalyRect.XMin) * scaleX;
 
             for (int i = 0; i < xScale1Sum; i++)
             {
@@ -79,8 +79,8 @@ namespace RealTimeGraph
                 }
             }
 
-            float yGrid1Start = pbCurve.Height-CURVE_HEIGHT_MARGIN
-                - (yScale1Min - yStartCurrent) * scaleY;
+            float yGrid1Start = pbCurve.Height - CURVE_HEIGHT_MARGIN
+                - (yScale1Min - dispalyRect.YMin) * scaleY;
             for (int i = 0; i <= yScale1Sum; i++)
             {
                 float yGrid1Pos = yGrid1Start - yScale1Length * i;
@@ -206,10 +206,10 @@ namespace RealTimeGraph
         {
             if (GraphType == GraphTypes.FixedMoveMode)
             {
-                float xDiff = xEndCurrent - xStartCurrent;
+                float xDiff = dispalyRect.XRange;
                 float xDelta = e.Delta / 1200F;
-                xStartCurrent -= xDiff * xDelta;
-                xEndCurrent += xDiff * xDelta;
+                dispalyRect.XMin -= xDiff * xDelta;
+                dispalyRect.XMax += xDiff * xDelta;
                 pbCurve.Refresh();
             }
         }
@@ -219,9 +219,9 @@ namespace RealTimeGraph
             if (GraphType == GraphTypes.FixedMoveMode
                 && e.Button == MouseButtons.Middle)
             {
-                xEndCurrent = xDataMax;
-                xStartCurrent = ((xEndCurrent - (XEndInitial - XStartInitial)) > XStartInitial)
-                    ? (xEndCurrent - (XEndInitial - XStartInitial)) : XStartInitial;
+                dispalyRect.XMax = xDataMax;
+                dispalyRect.XMin = ((dispalyRect.XMax - (XEndInitial - XStartInitial)) > XStartInitial)
+                    ? (dispalyRect.XMax - (XEndInitial - XStartInitial)) : XStartInitial;
             }
         }
 
@@ -246,7 +246,7 @@ namespace RealTimeGraph
             StringFormat centerFormat = new StringFormat();
             centerFormat.Alignment = StringAlignment.Center;
             // 绘制其他各级刻度线， 以及1级刻度值
-            float xScale1Start = pbAxisY.Width + (xScale1Min - xStartCurrent) * scaleX;
+            float xScale1Start = pbAxisY.Width + (xScale1Min - dispalyRect.XMin) * scaleX;
             for (int i = 0; i < xScale1Sum; i++)
             {
                 float xScale1Pos = xScale1Start + xScale1Length * i;   // 1级刻度坐标位置
@@ -274,14 +274,14 @@ namespace RealTimeGraph
             // 标识边界坐标值
             SolidBrush b = new SolidBrush(pbAxisX.BackColor);
 
-            String str = xStartCurrent.ToString("#0.##");
+            String str = dispalyRect.XMin.ToString("#0.##");
             SizeF sf = g.MeasureString(str, fontBorder);
             g.FillRectangle(b, pbAxisY.Width - sf.Width / 2, borderLength,
                 sf.Width, sf.Height);   // 防止坐标的重叠
             g.DrawString(str, fontBorder, Brushes.Black,
                 pbAxisY.Width, borderLength, centerFormat);
 
-            str = xEndCurrent.ToString("#0.##");
+            str = dispalyRect.XMax.ToString("#0.##");
             sf = g.MeasureString(str, fontBorder);
             g.FillRectangle(b, pbAxisY.Width + pbCurve.Width - sf.Width / 2, borderLength,
                 sf.Width, sf.Height);
@@ -306,7 +306,7 @@ namespace RealTimeGraph
             scaleYFormat.Alignment = StringAlignment.Far;
             scaleYFormat.LineAlignment = StringAlignment.Center;
             float yScale1Start = pbAxisY.Height - CURVE_HEIGHT_MARGIN
-                - (yScale1Min - yStartCurrent) * scaleY;
+                - (yScale1Min - dispalyRect.YMin) * scaleY;
             for (int i = 0; i < yScale1Sum; i++)
             {
                 float yScale1Pos = yScale1Start - yScale1Length * i;   // 1级刻度坐标位置
@@ -336,7 +336,7 @@ namespace RealTimeGraph
             borderYFormat.LineAlignment = StringAlignment.Center;
             SolidBrush b = new SolidBrush(pbAxisY.BackColor);
 
-            String str = yStartCurrent.ToString("#0.###");
+            String str = dispalyRect.YMin.ToString("#0.###");
             SizeF sf = g.MeasureString(str, fontBorder);
             g.FillRectangle(b, pbAxisY.Width - borderLength - sf.Width,
                 pbTitle.Height + pbCurve.Height - CURVE_HEIGHT_MARGIN - sf.Height / 2F,
@@ -345,7 +345,7 @@ namespace RealTimeGraph
                 pbAxisY.Width - borderLength, pbAxisY.Height - CURVE_HEIGHT_MARGIN,
                 borderYFormat);
 
-            str = yEndCurrent.ToString("#0.###");
+            str = dispalyRect.YMax.ToString("#0.###");
             sf = g.MeasureString(str, fontBorder);
             g.FillRectangle(b, pbAxisY.Width - borderLength - sf.Width,
                 pbTitle.Height + CURVE_HEIGHT_MARGIN - sf.Height / 2F,
