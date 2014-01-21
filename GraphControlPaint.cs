@@ -22,14 +22,23 @@ namespace RealTimeGraph
             pbAxisX.Refresh();
             pbAxisY.Refresh();
 
+            DrawCurve(g);
+        }
+
+        private void DrawCurve(Graphics g)
+        {
             TranslateToCartesian(g);
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            graphData.DrawCurve(g, curveWidth, curveHeight);
+            PointF[] points = graphData.GetPointsToDraw(curveWidth, curveHeight);
+            if (points != null && points.Length > 1)
+            {
+                g.DrawLines(graphProperties.CurvePen, points);
+            }
         }
 
         private void TranslateToCartesian(Graphics g)
         {
-            g.TranslateTransform(0, 
+            g.TranslateTransform(0,
                 pbCurve.Height - 1 - graphProperties.CurveHeightPadding);
             g.ScaleTransform(1, -1);
         }
@@ -189,6 +198,61 @@ namespace RealTimeGraph
                 RectZoomIn();
                 pbCurve.Refresh();
             }
+        }
+
+        /// <summary>矩形框选放大
+        /// </summary>
+        private void RectZoomIn()
+        {
+            DataRect selectedRect = new DataRect(
+                pbZoom.Location.X, pbZoom.Location.X + pbZoom.Width,
+                pbZoom.Location.Y, pbZoom.Location.Y + pbZoom.Height);
+            DataRect zoomInRect = ZoomInSelectedRect(selectedRect);
+
+            if (zoomInRect.XRange >= XDataAccuracy && zoomInRect.YRange >= YDataAccuracy)
+            {
+                ResetDisplayRect(zoomInRect);
+                MsgOutput = "Zoom in normally";
+            }
+            else if (zoomInRect.XRange >= XDataAccuracy)
+            {
+                ResetDisplayRect(zoomInRect.XMin, zoomInRect.XMax,
+                    (zoomInRect.YMin + zoomInRect.YMax - YDataAccuracy) / 2F,
+                    (zoomInRect.YMin + zoomInRect.YMax + YDataAccuracy) / 2F);
+                MsgOutput = "Zoom in to the Y data accuracy";
+            }
+            else if (zoomInRect.YRange >= YDataAccuracy)
+            {
+                ResetDisplayRect(
+                    (zoomInRect.XMin + zoomInRect.XMax - XDataAccuracy) / 2F,
+                    (zoomInRect.XMin + zoomInRect.XMax + XDataAccuracy) / 2F,
+                    zoomInRect.YMin, zoomInRect.YMax);
+                MsgOutput = "Zoom in to the X data accuracy";
+            }
+            else
+            {
+                ResetDisplayRect(
+                    (zoomInRect.XMin + zoomInRect.XMax - XDataAccuracy) / 2F,
+                    (zoomInRect.XMin + zoomInRect.XMax + XDataAccuracy) / 2F,
+                    (zoomInRect.YMin + zoomInRect.YMax - YDataAccuracy) / 2F,
+                    (zoomInRect.YMin + zoomInRect.YMax + YDataAccuracy) / 2F);
+                MsgOutput = "Zoom in to all data accuracy";
+            }
+        }
+
+        private DataRect ZoomInSelectedRect(DataRect selectedRect)
+        {
+            return new DataRect
+            {
+                XMin = graphData.DisplayRect.XMin +
+                    selectedRect.XMin * graphData.DisplayRect.XRange / curveWidth,
+                XMax = graphData.DisplayRect.XMin +
+                    selectedRect.XMax * graphData.DisplayRect.XRange / curveWidth,
+                YMin = graphData.DisplayRect.YMax -
+                    selectedRect.YMax * graphData.DisplayRect.YRange / curveHeight,
+                YMax = graphData.DisplayRect.YMax -
+                    selectedRect.YMin * graphData.DisplayRect.YRange / curveHeight
+            };
         }
 
         private void pbCurve_MouseWheel(object sender, MouseEventArgs e)

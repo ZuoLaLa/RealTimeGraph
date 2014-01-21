@@ -32,29 +32,7 @@ namespace RealTimeGraph
             MsgOutput = "Ready";
         }
 
-        /// <summary>将矩形区域的坐标点转换成对应的数据对。
-        /// 用于框选放大模式，也可变形用于拖动模式。
-        /// </summary>
-        /// <param name="pLx">矩形区域的左上角点 X 像素值</param>
-        /// <param name="pUy">矩形区域的左上角点 Y 像素值</param>
-        /// <param name="pRx">矩形区域的右下角点 X 像素值</param>
-        /// <param name="pDy">矩形区域的右下角点 Y 像素值</param>
-        /// <param name="xL">左上角点转换后的 X 值</param>
-        /// <param name="yU">左上角点转换后的 Y 值</param>
-        /// <param name="xR">右下角点转换后的 X 值</param>
-        /// <param name="yD">右下角点转换后的 Y 值</param>
-        private void RectPointsToData(float pLx, float pUy, float pRx, float pDy,
-            out float xL, out float yU, out float xR, out float yD)
-        {
-            xL = graphData.DisplayRect.XMin +
-                pLx * graphData.DisplayRect.XRange / (pbCurve.Width - 1);
-            yU = graphData.DisplayRect.YMax -
-                pUy * graphData.DisplayRect.YRange / (pbCurve.Height - 1);
-            xR = graphData.DisplayRect.XMin +
-                pRx * graphData.DisplayRect.XRange / (pbCurve.Width - 1);
-            yD = graphData.DisplayRect.YMax -
-                pDy * graphData.DisplayRect.YRange / (pbCurve.Height - 1);
-        }
+
         /// <summary>清空显示的曲线
         /// </summary>
         public void GraphClear()
@@ -80,6 +58,10 @@ namespace RealTimeGraph
             graphData.DisplayRect.UpdateRect(xS, xE, yS, yE);
         }
 
+        private void ResetDisplayRect(DataRect newRect)
+        {
+            graphData.DisplayRect.UpdateRect(newRect);
+        }
         /// <summary>曲线拖动
         /// </summary>
         /// <param name="xD">X 轴方向上的拖动量</param>
@@ -92,40 +74,7 @@ namespace RealTimeGraph
                 graphData.DisplayRect.XMin - xM, graphData.DisplayRect.XMax - xM,
                 graphData.DisplayRect.YMin + yM, graphData.DisplayRect.YMax + yM);
         }
-        /// <summary>矩形框选放大
-        /// </summary>
-        private void RectZoomIn()
-        {
-            float xL, yU, xR, yD;
-            RectPointsToData(pbZoom.Location.X, pbZoom.Location.Y,
-                pbZoom.Location.X + pbZoom.Width, pbZoom.Location.Y + pbZoom.Height,
-                out xL, out yU, out xR, out yD);
 
-            if ((xR - xL) >= XDataAccuracy && (yU - yD) >= YDataAccuracy)
-            {
-                ResetDisplayRect(xL, xR, yD, yU);
-            }
-            else if ((xR - xL) >= XDataAccuracy)
-            {
-                ResetDisplayRect(xL, xR, (yD + yU - YDataAccuracy) / 2F,
-                    (yD + yU + YDataAccuracy) / 2F);
-                MsgOutput = "Zoom in to the Y data accuracy";
-            }
-            else if ((yU - yD) >= YDataAccuracy)
-            {
-                ResetDisplayRect((xL + xR - XDataAccuracy) / 2F,
-                    (xL + xR + XDataAccuracy) / 2F, yD, yU);
-                MsgOutput = "Zoom in to the X data accuracy";
-            }
-            else
-            {
-                ResetDisplayRect((xL + xR - XDataAccuracy) / 2F,
-                    (xL + xR + XDataAccuracy) / 2F,
-                    (yD + yU - YDataAccuracy) / 2F,
-                    (yD + yU + YDataAccuracy) / 2F);
-                MsgOutput = "Zoom in to all data accuracy";
-            }
-        }
         /// <summary>更新数据最值。
         /// </summary>
         /// <param name="xMin">外部数据 X 的最小值</param>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 
@@ -71,10 +70,9 @@ namespace RealTimeGraph
         /// </summary>
         /// <param name="width">待绘制区域的宽度</param>
         /// <param name="height">待绘制区域的高度</param>
-        /// <returns>转换成功，返回 true</returns>
-        private bool GetPointsToDrawIn(int width, int height)
+        public PointF[] GetPointsToDraw(int width, int height)
         {
-            // 坐标起始和结束值之差小于精度范围则返回false
+            pointsList.Clear();
             if (DisplayRect.XRange > 0.9F * XDataAccuracy ||
                 DisplayRect.YRange > 0.9F * YDataAccuracy)
             {
@@ -92,29 +90,9 @@ namespace RealTimeGraph
                         // 装载坐标
                         pointsList.Add(currentPointF);
                     }
-
-                    if (pointsList.Count > 0)
-                    {
-                        return true;
-                    }
                 }
             }
-            return false;
-        }
-
-        public void DrawCurve(Graphics g, int curveWidth, int curveHeight)
-        {
-            pointsList.Clear();
-            if (GetPointsToDrawIn(curveWidth, curveHeight))
-            {
-                if (pointsList.Count > 1)
-                {
-                    Pen p = new Pen(Color.Yellow, 1);
-                    p.LineJoin = LineJoin.Bevel;
-                    g.DrawLines(p, pointsList.ToArray());
-                    p.Dispose();
-                }
-            }
+            return pointsList.ToArray();
         }
     }
 }

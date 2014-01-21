@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace RealTimeGraph
 {
@@ -20,6 +21,7 @@ namespace RealTimeGraph
         public Pen SecondGridPen;
         public Font TitleFont; // 曲线标题字体
         public Font AxisTitleFont;  // 坐标轴标题字体
+        public Pen CurvePen;
 
         public GraphProperties()
         {
@@ -39,6 +41,8 @@ namespace RealTimeGraph
             SecondGridPen = new Pen(Color.FromArgb(60, Color.White), 1);
             TitleFont = new Font("SimHei", 14);
             AxisTitleFont = new Font("FangSong", 10);
+            CurvePen = new Pen(Color.Yellow, 1);
+            CurvePen.LineJoin = LineJoin.Bevel;
         }
     }
 }
