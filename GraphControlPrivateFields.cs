@@ -5,9 +5,6 @@ namespace RealTimeGraph
 {
     public partial class GraphControl
     {
-        // 当前显示波形的数据范围
-        private DataRect dispalyRect;
-
         // 所有数据的范围
         private DataRect dataRect;
 
@@ -23,9 +20,6 @@ namespace RealTimeGraph
         /// 当 isAutoMove=false 时，isAutoScale 无效。
         /// </summary>
         private bool isAutoScale;
-
-
-
 
         private Point startPoint; // 用于记录拖动操作时鼠标按下的位置
 

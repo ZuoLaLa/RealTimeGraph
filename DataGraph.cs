@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 
@@ -51,7 +52,10 @@ namespace RealTimeGraph
 
         /// <summary>待绘制的数据点集
         /// </summary>
-        public List<PointF> PointsList;
+        private List<PointF> pointsList;
+
+        // 当前显示波形的数据范围
+        public DataRect DisplayRect;
 
         public DataGraph()
         {
@@ -59,7 +63,58 @@ namespace RealTimeGraph
             YDataAccuracy = DEFAULT_DATA_Y_ACCURACY;
             XDataList = new List<float>();
             YDataList = new List<float>();
-            PointsList = new List<PointF>();
+            pointsList = new List<PointF>();
+            DisplayRect = new DataRect();
+        }
+
+        /// <summary>数据转换为待绘制区域上的点集
+        /// </summary>
+        /// <param name="width">待绘制区域的宽度</param>
+        /// <param name="height">待绘制区域的高度</param>
+        /// <returns>转换成功，返回 true</returns>
+        private bool GetPointsToDrawIn(int width, int height)
+        {
+            // 坐标起始和结束值之差小于精度范围则返回false
+            if (DisplayRect.XRange > 0.9F * XDataAccuracy ||
+                DisplayRect.YRange > 0.9F * YDataAccuracy)
+            {
+                if (XDataList != null)
+                {
+                    PointF currentPointF = new PointF();
+                    for (int i = 0; i < XDataList.Count; i++)
+                    {
+
+                        // 转换为像素坐标
+                        currentPointF.X = (XDataList[i] - DisplayRect.XMin) *
+                            (width - 1) / DisplayRect.XRange;
+                        currentPointF.Y = (YDataList[i] - DisplayRect.YMin) *
+                            (height - 1) / DisplayRect.YRange;
+                        // 装载坐标
+                        pointsList.Add(currentPointF);
+                    }
+
+                    if (pointsList.Count > 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public void DrawCurve(Graphics g, int curveWidth, int curveHeight)
+        {
+            pointsList.Clear();
+            if (GetPointsToDrawIn(curveWidth, curveHeight))
+            {
+                if (pointsList.Count > 1)
+                {
+                    Pen p = new Pen(Color.Yellow, 1);
+                    p.LineJoin = LineJoin.Bevel;
+                    g.DrawLines(p, pointsList.ToArray());
+                    p.Dispose();
+                }
+            }
         }
     }
 }
