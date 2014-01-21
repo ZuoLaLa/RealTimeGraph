@@ -43,6 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataRange.cs" />
+    <Compile Include="DataRect.cs" />
+    <Compile Include="GraphProperties.cs" />
+    <Compile Include="GraphMode.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

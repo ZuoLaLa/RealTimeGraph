@@ -1,60 +1,35 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace RealTimeGraph
 {
     public partial class GraphControl
     {
-        /// <summary>曲线标题
-        /// </summary>
-        public string GraphTitle { private get; set; }
+        public string GraphTitle { get; set; }
+        public string AxisXTitle { get; set; }
+        public string AxisYTitle { get; set; }
 
-        /// <summary>X轴标题
-        /// </summary>
-        public string GraphXTitle { private get; set; }
+        private GraphMode graphStyle;
 
-        /// <summary>Y轴标题
-        /// </summary>
-        public string GraphYTitle { private get; set; }
-
-        /// <summary>可设定的曲线显示模式枚举类型
-        /// </summary>
-        public enum GraphTypes
+        public GraphMode GraphStyle
         {
-            /// <summary>全局实时显示模式
-            /// </summary>
-            GlobalMode,
-            /// <summary>固定坐标尺度的滚动实时显示模式
-            /// </summary>
-            FixedMoveMode,
-            /// <summary>框选放大模式
-            /// </summary>
-            RectZoomInMode,
-            /// <summary>拖动模式
-            /// </summary>
-            DragMode,
-        }
-
-        private GraphTypes graphType;
-
-        public GraphTypes GraphType
-        {
-            get { return graphType; }
+            get { return graphStyle; }
             set
             {
-                graphType = value;
+                graphStyle = value;
 
-                switch (graphType)
+                switch (graphStyle)
                 {
-                    case GraphTypes.GlobalMode:
+                    case GraphMode.GlobalMode:
                         isAutoMove = true;
                         isAutoScale = true;
                         break;
-                    case GraphTypes.FixedMoveMode:
+                    case GraphMode.FixMoveMode:
                         isAutoMove = true;
                         isAutoScale = false;
                         break;
-                    case GraphTypes.RectZoomInMode:
-                    case GraphTypes.DragMode:
+                    case GraphMode.RectZoomInMode:
+                    case GraphMode.DragMode:
                         isAutoMove = false;
                         isAutoScale = false;
                         break;
@@ -63,24 +38,38 @@ namespace RealTimeGraph
         }
 
         private float xDataAccuracy;
-        /// <summary>X 数据精度
-        /// </summary>
         public float XDataAccuracy
         {
-            private get { return xDataAccuracy; }
-            set {
-                xDataAccuracy = (value > 0) ? value : X_DATA_ACCURACY_DEFAULT;
+            get { return xDataAccuracy; }
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentException(
+                        "The data accuracy must be greater than zero!");
+                }
+                else
+                {
+                    xDataAccuracy = value;
+                }
             }
         }
 
         private float yDataAccuracy;
-        /// <summary>Y 数据精度
-        /// </summary>
         public float YDataAccuracy
         {
-            private get { return yDataAccuracy; }
-            set {
-                yDataAccuracy = (value > 0) ? value : Y_DATA_ACCURACY_DEFAULT;
+            get { return yDataAccuracy; }
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentException(
+                        "The data accuracy must be greater than zero!");
+                }
+                else
+                {
+                    yDataAccuracy = value;
+                }
             }
         }
 
@@ -89,12 +78,33 @@ namespace RealTimeGraph
 
         public string MsgOutput;
 
-        public bool ShowGrid;
+        public bool IsShowGrid;
 
         // 初始状态下的 X, Y 起始和终止坐标
-        public float XStartInitial { private get; set; }
-        public float XEndInitial { private get; set; }
-        public float YStartInitial { private get; set; }
-        public float YEndInitial { private get; set; }
+        private DataRect initialRect;
+
+        public float InitialMinX
+        {
+            get { return initialRect.XMin; }
+            set { initialRect.XMin = value; }
+        }
+
+        public float InitialMaxX
+        {
+            get { return initialRect.XMax; }
+            set { initialRect.XMax = value; }
+        }
+
+        public float InitialMinY
+        {
+            get { return initialRect.YMin; }
+            set { initialRect.YMin = value; }
+        }
+
+        public float InitialMaxY
+        {
+            get { return initialRect.YMax; }
+            set { initialRect.YMax = value; }
+        }
     }
 }

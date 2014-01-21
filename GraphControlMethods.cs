@@ -10,40 +10,33 @@ namespace RealTimeGraph
         /// </summary>
         private void InitialGraph()
         {
-            XStartInitial = 0;
-            XEndInitial = 100;
-            YStartInitial = 0;
-            YEndInitial = 200;
+            graphProperties = new GraphProperties();
+            initialRect = new DataRect();
+            dispalyRect = new DataRect();
+            dataRect = new DataRect();
 
-            ResetAxis();
+            XDataAccuracy = GraphProperties.DEFAULT_DATA_X_ACCURACY;
+            YDataAccuracy = GraphProperties.DEFAULT_DATA_Y_ACCURACY;
+
 
             // 默认初始处于滚动模式
-            GraphType = GraphTypes.FixedMoveMode;
+            GraphStyle = GraphMode.FixMoveMode;
             isAutoMove = true;
             isAutoScale = false;
 
             XDataList = new List<float>();
             YDataList = new List<float>();
-            XDataAccuracy = 1f;
-            YDataAccuracy = 0.1f;
 
             pointsList = new List<PointF>();
 
-            penBorder = new Pen(Color.Black, 2);
-            fontBorder = new Font("Verdana", 8, FontStyle.Bold);
-            borderLength = 15;
-            penScale1 = new Pen(Color.Black, 2);
-            penScale2 = new Pen(Color.Black, 1);
-            fontScale1 = new Font("Verdana", 8);
-            penGrid1 = new Pen(Color.FromArgb(160, Color.White), 1);
-            penGrid2 = new Pen(Color.FromArgb(60, Color.White), 1);
-            ShowGrid = false;
 
-            fontTitle = new Font("SimHei", 14);
-            fontAxis = new Font("FangSong", 10);
+
+            IsShowGrid = false;
+
+
             GraphTitle = "位移实时显示曲线";
-            GraphXTitle = "时间(s)";
-            GraphYTitle = "位移(mm)";
+            AxisXTitle = "时间(s)";
+            AxisYTitle = "位移(mm)";
 
             pbZoom.BackColor = Color.FromArgb(50, 0, 64, 128);
             pbZoom.Visible = false;
@@ -58,8 +51,8 @@ namespace RealTimeGraph
         private bool DataToPoints(int width, int height)
         {
             // 坐标起始和结束值之差小于精度范围则返回false
-            if ((xEndCurrent - xStartCurrent) > 0.9F * XDataAccuracy ||
-                (yEndCurrent - yStartCurrent) > 0.9F * YDataAccuracy)
+            if (dispalyRect.XRange > 0.9F * XDataAccuracy ||
+                dispalyRect.YRange > 0.9F * YDataAccuracy)
             {
                 if (XDataList != null)
                 {
@@ -68,10 +61,10 @@ namespace RealTimeGraph
                     {
 
                         // 转换为像素坐标
-                        currentPointF.X = (XDataList[i] - xStartCurrent) *
-                            (width - 1) / (xEndCurrent - xStartCurrent);
-                        currentPointF.Y = (YDataList[i] - yStartCurrent) *
-                            (height - 1) / (yEndCurrent - yStartCurrent);
+                        currentPointF.X = (XDataList[i] - dispalyRect.XMin) *
+                            (width - 1) / dispalyRect.XRange;
+                        currentPointF.Y = (YDataList[i] - dispalyRect.YMin) *
+                            (height - 1) / dispalyRect.YRange;
                         // 装载坐标
                         pointsList.Add(currentPointF);
                     }
@@ -101,14 +94,14 @@ namespace RealTimeGraph
         private void RectPointsToData(float pLx, float pUy, float pRx, float pDy,
             out float xL, out float yU, out float xR, out float yD)
         {
-            xL = xStartCurrent +
-                pLx * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
-            yU = yEndCurrent -
-                pUy * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
-            xR = xStartCurrent +
-                pRx * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
-            yD = yEndCurrent -
-                pDy * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
+            xL = dispalyRect.XMin +
+                pLx * dispalyRect.XRange / (pbCurve.Width - 1);
+            yU = dispalyRect.YMax -
+                pUy * dispalyRect.YRange / (pbCurve.Height - 1);
+            xR = dispalyRect.XMin +
+                pRx * dispalyRect.XRange / (pbCurve.Width - 1);
+            yD = dispalyRect.YMax -
+                pDy * dispalyRect.YRange / (pbCurve.Height - 1);
         }
         /// <summary>清空显示的曲线
         /// </summary>
@@ -120,12 +113,9 @@ namespace RealTimeGraph
         }
         /// <summary>重置坐标轴，回到初始设置。
         /// </summary>
-        public void ResetAxis()
+        public void ResetDisplayRect()
         {
-            xStartCurrent = XStartInitial;
-            xEndCurrent = XEndInitial;
-            yStartCurrent = YStartInitial;
-            yEndCurrent = YEndInitial;
+            dispalyRect.UpdateRect(initialRect);
         }
         /// <summary>设置坐标轴范围
         /// </summary>
@@ -133,32 +123,22 @@ namespace RealTimeGraph
         /// <param name="xE">更新后的 X 轴右端点</param>
         /// <param name="yS">更新后的 Y 轴下端点</param>
         /// <param name="yE">更新后的 Y 轴上端点</param>
-        private void ResetAxis(float xS, float xE, float yS, float yE)
+        private void ResetDisplayRect(float xS, float xE, float yS, float yE)
         {
-            xStartCurrent = xS;
-            xEndCurrent = xE;
-            yStartCurrent = yS;
-            yEndCurrent = yE;
+            dispalyRect.UpdateRect(xS, xE, yS, yE);
         }
-        /// <summary>重置 X 轴为初始数据宽度（即显示多少个数据点）
-        /// </summary>
-        public void ResetAxisXWidth()
-        {
-            xStartCurrent = xEndCurrent - (XEndInitial - XStartInitial);
-        }
+
         /// <summary>曲线拖动
         /// </summary>
         /// <param name="xD">X 轴方向上的拖动量</param>
         /// <param name="yD">Y 轴方向上的拖动量</param>
         private void DragMove(float xD, float yD)
         {
-            float xM = xD * (xEndCurrent - xStartCurrent) / (pbCurve.Width - 1);
-            float yM = yD * (yEndCurrent - yStartCurrent) / (pbCurve.Height - 1);
-
-            xStartCurrent -= xM;
-            xEndCurrent -= xM;
-            yStartCurrent += yM;
-            yEndCurrent += yM;
+            float xM = xD * dispalyRect.XRange / (pbCurve.Width - 1);
+            float yM = yD * dispalyRect.YRange / (pbCurve.Height - 1);
+            dispalyRect = new DataRect(
+                dispalyRect.XMin - xM, dispalyRect.XMax - xM,
+                dispalyRect.YMin + yM, dispalyRect.YMax + yM);
         }
         /// <summary>矩形框选放大
         /// </summary>
@@ -171,23 +151,23 @@ namespace RealTimeGraph
 
             if ((xR - xL) >= XDataAccuracy && (yU - yD) >= YDataAccuracy)
             {
-                ResetAxis(xL, xR, yD, yU);
+                ResetDisplayRect(xL, xR, yD, yU);
             }
             else if ((xR - xL) >= XDataAccuracy)
             {
-                ResetAxis(xL, xR, (yD + yU - YDataAccuracy) / 2F,
+                ResetDisplayRect(xL, xR, (yD + yU - YDataAccuracy) / 2F,
                     (yD + yU + YDataAccuracy) / 2F);
                 MsgOutput = "Zoom in to the Y data accuracy";
             }
             else if ((yU - yD) >= YDataAccuracy)
             {
-                ResetAxis((xL + xR - XDataAccuracy) / 2F,
+                ResetDisplayRect((xL + xR - XDataAccuracy) / 2F,
                     (xL + xR + XDataAccuracy) / 2F, yD, yU);
                 MsgOutput = "Zoom in to the X data accuracy";
             }
             else
             {
-                ResetAxis((xL + xR - XDataAccuracy) / 2F,
+                ResetDisplayRect((xL + xR - XDataAccuracy) / 2F,
                     (xL + xR + XDataAccuracy) / 2F,
                     (yD + yU - YDataAccuracy) / 2F,
                     (yD + yU + YDataAccuracy) / 2F);
@@ -202,10 +182,7 @@ namespace RealTimeGraph
         /// <param name="yMax">外部数据 Y 的最大值</param>
         public void UpdateDataLimits(float xMin, float xMax, float yMin, float yMax)
         {
-            xDataMin = xMin;
-            xDataMax = xMax;
-            yDataMin = yMin;
-            yDataMax = yMax;
+            dataRect.UpdateRect(xMin, xMax, yMin, yMax);
         }
         /// <summary>获取友好坐标系统下的一级坐标显示范围。
         /// 显示坐标的最小值不大于显示数据点的最小值，
@@ -282,8 +259,8 @@ namespace RealTimeGraph
         /// <returns>若坐标位置位于X轴可绘制区域内，则返回true.</returns>
         private bool IsInAxisY(float scalePos)
         {
-            return scalePos > pbAxisY.Height - pbCurve.Height + CURVE_HEIGHT_MARGIN + 1 &&
-                                scalePos < pbAxisY.Height - CURVE_HEIGHT_MARGIN - 1;
+            return scalePos > pbAxisY.Height - pbCurve.Height + graphProperties.CurveHeightPadding + 1 &&
+                                scalePos < pbAxisY.Height - graphProperties.CurveHeightPadding - 1;
         }
         /// <summary>判断纵向网格位置是否位于可绘制区域内
         /// </summary>
@@ -312,27 +289,27 @@ namespace RealTimeGraph
                 {
                     if (isAutoScale)    // 此即为 GlobalMode 模式
                     {
-                        xStartCurrent = (xDataMin < XStartInitial)
-                            ? xDataMin : XStartInitial;
-                        xEndCurrent = (xDataMax > XEndInitial)
-                            ? xDataMax : XEndInitial;
-                        yStartCurrent = (yDataMin < YStartInitial)
-                            ? yDataMin : YStartInitial;
-                        yEndCurrent = (yDataMax > YEndInitial)
-                            ? yDataMax : YEndInitial;
+                        dispalyRect.XMin = (dataRect.XMin < InitialMinX)
+                            ? dataRect.XMin : InitialMinX;
+                        dispalyRect.XMax = (dataRect.XMax > InitialMaxX)
+                            ? dataRect.XMax : InitialMaxX;
+                        dispalyRect.YMin = (dataRect.YMin < InitialMinY)
+                            ? dataRect.YMin : InitialMinY;
+                        dispalyRect.YMax = (dataRect.YMax > InitialMaxY)
+                            ? dataRect.YMax : InitialMaxY;
                     }
                     else    // 此即为 FixedMoveMode 模式
                     {
-                        if (xDataMax > xEndCurrent)
+                        if (dataRect.XMax > dispalyRect.XMax)
                         {
-                            xStartCurrent += xDataMax - xEndCurrent;
-                            xEndCurrent = xDataMax;
+                            dispalyRect.XMin += dataRect.XMax - dispalyRect.XMax;
+                            dispalyRect.XMax = dataRect.XMax;
                         }
 
-                        yStartCurrent = (yDataMin < YStartInitial)
-                            ? yDataMin : YStartInitial;
-                        yEndCurrent = (yDataMax > YEndInitial)
-                            ? yDataMax : YEndInitial;
+                        dispalyRect.YMin = (dataRect.YMin < dispalyRect.YMin)
+                            ? dataRect.YMin : dispalyRect.YMin;
+                        dispalyRect.YMax = (dataRect.YMax > dispalyRect.YMax)
+                            ? dataRect.YMax : dispalyRect.YMax;
                     }
                 }
             }
@@ -341,26 +318,26 @@ namespace RealTimeGraph
         /// </summary>
         private void UpdateAxisScale()
         {
-            scaleX = curveWidth / (xEndCurrent - xStartCurrent);
-            getScale1Limits(xStartCurrent, xEndCurrent,
+            scaleX = curveWidth / dispalyRect.XRange;
+            getScale1Limits(dispalyRect.XMin, dispalyRect.XMax,
                 out xScale1Min, out xScale1Max, out xScale1);
-            xScale1Num = getScaleNum(curveWidth * xScale1 / (xEndCurrent - xStartCurrent),
-                SCALE1_INTERVAL);
+            xScale1Num = getScaleNum(curveWidth * xScale1 / dispalyRect.XRange,
+                graphProperties.FirstScaleInterval);
             xScale1Sum = (int)((xScale1Max - xScale1Min) / xScale1 * xScale1Num);
             xScale1Length = curveWidth * xScale1
-                / ((xEndCurrent - xStartCurrent) * xScale1Num);
-            xScale2Num = getScaleNum(xScale1Length, SCALE2_INTERVAL);
+                / (dispalyRect.XRange * xScale1Num);
+            xScale2Num = getScaleNum(xScale1Length, graphProperties.SecondScaleInterval);
             xScale2Length = xScale1Length / xScale2Num;
 
-            scaleY = curveHeight / (yEndCurrent - yStartCurrent);
-            getScale1Limits(yStartCurrent, yEndCurrent, out yScale1Min,
+            scaleY = curveHeight / dispalyRect.YRange;
+            getScale1Limits(dispalyRect.YMin, dispalyRect.YMax, out yScale1Min,
                 out yScale1Max, out yScale1);
-            yScale1Num = getScaleNum(curveHeight * yScale1 / (yEndCurrent - yStartCurrent),
-                SCALE1_INTERVAL);
+            yScale1Num = getScaleNum(curveHeight * yScale1 / dispalyRect.YRange,
+                graphProperties.FirstScaleInterval);
             yScale1Sum = (int)(yScale1Num * (yScale1Max - yScale1Min) / yScale1);
             yScale1Length = curveHeight * yScale1
-                / ((yEndCurrent - yStartCurrent) * yScale1Num);
-            yScale2Num = getScaleNum(yScale1Length, SCALE2_INTERVAL);
+                / (dispalyRect.YRange * yScale1Num);
+            yScale2Num = getScaleNum(yScale1Length, graphProperties.SecondScaleInterval);
             yScale2Length = yScale1Length / yScale2Num;
         }
     }
