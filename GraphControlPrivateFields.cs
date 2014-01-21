@@ -5,8 +5,11 @@ namespace RealTimeGraph
 {
     public partial class GraphControl
     {
-        // 当前显示波形的 X, Y 起始和终止坐标
+        // 当前显示波形的数据范围
         private DataRect dispalyRect;
+
+        // 所有数据的范围
+        private DataRect dataRect;
 
         /// <summary>波形是否随时间移动（即是否处于实时显示状态）。
         /// 设为 false 时用于“框选放大模式”，
@@ -49,11 +52,6 @@ namespace RealTimeGraph
 
         private const float X_DATA_ACCURACY_DEFAULT = 1F;
         private const float Y_DATA_ACCURACY_DEFAULT = 0.1F;
-
-        private float xDataMin;
-        private float xDataMax;
-        private float yDataMin;
-        private float yDataMax;
 
         float scaleX;       // X 轴比例尺（单位长度的像素数）
         float scaleY;

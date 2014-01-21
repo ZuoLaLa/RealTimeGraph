@@ -15,7 +15,9 @@ namespace RealTimeGraph
             YStartInitial = 0;
             YEndInitial = 200;
 
-            ResetAxis();
+            dispalyRect = new DataRect();
+            dataRect = new DataRect();
+            ResetDisplayRect();
 
             // 默认初始处于滚动模式
             GraphType = GraphTypes.FixedMoveMode;
@@ -120,9 +122,9 @@ namespace RealTimeGraph
         }
         /// <summary>重置坐标轴，回到初始设置。
         /// </summary>
-        public void ResetAxis()
+        public void ResetDisplayRect()
         {
-            dispalyRect = new DataRect(
+            dispalyRect.UpdateRect(
                 XStartInitial, XEndInitial, YStartInitial, YEndInitial);
         }
         /// <summary>设置坐标轴范围
@@ -131,9 +133,9 @@ namespace RealTimeGraph
         /// <param name="xE">更新后的 X 轴右端点</param>
         /// <param name="yS">更新后的 Y 轴下端点</param>
         /// <param name="yE">更新后的 Y 轴上端点</param>
-        private void ResetAxis(float xS, float xE, float yS, float yE)
+        private void ResetDisplayRect(float xS, float xE, float yS, float yE)
         {
-            dispalyRect = new DataRect(xS, xE, yS, yE);
+            dispalyRect.UpdateRect(xS, xE, yS, yE);
         }
 
         /// <summary>曲线拖动
@@ -159,23 +161,23 @@ namespace RealTimeGraph
 
             if ((xR - xL) >= XDataAccuracy && (yU - yD) >= YDataAccuracy)
             {
-                ResetAxis(xL, xR, yD, yU);
+                ResetDisplayRect(xL, xR, yD, yU);
             }
             else if ((xR - xL) >= XDataAccuracy)
             {
-                ResetAxis(xL, xR, (yD + yU - YDataAccuracy) / 2F,
+                ResetDisplayRect(xL, xR, (yD + yU - YDataAccuracy) / 2F,
                     (yD + yU + YDataAccuracy) / 2F);
                 MsgOutput = "Zoom in to the Y data accuracy";
             }
             else if ((yU - yD) >= YDataAccuracy)
             {
-                ResetAxis((xL + xR - XDataAccuracy) / 2F,
+                ResetDisplayRect((xL + xR - XDataAccuracy) / 2F,
                     (xL + xR + XDataAccuracy) / 2F, yD, yU);
                 MsgOutput = "Zoom in to the X data accuracy";
             }
             else
             {
-                ResetAxis((xL + xR - XDataAccuracy) / 2F,
+                ResetDisplayRect((xL + xR - XDataAccuracy) / 2F,
                     (xL + xR + XDataAccuracy) / 2F,
                     (yD + yU - YDataAccuracy) / 2F,
                     (yD + yU + YDataAccuracy) / 2F);
@@ -190,10 +192,7 @@ namespace RealTimeGraph
         /// <param name="yMax">外部数据 Y 的最大值</param>
         public void UpdateDataLimits(float xMin, float xMax, float yMin, float yMax)
         {
-            xDataMin = xMin;
-            xDataMax = xMax;
-            yDataMin = yMin;
-            yDataMax = yMax;
+            dataRect.UpdateRect(xMin, xMax, yMin, yMax);
         }
         /// <summary>获取友好坐标系统下的一级坐标显示范围。
         /// 显示坐标的最小值不大于显示数据点的最小值，
@@ -300,27 +299,27 @@ namespace RealTimeGraph
                 {
                     if (isAutoScale)    // 此即为 GlobalMode 模式
                     {
-                        dispalyRect.XMin = (xDataMin < XStartInitial)
-                            ? xDataMin : XStartInitial;
-                        dispalyRect.XMax = (xDataMax > XEndInitial)
-                            ? xDataMax : XEndInitial;
-                        dispalyRect.YMin = (yDataMin < YStartInitial)
-                            ? yDataMin : YStartInitial;
-                        dispalyRect.YMax = (yDataMax > YEndInitial)
-                            ? yDataMax : YEndInitial;
+                        dispalyRect.XMin = (dataRect.XMin < XStartInitial)
+                            ? dataRect.XMin : XStartInitial;
+                        dispalyRect.XMax = (dataRect.XMax > XEndInitial)
+                            ? dataRect.XMax : XEndInitial;
+                        dispalyRect.YMin = (dataRect.YMin < YStartInitial)
+                            ? dataRect.YMin : YStartInitial;
+                        dispalyRect.YMax = (dataRect.YMax > YEndInitial)
+                            ? dataRect.YMax : YEndInitial;
                     }
                     else    // 此即为 FixedMoveMode 模式
                     {
-                        if (xDataMax > dispalyRect.XMax)
+                        if (dataRect.XMax > dispalyRect.XMax)
                         {
-                            dispalyRect.XMin += xDataMax - dispalyRect.XMax;
-                            dispalyRect.XMax = xDataMax;
+                            dispalyRect.XMin += dataRect.XMax - dispalyRect.XMax;
+                            dispalyRect.XMax = dataRect.XMax;
                         }
 
-                        dispalyRect.YMin = (yDataMin < dispalyRect.YMin)
-                            ? yDataMin : dispalyRect.YMin;
-                        dispalyRect.YMax = (yDataMax > dispalyRect.YMax)
-                            ? yDataMax : dispalyRect.YMax;
+                        dispalyRect.YMin = (dataRect.YMin < dispalyRect.YMin)
+                            ? dataRect.YMin : dispalyRect.YMin;
+                        dispalyRect.YMax = (dataRect.YMax > dispalyRect.YMax)
+                            ? dataRect.YMax : dispalyRect.YMax;
                     }
                 }
             }

@@ -44,10 +44,24 @@ namespace RealTimeGraph
             get { return axisY.Range; }
         }
 
+        public DataRect()
+        {
+            axisX = new DataRange();
+            axisY = new DataRange();
+        }
+
         public DataRect(float xMin, float xMax, float yMin, float yMax)
         {
             axisX = new DataRange(xMin, xMax);
             axisY = new DataRange(yMin, yMax);
+        }
+
+        public void UpdateRect(float xMin, float xMax, float yMin, float yMax)
+        {
+            XMin = xMin;
+            XMax = xMax;
+            YMin = yMin;
+            YMax = yMax;
         }
     }
 }

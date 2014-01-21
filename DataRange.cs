@@ -13,6 +13,10 @@ namespace RealTimeGraph
             get { return Max - Min; }
         }
 
+        public DataRange()
+        {
+        }
+
         public DataRange(float min, float max)
         {
             if (min > max)

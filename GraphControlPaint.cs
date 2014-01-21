@@ -219,7 +219,7 @@ namespace RealTimeGraph
             if (GraphType == GraphTypes.FixedMoveMode
                 && e.Button == MouseButtons.Middle)
             {
-                dispalyRect.XMax = xDataMax;
+                dispalyRect.XMax = dataRect.XMax;
                 dispalyRect.XMin = ((dispalyRect.XMax - (XEndInitial - XStartInitial)) > XStartInitial)
                     ? (dispalyRect.XMax - (XEndInitial - XStartInitial)) : XStartInitial;
             }
