@@ -1,20 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace RealTimeGraph
 {
     public partial class GraphControl
     {
-        /// <summary>曲线标题
-        /// </summary>
         public string GraphTitle { get; set; }
-
-        /// <summary>X轴标题
-        /// </summary>
-        public string GraphXTitle { get; set; }
-
-        /// <summary>Y轴标题
-        /// </summary>
-        public string GraphYTitle { get; set; }
+        public string AxisXTitle { get; set; }
+        public string AxisYTitle { get; set; }
 
         /// <summary>可设定的曲线显示模式枚举类型
         /// </summary>
@@ -62,27 +55,38 @@ namespace RealTimeGraph
             }
         }
 
-        private float xDataAccuracy;
-        /// <summary>X 数据精度
-        /// </summary>
+        private DataPair dataAccuracy;
         public float XDataAccuracy
         {
-            get { return xDataAccuracy; }
+            get { return dataAccuracy.X; }
             set
             {
-                xDataAccuracy = (value > 0) ? value : X_DATA_ACCURACY_DEFAULT;
+                if (value <= 0)
+                {
+                    throw new ArgumentException(
+                        "The data accuracy must be greater than zero!");
+                }
+                else
+                {
+                    dataAccuracy.X = value;
+                }
             }
         }
 
-        private float yDataAccuracy;
-        /// <summary>Y 数据精度
-        /// </summary>
         public float YDataAccuracy
         {
-            get { return yDataAccuracy; }
+            get { return dataAccuracy.Y; }
             set
             {
-                yDataAccuracy = (value > 0) ? value : Y_DATA_ACCURACY_DEFAULT;
+                if (value <= 0)
+                {
+                    throw new ArgumentException(
+                        "The data accuracy must be greater than zero!");
+                }
+                else
+                {
+                    dataAccuracy.Y = value;
+                }
             }
         }
 
@@ -91,12 +95,33 @@ namespace RealTimeGraph
 
         public string MsgOutput;
 
-        public bool ShowGrid;
+        public bool IsShowGrid;
 
         // 初始状态下的 X, Y 起始和终止坐标
-        public float XStartInitial { get; set; }
-        public float XEndInitial { get; set; }
-        public float YStartInitial { get; set; }
-        public float YEndInitial { get; set; }
+        private DataRect initialRect;
+
+        public float InitialMinX
+        {
+            get { return initialRect.XMin; }
+            set { initialRect.XMin = value; }
+        }
+
+        public float InitialMaxX
+        {
+            get { return initialRect.XMax; }
+            set { initialRect.XMax = value; }
+        }
+
+        public float InitialMinY
+        {
+            get { return initialRect.YMin; }
+            set { initialRect.YMin = value; }
+        }
+
+        public float InitialMaxY
+        {
+            get { return initialRect.YMax; }
+            set { initialRect.YMax = value; }
+        }
     }
 }

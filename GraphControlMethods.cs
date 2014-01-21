@@ -10,14 +10,10 @@ namespace RealTimeGraph
         /// </summary>
         private void InitialGraph()
         {
-            XStartInitial = 0;
-            XEndInitial = 100;
-            YStartInitial = 0;
-            YEndInitial = 200;
-
+            initialRect = new DataRect();
             dispalyRect = new DataRect();
             dataRect = new DataRect();
-            ResetDisplayRect();
+            dataAccuracy = new DataPair(1F, 0.1F);
 
             // 默认初始处于滚动模式
             GraphType = GraphTypes.FixedMoveMode;
@@ -26,8 +22,6 @@ namespace RealTimeGraph
 
             XDataList = new List<float>();
             YDataList = new List<float>();
-            XDataAccuracy = 1f;
-            YDataAccuracy = 0.1f;
 
             pointsList = new List<PointF>();
 
@@ -39,13 +33,13 @@ namespace RealTimeGraph
             fontScale1 = new Font("Verdana", 8);
             penGrid1 = new Pen(Color.FromArgb(160, Color.White), 1);
             penGrid2 = new Pen(Color.FromArgb(60, Color.White), 1);
-            ShowGrid = false;
+            IsShowGrid = false;
 
             fontTitle = new Font("SimHei", 14);
             fontAxis = new Font("FangSong", 10);
             GraphTitle = "位移实时显示曲线";
-            GraphXTitle = "时间(s)";
-            GraphYTitle = "位移(mm)";
+            AxisXTitle = "时间(s)";
+            AxisYTitle = "位移(mm)";
 
             pbZoom.BackColor = Color.FromArgb(50, 0, 64, 128);
             pbZoom.Visible = false;
@@ -124,8 +118,7 @@ namespace RealTimeGraph
         /// </summary>
         public void ResetDisplayRect()
         {
-            dispalyRect.UpdateRect(
-                XStartInitial, XEndInitial, YStartInitial, YEndInitial);
+            dispalyRect.UpdateRect(initialRect);
         }
         /// <summary>设置坐标轴范围
         /// </summary>
@@ -299,14 +292,14 @@ namespace RealTimeGraph
                 {
                     if (isAutoScale)    // 此即为 GlobalMode 模式
                     {
-                        dispalyRect.XMin = (dataRect.XMin < XStartInitial)
-                            ? dataRect.XMin : XStartInitial;
-                        dispalyRect.XMax = (dataRect.XMax > XEndInitial)
-                            ? dataRect.XMax : XEndInitial;
-                        dispalyRect.YMin = (dataRect.YMin < YStartInitial)
-                            ? dataRect.YMin : YStartInitial;
-                        dispalyRect.YMax = (dataRect.YMax > YEndInitial)
-                            ? dataRect.YMax : YEndInitial;
+                        dispalyRect.XMin = (dataRect.XMin < InitialMinX)
+                            ? dataRect.XMin : InitialMinX;
+                        dispalyRect.XMax = (dataRect.XMax > InitialMaxX)
+                            ? dataRect.XMax : InitialMaxX;
+                        dispalyRect.YMin = (dataRect.YMin < InitialMinY)
+                            ? dataRect.YMin : InitialMinY;
+                        dispalyRect.YMax = (dataRect.YMax > InitialMaxY)
+                            ? dataRect.YMax : InitialMaxY;
                     }
                     else    // 此即为 FixedMoveMode 模式
                     {

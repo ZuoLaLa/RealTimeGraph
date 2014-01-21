@@ -14,7 +14,7 @@ namespace RealTimeGraph
             UpdateCurveSize();
 
             Graphics g = e.Graphics;
-            if (ShowGrid)
+            if (IsShowGrid)
             {
                 Gridding(g);
             }
@@ -220,8 +220,8 @@ namespace RealTimeGraph
                 && e.Button == MouseButtons.Middle)
             {
                 dispalyRect.XMax = dataRect.XMax;
-                dispalyRect.XMin = ((dispalyRect.XMax - (XEndInitial - XStartInitial)) > XStartInitial)
-                    ? (dispalyRect.XMax - (XEndInitial - XStartInitial)) : XStartInitial;
+                dispalyRect.XMin = ((dispalyRect.XMax - initialRect.XRange) > InitialMinX)
+                    ? (dispalyRect.XMax - initialRect.XRange) : InitialMinX;
             }
         }
 
@@ -238,7 +238,7 @@ namespace RealTimeGraph
             // 绘制 X 轴标题
             StringFormat titleFormat = new StringFormat();
             titleFormat.Alignment = StringAlignment.Center;
-            g.DrawString(GraphXTitle, fontAxis, Brushes.Black,
+            g.DrawString(AxisXTitle, fontAxis, Brushes.Black,
                 pbAxisY.Width + pbCurve.Width / 2F,
                 pbAxisX.Height / 2F + fontTitle.Height / 5F,
                 titleFormat);
@@ -366,7 +366,7 @@ namespace RealTimeGraph
                 pbTitle.Width / 2F, pbTitle.Height / 2F - fontTitle.Height / 5F,
                 titleFormat);
             // 绘制Y轴标签
-            g.DrawString(GraphYTitle, fontAxis, Brushes.Black,
+            g.DrawString(AxisYTitle, fontAxis, Brushes.Black,
                 fontAxis.Height / 5F, pbTitle.Height - fontAxis.Height * 1.2F);
         }
     }

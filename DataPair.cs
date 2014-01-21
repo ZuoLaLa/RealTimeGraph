@@ -15,5 +15,9 @@ namespace RealTimeGraph
             X = x;
             Y = y;
         }
+
+        public DataPair()
+        {
+        }
     }
 }

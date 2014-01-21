@@ -63,5 +63,13 @@ namespace RealTimeGraph
             YMin = yMin;
             YMax = yMax;
         }
+
+        public void UpdateRect(DataRect newRect)
+        {
+            XMin = newRect.XMin;
+            XMax = newRect.XMax;
+            YMin = newRect.YMin;
+            YMax = newRect.YMax;
+        }
     }
 }
