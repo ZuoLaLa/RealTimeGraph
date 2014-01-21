@@ -37,44 +37,31 @@ namespace RealTimeGraph
             }
         }
 
-        private float xDataAccuracy;
         public float XDataAccuracy
         {
-            get { return xDataAccuracy; }
-            set
-            {
-                if (value <= 0)
-                {
-                    throw new ArgumentException(
-                        "The data accuracy must be greater than zero!");
-                }
-                else
-                {
-                    xDataAccuracy = value;
-                }
-            }
+            get { return graphData.XDataAccuracy; }
+            set { graphData.XDataAccuracy = value; }
         }
 
-        private float yDataAccuracy;
         public float YDataAccuracy
         {
-            get { return yDataAccuracy; }
-            set
-            {
-                if (value <= 0)
-                {
-                    throw new ArgumentException(
-                        "The data accuracy must be greater than zero!");
-                }
-                else
-                {
-                    yDataAccuracy = value;
-                }
-            }
+            get { return graphData.YDataAccuracy; }
+            set { graphData.YDataAccuracy = value; }
         }
 
-        public List<float> XDataList;
-        public List<float> YDataList;
+        private DataGraph graphData;
+
+        public List<float> XDataList
+        {
+            get { return graphData.XDataList; }
+            set { graphData.XDataList = value; }
+        }
+
+        public List<float> YDataList
+        {
+            get { return graphData.YDataList; }
+            set { graphData.YDataList = value; }
+        }
 
         public string MsgOutput;
 

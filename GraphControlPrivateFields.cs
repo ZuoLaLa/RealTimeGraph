@@ -24,9 +24,7 @@ namespace RealTimeGraph
         /// </summary>
         private bool isAutoScale;
 
-        /// <summary>待绘制的数据点集
-        /// </summary>
-        private List<PointF> pointsList;
+
 
 
         private Point startPoint; // 用于记录拖动操作时鼠标按下的位置

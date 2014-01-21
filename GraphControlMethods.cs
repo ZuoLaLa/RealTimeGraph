@@ -11,28 +11,17 @@ namespace RealTimeGraph
         private void InitialGraph()
         {
             graphProperties = new GraphProperties();
+            graphData = new DataGraph();
             initialRect = new DataRect();
             dispalyRect = new DataRect();
             dataRect = new DataRect();
-
-            XDataAccuracy = GraphProperties.DEFAULT_DATA_X_ACCURACY;
-            YDataAccuracy = GraphProperties.DEFAULT_DATA_Y_ACCURACY;
-
 
             // 默认初始处于滚动模式
             GraphStyle = GraphMode.FixMoveMode;
             isAutoMove = true;
             isAutoScale = false;
 
-            XDataList = new List<float>();
-            YDataList = new List<float>();
-
-            pointsList = new List<PointF>();
-
-
-
             IsShowGrid = false;
-
 
             GraphTitle = "位移实时显示曲线";
             AxisXTitle = "时间(s)";
@@ -66,10 +55,10 @@ namespace RealTimeGraph
                         currentPointF.Y = (YDataList[i] - dispalyRect.YMin) *
                             (height - 1) / dispalyRect.YRange;
                         // 装载坐标
-                        pointsList.Add(currentPointF);
+                        graphData.PointsList.Add(currentPointF);
                     }
 
-                    if (pointsList.Count > 0)
+                    if (graphData.PointsList.Count > 0)
                     {
                         return true;
                     }

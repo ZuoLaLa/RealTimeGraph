@@ -35,18 +35,18 @@ namespace RealTimeGraph
         /// <param name="g"></param>
         private void DrawCurve(Graphics g)
         {
-            pointsList.Clear();
+            graphData.PointsList.Clear();
             // 绘图原点坐标变换到控件的左下角，转换为通常的笛卡尔坐标系，以方便画曲线。
             g.TranslateTransform(0, pbCurve.Height - 1 - graphProperties.CurveHeightPadding);
             g.ScaleTransform(1, -1);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             if (DataToPoints(curveWidth, curveHeight))
             {
-                if (pointsList.Count > 1)
+                if (graphData.PointsList.Count > 1)
                 {
                     Pen p = new Pen(Color.Yellow, 1);
                     p.LineJoin = LineJoin.Bevel;
-                    g.DrawLines(p, pointsList.ToArray());
+                    g.DrawLines(p, graphData.PointsList.ToArray());
                     p.Dispose();
                 }
             }

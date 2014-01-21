@@ -40,8 +40,5 @@ namespace RealTimeGraph
             TitleFont = new Font("SimHei", 14);
             AxisTitleFont = new Font("FangSong", 10);
         }
-
-        public const float DEFAULT_DATA_X_ACCURACY = 1F;
-        public const float DEFAULT_DATA_Y_ACCURACY = 0.1F;
     }
 }
