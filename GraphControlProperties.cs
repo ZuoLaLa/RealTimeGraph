@@ -1,39 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Collections.Generic;
 
 namespace RealTimeGraph
 {
-    public partial class RTGControl : UserControl
+    public partial class GraphControl
     {
-        private string graphTitle;
         /// <summary>曲线标题
         /// </summary>
-        public string GraphTitle
-        {
-            get { return graphTitle; }
-            set { graphTitle = value; }
-        }
+        public string GraphTitle { private get; set; }
 
-        private string graphXTitle;
         /// <summary>X轴标题
         /// </summary>
-        public string GraphXTitle
-        {
-            get { return graphXTitle; }
-            set { graphXTitle = value; }
-        }
+        public string GraphXTitle { private get; set; }
 
-        private string graphYTitle;
         /// <summary>Y轴标题
         /// </summary>
-        public string GraphYTitle
-        {
-            get { return graphYTitle; }
-            set { graphYTitle = value; }
-        }
+        public string GraphYTitle { private get; set; }
 
         /// <summary>可设定的曲线显示模式枚举类型
         /// </summary>
@@ -77,8 +58,6 @@ namespace RealTimeGraph
                         isAutoMove = false;
                         isAutoScale = false;
                         break;
-                    default:
-                        break;
                 }
             }
         }
@@ -88,17 +67,9 @@ namespace RealTimeGraph
         /// </summary>
         public float XDataAccuracy
         {
-            get { return xDataAccuracy; }
-            set
-            {
-                if (value > 0)
-                {
-                    xDataAccuracy = value;
-                }
-                else
-                {
-                    xDataAccuracy = xDataAccuracyDefault;
-                }
+            private get { return xDataAccuracy; }
+            set {
+                xDataAccuracy = (value > 0) ? value : X_DATA_ACCURACY_DEFAULT;
             }
         }
 
@@ -107,17 +78,9 @@ namespace RealTimeGraph
         /// </summary>
         public float YDataAccuracy
         {
-            get { return yDataAccuracy; }
-            set
-            {
-                if (value > 0)
-                {
-                    yDataAccuracy = value;
-                }
-                else
-                {
-                    yDataAccuracy = yDataAccuracyDefault;
-                }
+            private get { return yDataAccuracy; }
+            set {
+                yDataAccuracy = (value > 0) ? value : Y_DATA_ACCURACY_DEFAULT;
             }
         }
 
@@ -129,32 +92,9 @@ namespace RealTimeGraph
         public bool ShowGrid;
 
         // 初始状态下的 X, Y 起始和终止坐标
-        private float xStartInitial;
-        public float XStartInitial
-        {
-            get { return xStartInitial; }
-            set { xStartInitial = value; }
-        }
-
-        private float xEndInitial;
-        public float XEndInitial
-        {
-            get { return xEndInitial; }
-            set { xEndInitial = value; }
-        }
-
-        private float yStartInitial;
-        public float YStartInitial
-        {
-            get { return yStartInitial; }
-            set { yStartInitial = value; }
-        }
-        
-        private float yEndInitial;
-        public float YEndInitial
-        {
-            get { return yEndInitial; }
-            set { yEndInitial = value; }
-        }
+        public float XStartInitial { private get; set; }
+        public float XEndInitial { private get; set; }
+        public float YStartInitial { private get; set; }
+        public float YEndInitial { private get; set; }
     }
 }

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Collections.Generic;
 using System.Drawing;
 
 namespace RealTimeGraph
 {
-    public partial class RTGControl : UserControl
+    public partial class GraphControl
     {
         // 当前显示波形的 X, Y 起始和终止坐标
         private float xStartCurrent;
@@ -41,10 +37,10 @@ namespace RealTimeGraph
         Pen penGrid2;
 
         private int borderLength;  // 坐标边界刻度线的长度
-        private int scale1Length = 10;  // 一级坐标刻度线的长度
-        private int scale2Length = 8;
-        private int scale1Interval = 100;   // 一级坐标刻度线的最小间隔
-        private int scale2Interval = 15;
+        private const int SCALE1_LENGTH = 10; // 一级坐标刻度线的长度
+        private const int SCALE2_LENGTH = 8;
+        private const int SCALE1_INTERVAL = 100; // 一级坐标刻度线的最小间隔
+        private const int SCALE2_INTERVAL = 15;
 
         private Font fontTitle; // 曲线标题字体
         private Font fontAxis;  // 坐标轴标题字体
@@ -54,8 +50,8 @@ namespace RealTimeGraph
         private Point pbZoomStart; // 框选放大框的左上角位置
         private Point pbZoomEnd; // 框选放大框的右下角位置
 
-        private float xDataAccuracyDefault = 1F;
-        private float yDataAccuracyDefault = 0.1F;
+        private const float X_DATA_ACCURACY_DEFAULT = 1F;
+        private const float Y_DATA_ACCURACY_DEFAULT = 0.1F;
 
         private float xDataMin;
         private float xDataMax;

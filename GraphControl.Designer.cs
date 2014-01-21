@@ -1,6 +1,6 @@
 ﻿namespace RealTimeGraph
 {
-    partial class RTGControl
+    partial class GraphControl
     {
         /// <summary>
         /// Required designer variable.
@@ -147,12 +147,12 @@
             this.pbCurve.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseUp);
             this.pbCurve.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseWheel);
             // 
-            // RTGControl
+            // GraphControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panelGraph);
-            this.Name = "RTGControl";
+            this.Name = "GraphControl";
             this.Size = new System.Drawing.Size(400, 300);
             this.Resize += new System.EventHandler(this.RTGControl_Resize);
             this.panelGraph.ResumeLayout(false);
