@@ -60,9 +60,6 @@
       <DependentUpon>GraphControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GraphControlMethods.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="GraphControlPaint.cs">
       <SubType>UserControl</SubType>
     </Compile>

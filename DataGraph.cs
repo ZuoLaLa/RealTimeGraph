@@ -112,7 +112,7 @@ namespace RealTimeGraph
         /// </summary>
         public void UpdateDisplayRect(DataRect initialRect, GraphMode graphStyle)
         {
-            if (XDataList != null)
+            if (XDataList != null && XDataList.Count > 0)
             {
                 if (graphStyle == GraphMode.GlobalMode)
                 {
@@ -138,6 +138,10 @@ namespace RealTimeGraph
                     DisplayRect.YMax = (dataRect.YMax > DisplayRect.YMax)
                         ? dataRect.YMax : DisplayRect.YMax;
                 }
+            }
+            else
+            {
+                DisplayRect.UpdateRect(initialRect);
             }
         }
 
