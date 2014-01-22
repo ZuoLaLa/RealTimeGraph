@@ -122,12 +122,12 @@ namespace RealTimeGraph
 
         private void pbCurve_MouseDown(object sender, MouseEventArgs e)
         {
-            if (graphStyle == GraphMode.DragMode &&
+            if (GraphStyle == GraphMode.DragMode &&
                 e.Button == MouseButtons.Left)
             {
                 startPoint = e.Location;
             }
-            else if (graphStyle == GraphMode.RectZoomInMode &&
+            else if (GraphStyle == GraphMode.RectZoomInMode &&
                 e.Button == MouseButtons.Left)
             {
                 pbZoom.Parent = pbCurve;
@@ -138,7 +138,7 @@ namespace RealTimeGraph
 
         private void pbCurve_MouseMove(object sender, MouseEventArgs e)
         {
-            if (graphStyle == GraphMode.DragMode &&
+            if (GraphStyle == GraphMode.DragMode &&
                 e.Button == MouseButtons.Left)
             {
                 float xD = e.X - startPoint.X;
@@ -147,7 +147,7 @@ namespace RealTimeGraph
                 startPoint = e.Location;
                 pbCurve.Refresh();
             }
-            else if (graphStyle == GraphMode.RectZoomInMode &&
+            else if (GraphStyle == GraphMode.RectZoomInMode &&
                 e.Button == MouseButtons.Left)
             {
                 if (e.Location.X < 0)
@@ -191,7 +191,7 @@ namespace RealTimeGraph
 
         private void pbCurve_MouseUp(object sender, MouseEventArgs e)
         {
-            if (graphStyle == GraphMode.RectZoomInMode &&
+            if (GraphStyle == GraphMode.RectZoomInMode &&
                 e.Button == MouseButtons.Left)
             {
                 pbZoom.Visible = false;
@@ -411,16 +411,24 @@ namespace RealTimeGraph
         private void pbTitle_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
+            DrawGraphTitle(g);
+            DrawAxisYTitle(g);
+        }
 
-            // 绘制标题           
+        private void DrawGraphTitle(Graphics g)
+        {
             StringFormat titleFormat = new StringFormat();
             titleFormat.Alignment = StringAlignment.Center;
             g.DrawString(GraphTitle, graphProperties.TitleFont, Brushes.Black,
-                pbTitle.Width / 2F, pbTitle.Height / 2F - graphProperties.TitleFont.Height / 5F,
+                pbTitle.Width/2F, pbTitle.Height/2F - graphProperties.TitleFont.Height/5F,
                 titleFormat);
-            // 绘制Y轴标签
+        }
+
+        private void DrawAxisYTitle(Graphics g)
+        {
             g.DrawString(AxisYTitle, graphProperties.AxisTitleFont, Brushes.Black,
-                graphProperties.AxisTitleFont.Height / 5F, pbTitle.Height - graphProperties.AxisTitleFont.Height * 1.2F);
+                graphProperties.AxisTitleFont.Height/5F,
+                pbTitle.Height - graphProperties.AxisTitleFont.Height*1.2F);
         }
     }
 }

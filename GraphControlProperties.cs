@@ -8,34 +8,9 @@ namespace RealTimeGraph
         public string GraphTitle { get; set; }
         public string AxisXTitle { get; set; }
         public string AxisYTitle { get; set; }
-
-        private GraphMode graphStyle;
-
-        public GraphMode GraphStyle
-        {
-            get { return graphStyle; }
-            set
-            {
-                graphStyle = value;
-
-                switch (graphStyle)
-                {
-                    case GraphMode.GlobalMode:
-                        isAutoMove = true;
-                        isAutoScale = true;
-                        break;
-                    case GraphMode.FixMoveMode:
-                        isAutoMove = true;
-                        isAutoScale = false;
-                        break;
-                    case GraphMode.RectZoomInMode:
-                    case GraphMode.DragMode:
-                        isAutoMove = false;
-                        isAutoScale = false;
-                        break;
-                }
-            }
-        }
+        public GraphMode GraphStyle { get; set; }
+        public bool IsShowGrid;
+        public string MsgOutput;
 
         public float XDataAccuracy
         {
@@ -62,10 +37,6 @@ namespace RealTimeGraph
             get { return graphData.YDataList; }
             set { graphData.YDataList = value; }
         }
-
-        public string MsgOutput;
-
-        public bool IsShowGrid;
 
         // 初始状态下的 X, Y 起始和终止坐标
         private DataRect initialRect;

@@ -17,8 +17,6 @@ namespace RealTimeGraph
 
             // 默认初始处于滚动模式
             GraphStyle = GraphMode.FixMoveMode;
-            isAutoMove = true;
-            isAutoScale = false;
 
             IsShowGrid = false;
 
@@ -186,32 +184,29 @@ namespace RealTimeGraph
         {
             if (XDataList != null)
             {
-                if (isAutoMove)
+                if (GraphStyle== GraphMode.GlobalMode)
                 {
-                    if (isAutoScale)    // 此即为 GlobalMode 模式
-                    {
-                        graphData.DisplayRect.XMin = (dataRect.XMin < InitialMinX)
+                    graphData.DisplayRect.XMin = (dataRect.XMin < InitialMinX)
                             ? dataRect.XMin : InitialMinX;
-                        graphData.DisplayRect.XMax = (dataRect.XMax > InitialMaxX)
-                            ? dataRect.XMax : InitialMaxX;
-                        graphData.DisplayRect.YMin = (dataRect.YMin < InitialMinY)
-                            ? dataRect.YMin : InitialMinY;
-                        graphData.DisplayRect.YMax = (dataRect.YMax > InitialMaxY)
-                            ? dataRect.YMax : InitialMaxY;
-                    }
-                    else    // 此即为 FixedMoveMode 模式
+                    graphData.DisplayRect.XMax = (dataRect.XMax > InitialMaxX)
+                        ? dataRect.XMax : InitialMaxX;
+                    graphData.DisplayRect.YMin = (dataRect.YMin < InitialMinY)
+                        ? dataRect.YMin : InitialMinY;
+                    graphData.DisplayRect.YMax = (dataRect.YMax > InitialMaxY)
+                        ? dataRect.YMax : InitialMaxY;
+                }
+                else if (GraphStyle== GraphMode.FixMoveMode)
+                {
+                    if (dataRect.XMax > graphData.DisplayRect.XMax)
                     {
-                        if (dataRect.XMax > graphData.DisplayRect.XMax)
-                        {
-                            graphData.DisplayRect.XMin += dataRect.XMax - graphData.DisplayRect.XMax;
-                            graphData.DisplayRect.XMax = dataRect.XMax;
-                        }
-
-                        graphData.DisplayRect.YMin = (dataRect.YMin < graphData.DisplayRect.YMin)
-                            ? dataRect.YMin : graphData.DisplayRect.YMin;
-                        graphData.DisplayRect.YMax = (dataRect.YMax > graphData.DisplayRect.YMax)
-                            ? dataRect.YMax : graphData.DisplayRect.YMax;
+                        graphData.DisplayRect.XMin += dataRect.XMax - graphData.DisplayRect.XMax;
+                        graphData.DisplayRect.XMax = dataRect.XMax;
                     }
+
+                    graphData.DisplayRect.YMin = (dataRect.YMin < graphData.DisplayRect.YMin)
+                        ? dataRect.YMin : graphData.DisplayRect.YMin;
+                    graphData.DisplayRect.YMax = (dataRect.YMax > graphData.DisplayRect.YMax)
+                        ? dataRect.YMax : graphData.DisplayRect.YMax;
                 }
             }
         }

@@ -8,19 +8,6 @@ namespace RealTimeGraph
         // 所有数据的范围
         private DataRect dataRect;
 
-        /// <summary>波形是否随时间移动（即是否处于实时显示状态）。
-        /// 设为 false 时用于“框选放大模式”，
-        /// 设为 true 时用于“全局”和“滚动”实时显示模式。
-        /// </summary>
-        private bool isAutoMove;
-
-        /// <summary>设置波形是否实时调整坐标尺度范围。
-        /// 设为 false 时用于固定坐标尺度的“滚动实时显示”模式，
-        /// 设为 true 时用于显示所有数据点的“全局实时显示”模式。
-        /// 当 isAutoMove=false 时，isAutoScale 无效。
-        /// </summary>
-        private bool isAutoScale;
-
         private Point startPoint; // 用于记录拖动操作时鼠标按下的位置
 
         private Point pbZoomStart; // 框选放大框的左上角位置
