@@ -94,5 +94,7 @@ namespace RealTimeGraph
             }
             return pointsList.ToArray();
         }
+
+
     }
 }

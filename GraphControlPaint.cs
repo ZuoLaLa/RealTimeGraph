@@ -9,7 +9,7 @@ namespace RealTimeGraph
     {
         private void pbCurve_Paint(object sender, PaintEventArgs e)
         {
-            UpdateAxisCurrent();
+            UpdateDisplayRect();
             UpdateAxisScale();
             UpdateCurveSize();
 
@@ -18,29 +18,131 @@ namespace RealTimeGraph
             {
                 Gridding(g);
             }
-
             pbAxisX.Refresh();
             pbAxisY.Refresh();
-
             DrawCurve(g);
         }
 
-        private void DrawCurve(Graphics g)
+        /// <summary>根据画图模式和数据调整坐标显示
+        /// </summary>
+        private void UpdateDisplayRect()
         {
-            TranslateToCartesian(g);
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-            PointF[] points = graphData.GetPointsToDraw(curveWidth, curveHeight);
-            if (points != null && points.Length > 1)
+            if (XDataList != null)
             {
-                g.DrawLines(graphProperties.CurvePen, points);
+                if (GraphStyle == GraphMode.GlobalMode)
+                {
+                    graphData.DisplayRect.XMin = (dataRect.XMin < InitialMinX)
+                            ? dataRect.XMin : InitialMinX;
+                    graphData.DisplayRect.XMax = (dataRect.XMax > InitialMaxX)
+                        ? dataRect.XMax : InitialMaxX;
+                    graphData.DisplayRect.YMin = (dataRect.YMin < InitialMinY)
+                        ? dataRect.YMin : InitialMinY;
+                    graphData.DisplayRect.YMax = (dataRect.YMax > InitialMaxY)
+                        ? dataRect.YMax : InitialMaxY;
+                }
+                else if (GraphStyle == GraphMode.FixMoveMode)
+                {
+                    if (dataRect.XMax > graphData.DisplayRect.XMax)
+                    {
+                        graphData.DisplayRect.XMin += dataRect.XMax - graphData.DisplayRect.XMax;
+                        graphData.DisplayRect.XMax = dataRect.XMax;
+                    }
+
+                    graphData.DisplayRect.YMin = (dataRect.YMin < graphData.DisplayRect.YMin)
+                        ? dataRect.YMin : graphData.DisplayRect.YMin;
+                    graphData.DisplayRect.YMax = (dataRect.YMax > graphData.DisplayRect.YMax)
+                        ? dataRect.YMax : graphData.DisplayRect.YMax;
+                }
             }
         }
 
-        private void TranslateToCartesian(Graphics g)
+        /// <summary>根据坐标范围调整坐标刻度参数。
+        /// </summary>
+        private void UpdateAxisScale()
         {
-            g.TranslateTransform(0,
-                pbCurve.Height - 1 - graphProperties.CurveHeightPadding);
-            g.ScaleTransform(1, -1);
+            scaleX = curveWidth / graphData.DisplayRect.XRange;
+            getScale1Limits(graphData.DisplayRect.XMin, graphData.DisplayRect.XMax,
+                out xScale1Min, out xScale1Max, out xScale1);
+            xScale1Num = getScaleNum(curveWidth * xScale1 / graphData.DisplayRect.XRange,
+                graphProperties.FirstScaleInterval);
+            xScale1Sum = (int)((xScale1Max - xScale1Min) / xScale1 * xScale1Num);
+            xScale1Length = curveWidth * xScale1
+                / (graphData.DisplayRect.XRange * xScale1Num);
+            xScale2Num = getScaleNum(xScale1Length, graphProperties.SecondScaleInterval);
+            xScale2Length = xScale1Length / xScale2Num;
+
+            scaleY = curveHeight / graphData.DisplayRect.YRange;
+            getScale1Limits(graphData.DisplayRect.YMin, graphData.DisplayRect.YMax, out yScale1Min,
+                out yScale1Max, out yScale1);
+            yScale1Num = getScaleNum(curveHeight * yScale1 / graphData.DisplayRect.YRange,
+                graphProperties.FirstScaleInterval);
+            yScale1Sum = (int)(yScale1Num * (yScale1Max - yScale1Min) / yScale1);
+            yScale1Length = curveHeight * yScale1
+                / (graphData.DisplayRect.YRange * yScale1Num);
+            yScale2Num = getScaleNum(yScale1Length, graphProperties.SecondScaleInterval);
+            yScale2Length = yScale1Length / yScale2Num;
+        }
+
+        /// <summary>获取友好坐标系统下的一级坐标显示范围。
+        /// 显示坐标的最小值不大于显示数据点的最小值，
+        /// 最大值不小于显示数据点的最大值，且均取整（广义上的）。
+        /// </summary>
+        /// <param name="dataMin">待绘制的数据最小值</param>
+        /// <param name="dataMax">待绘制的数据最大值</param>
+        /// <param name="scale1Min">计算得到的一级坐标最小值</param>
+        /// <param name="scale1Max">计算得到的一级坐标最大值</param>
+        /// <param name="scale1">计算得到的一级坐标的分度值</param>
+        private void getScale1Limits(double dataMin, double dataMax,
+            out float scale1Min, out float scale1Max, out float scale1)
+        {
+            decimal dataDiff = Convert.ToDecimal(dataMax - dataMin);
+            decimal scale = 1;
+
+            if (dataDiff >= 1)
+            {
+                while ((dataDiff /= 10) >= 1)
+                {
+                    scale *= 10;
+                }
+            }
+            else if (dataDiff > 0 && dataDiff < 1)
+            {
+                do
+                {
+                    scale /= 10;
+                    dataDiff *= 10;
+                } while (dataDiff < 1);
+            }
+
+            scale1Max = Convert.ToSingle(
+                Math.Ceiling(Convert.ToDecimal(dataMax) / scale) * scale);
+            scale1Min = Convert.ToSingle(
+                Math.Floor(Convert.ToDecimal(dataMin) / scale) * scale);
+            scale1 = Convert.ToSingle(scale);
+        }
+
+        /// <summary>获取刻度划分数
+        /// </summary>
+        /// <param name="totalWidth">待划分的上级刻度长度</param>
+        /// <param name="scaleInterval">本级刻度最小间隔</param>
+        /// <returns>刻度划分数（10，5，2，1）</returns>
+        private int getScaleNum(double totalWidth, int scaleInterval)
+        {
+            int scaleNum = 1;
+            if (totalWidth / 10 >= scaleInterval)
+            {
+                scaleNum = 10;
+            }
+            else if (totalWidth / 5 >= scaleInterval)
+            {
+                scaleNum = 5;
+            }
+            else if (totalWidth / 2 >= scaleInterval)
+            {
+                scaleNum = 2;
+            }
+
+            return scaleNum;
         }
 
         private void UpdateCurveSize()
@@ -100,182 +202,41 @@ namespace RealTimeGraph
             }
         }
 
-        // 鼠标进入绘图区域时，根据绘图模式改变鼠标形态
-        private void pbCurve_MouseEnter(object sender, EventArgs e)
-        {
-            switch (GraphStyle)
-            {
-
-                case GraphMode.RectZoomInMode:
-                    this.Cursor = Cursors.Cross;
-                    break;
-                case GraphMode.DragMode:
-                    this.Cursor = Cursors.Hand;
-                    break;
-                default:
-                    this.Cursor = Cursors.Default;
-                    break;
-            }
-
-            pbCurve.Focus();
-        }
-
-        private void pbCurve_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (GraphStyle == GraphMode.DragMode &&
-                e.Button == MouseButtons.Left)
-            {
-                startPoint = e.Location;
-            }
-            else if (GraphStyle == GraphMode.RectZoomInMode &&
-                e.Button == MouseButtons.Left)
-            {
-                pbZoom.Parent = pbCurve;
-                pbZoom.Visible = false;
-                pbZoomStart = e.Location;
-            }
-        }
-
-        private void pbCurve_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (GraphStyle == GraphMode.DragMode &&
-                e.Button == MouseButtons.Left)
-            {
-                float xD = e.X - startPoint.X;
-                float yD = e.Y - startPoint.Y;
-                DragMove(xD, yD);
-                startPoint = e.Location;
-                pbCurve.Refresh();
-            }
-            else if (GraphStyle == GraphMode.RectZoomInMode &&
-                e.Button == MouseButtons.Left)
-            {
-                if (e.Location.X < 0)
-                {
-                    pbZoomEnd.X = 0;
-                }
-                else if (e.Location.X > pbCurve.Width - 1)
-                {
-                    pbZoomEnd.X = pbCurve.Width - 1;
-                }
-                else
-                {
-                    pbZoomEnd.X = e.Location.X;
-                }
-
-                if (e.Location.Y < 0)
-                {
-                    pbZoomEnd.Y = 0;
-                }
-                else if (e.Location.Y > pbCurve.Height - 1)
-                {
-                    pbZoomEnd.Y = pbCurve.Height - 1;
-                }
-                else
-                {
-                    pbZoomEnd.Y = e.Location.Y;
-                }
-
-                Point pbZoomLoc = new Point();
-                pbZoomLoc.X = (pbZoomStart.X < pbZoomEnd.X) ?
-                    pbZoomStart.X : pbZoomEnd.X;
-                pbZoomLoc.Y = (pbZoomStart.Y < pbZoomEnd.Y) ?
-                    pbZoomStart.Y : pbZoomEnd.Y;
-                // 无法直接对 pbZoom.Location.X 进行赋值，故通过 pbZoomLoc 过渡。
-                pbZoom.Location = pbZoomLoc;
-                pbZoom.Width = Math.Abs(pbZoomEnd.X - pbZoomStart.X);
-                pbZoom.Height = Math.Abs(pbZoomEnd.Y - pbZoomStart.Y);
-                pbZoom.Visible = true;
-            }
-        }
-
-        private void pbCurve_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (GraphStyle == GraphMode.RectZoomInMode &&
-                e.Button == MouseButtons.Left)
-            {
-                pbZoom.Visible = false;
-                RectZoomIn();
-                pbCurve.Refresh();
-            }
-        }
-
-        /// <summary>矩形框选放大
+        /// <summary>判断纵向网格位置是否位于可绘制区域内
         /// </summary>
-        private void RectZoomIn()
+        /// <param name="scalePos">纵向网格位置</param>
+        /// <returns>若坐标位置位于可绘制区域内，则返回true.</returns>
+        private bool IsInCurveX(float scalePos)
         {
-            DataRect selectedRect = new DataRect(
-                pbZoom.Location.X, pbZoom.Location.X + pbZoom.Width,
-                pbZoom.Location.Y, pbZoom.Location.Y + pbZoom.Height);
-            DataRect zoomInRect = ZoomInSelectedRect(selectedRect);
+            return scalePos > 0 && scalePos < pbCurve.Width - 1;
+        }
 
-            if (zoomInRect.XRange >= XDataAccuracy && zoomInRect.YRange >= YDataAccuracy)
+        /// <summary>判断横向网格位置是否位于可绘制区域内
+        /// </summary>
+        /// <param name="scalePos">横向网格位置</param>
+        /// <returns>若坐标位置位于可绘制区域内，则返回true.</returns>
+        private bool IsInCurveY(float scalePos)
+        {
+            return scalePos >= 1 &&
+                scalePos <= pbCurve.Height - 1;
+        }
+
+        private void DrawCurve(Graphics g)
+        {
+            TranslateToCartesian(g);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            PointF[] points = graphData.GetPointsToDraw(curveWidth, curveHeight);
+            if (points != null && points.Length > 1)
             {
-                ResetDisplayRect(zoomInRect);
-                MsgOutput = "Zoom in normally";
-            }
-            else if (zoomInRect.XRange >= XDataAccuracy)
-            {
-                ResetDisplayRect(zoomInRect.XMin, zoomInRect.XMax,
-                    (zoomInRect.YMin + zoomInRect.YMax - YDataAccuracy) / 2F,
-                    (zoomInRect.YMin + zoomInRect.YMax + YDataAccuracy) / 2F);
-                MsgOutput = "Zoom in to the Y data accuracy";
-            }
-            else if (zoomInRect.YRange >= YDataAccuracy)
-            {
-                ResetDisplayRect(
-                    (zoomInRect.XMin + zoomInRect.XMax - XDataAccuracy) / 2F,
-                    (zoomInRect.XMin + zoomInRect.XMax + XDataAccuracy) / 2F,
-                    zoomInRect.YMin, zoomInRect.YMax);
-                MsgOutput = "Zoom in to the X data accuracy";
-            }
-            else
-            {
-                ResetDisplayRect(
-                    (zoomInRect.XMin + zoomInRect.XMax - XDataAccuracy) / 2F,
-                    (zoomInRect.XMin + zoomInRect.XMax + XDataAccuracy) / 2F,
-                    (zoomInRect.YMin + zoomInRect.YMax - YDataAccuracy) / 2F,
-                    (zoomInRect.YMin + zoomInRect.YMax + YDataAccuracy) / 2F);
-                MsgOutput = "Zoom in to all data accuracy";
+                g.DrawLines(graphProperties.CurvePen, points);
             }
         }
 
-        private DataRect ZoomInSelectedRect(DataRect selectedRect)
+        private void TranslateToCartesian(Graphics g)
         {
-            return new DataRect
-            {
-                XMin = graphData.DisplayRect.XMin +
-                    selectedRect.XMin * graphData.DisplayRect.XRange / curveWidth,
-                XMax = graphData.DisplayRect.XMin +
-                    selectedRect.XMax * graphData.DisplayRect.XRange / curveWidth,
-                YMin = graphData.DisplayRect.YMax -
-                    selectedRect.YMax * graphData.DisplayRect.YRange / curveHeight,
-                YMax = graphData.DisplayRect.YMax -
-                    selectedRect.YMin * graphData.DisplayRect.YRange / curveHeight
-            };
-        }
-
-        private void pbCurve_MouseWheel(object sender, MouseEventArgs e)
-        {
-            if (GraphStyle == GraphMode.FixMoveMode)
-            {
-                float xDiff = graphData.DisplayRect.XRange;
-                float xDelta = e.Delta / 1200F;
-                graphData.DisplayRect.XMin -= xDiff * xDelta;
-                graphData.DisplayRect.XMax += xDiff * xDelta;
-                pbCurve.Refresh();
-            }
-        }
-
-        private void pbCurve_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (GraphStyle == GraphMode.FixMoveMode
-                && e.Button == MouseButtons.Middle)
-            {
-                graphData.DisplayRect.XMax = dataRect.XMax;
-                graphData.DisplayRect.XMin = ((graphData.DisplayRect.XMax - initialRect.XRange) > InitialMinX)
-                    ? (graphData.DisplayRect.XMax - initialRect.XRange) : InitialMinX;
-            }
+            g.TranslateTransform(0,
+                pbCurve.Height - 1 - graphProperties.CurveHeightPadding);
+            g.ScaleTransform(1, -1);
         }
 
         private void pbAxisX_Paint(object sender, PaintEventArgs e)
@@ -340,6 +301,16 @@ namespace RealTimeGraph
                 sf.Width, sf.Height);
             g.DrawString(str, graphProperties.BorderFont, Brushes.Black,
                 pbAxisY.Width + pbCurve.Width, graphProperties.BorderLength, centerFormat);
+        }
+
+        /// <summary>判断坐标位置是否位于X轴可绘制区域内
+        /// </summary>
+        /// <param name="scalePos">x刻度坐标位置</param>
+        /// <returns>若坐标位置位于X轴可绘制区域内，则返回true.</returns>
+        private bool IsInAxisX(float scalePos)
+        {
+            return scalePos > pbAxisY.Width + 1 &&
+                                scalePos < pbAxisY.Width + pbCurve.Width - 1;
         }
 
         private void pbAxisY_Paint(object sender, PaintEventArgs e)
@@ -408,6 +379,16 @@ namespace RealTimeGraph
                 borderYFormat);
         }
 
+        /// <summary>判断坐标位置是否位于Y轴可绘制区域内
+        /// </summary>
+        /// <param name="scalePos">Y刻度坐标位置</param>
+        /// <returns>若坐标位置位于X轴可绘制区域内，则返回true.</returns>
+        private bool IsInAxisY(float scalePos)
+        {
+            return scalePos > pbAxisY.Height - pbCurve.Height + graphProperties.CurveHeightPadding + 1 &&
+                                scalePos < pbAxisY.Height - graphProperties.CurveHeightPadding - 1;
+        }
+
         private void pbTitle_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -420,15 +401,228 @@ namespace RealTimeGraph
             StringFormat titleFormat = new StringFormat();
             titleFormat.Alignment = StringAlignment.Center;
             g.DrawString(GraphTitle, graphProperties.TitleFont, Brushes.Black,
-                pbTitle.Width/2F, pbTitle.Height/2F - graphProperties.TitleFont.Height/5F,
+                pbTitle.Width / 2F, pbTitle.Height / 2F - graphProperties.TitleFont.Height / 5F,
                 titleFormat);
         }
 
         private void DrawAxisYTitle(Graphics g)
         {
             g.DrawString(AxisYTitle, graphProperties.AxisTitleFont, Brushes.Black,
-                graphProperties.AxisTitleFont.Height/5F,
-                pbTitle.Height - graphProperties.AxisTitleFont.Height*1.2F);
+                graphProperties.AxisTitleFont.Height / 5F,
+                pbTitle.Height - graphProperties.AxisTitleFont.Height * 1.2F);
         }
+
+        #region Mouse Event
+
+        // 鼠标进入绘图区域时，根据绘图模式改变鼠标形态
+        private void pbCurve_MouseEnter(object sender, EventArgs e)
+        {
+            switch (GraphStyle)
+            {
+
+                case GraphMode.RectZoomInMode:
+                    this.Cursor = Cursors.Cross;
+                    break;
+                case GraphMode.DragMode:
+                    this.Cursor = Cursors.Hand;
+                    break;
+                default:
+                    this.Cursor = Cursors.Default;
+                    break;
+            }
+            pbCurve.Focus();
+        }
+
+        private void pbCurve_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (GraphStyle == GraphMode.DragMode &&
+                e.Button == MouseButtons.Left)
+            {
+                startPoint = e.Location;
+            }
+            else if (GraphStyle == GraphMode.RectZoomInMode &&
+                     e.Button == MouseButtons.Left)
+            {
+                pbZoom.Parent = pbCurve;
+                pbZoom.Visible = false;
+                pbZoomStart = e.Location;
+            }
+        }
+
+        private void pbCurve_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (GraphStyle == GraphMode.DragMode &&
+                e.Button == MouseButtons.Left)
+            {
+                float xD = e.X - startPoint.X;
+                float yD = e.Y - startPoint.Y;
+                DragMove(xD, yD);
+                startPoint = e.Location;
+                pbCurve.Refresh();
+            }
+            else if (GraphStyle == GraphMode.RectZoomInMode &&
+                     e.Button == MouseButtons.Left)
+            {
+                if (e.Location.X < 0)
+                {
+                    pbZoomEnd.X = 0;
+                }
+                else if (e.Location.X > pbCurve.Width - 1)
+                {
+                    pbZoomEnd.X = pbCurve.Width - 1;
+                }
+                else
+                {
+                    pbZoomEnd.X = e.Location.X;
+                }
+
+                if (e.Location.Y < 0)
+                {
+                    pbZoomEnd.Y = 0;
+                }
+                else if (e.Location.Y > pbCurve.Height - 1)
+                {
+                    pbZoomEnd.Y = pbCurve.Height - 1;
+                }
+                else
+                {
+                    pbZoomEnd.Y = e.Location.Y;
+                }
+
+                Point pbZoomLoc = new Point();
+                pbZoomLoc.X = (pbZoomStart.X < pbZoomEnd.X)
+                    ? pbZoomStart.X
+                    : pbZoomEnd.X;
+                pbZoomLoc.Y = (pbZoomStart.Y < pbZoomEnd.Y)
+                    ? pbZoomStart.Y
+                    : pbZoomEnd.Y;
+                // 无法直接对 pbZoom.Location.X 进行赋值，故通过 pbZoomLoc 过渡。
+                pbZoom.Location = pbZoomLoc;
+                pbZoom.Width = Math.Abs(pbZoomEnd.X - pbZoomStart.X);
+                pbZoom.Height = Math.Abs(pbZoomEnd.Y - pbZoomStart.Y);
+                pbZoom.Visible = true;
+            }
+        }
+
+        /// <summary>曲线拖动
+        /// </summary>
+        /// <param name="xD">X 轴方向上的拖动量</param>
+        /// <param name="yD">Y 轴方向上的拖动量</param>
+        private void DragMove(float xD, float yD)
+        {
+            float xM = xD * graphData.DisplayRect.XRange / (pbCurve.Width - 1);
+            float yM = yD * graphData.DisplayRect.YRange / (pbCurve.Height - 1);
+            graphData.DisplayRect = new DataRect(
+                graphData.DisplayRect.XMin - xM, graphData.DisplayRect.XMax - xM,
+                graphData.DisplayRect.YMin + yM, graphData.DisplayRect.YMax + yM);
+        }
+
+        private void pbCurve_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (GraphStyle == GraphMode.RectZoomInMode &&
+                e.Button == MouseButtons.Left)
+            {
+                pbZoom.Visible = false;
+                RectZoomIn();
+                pbCurve.Refresh();
+            }
+        }
+
+        /// <summary>矩形框选放大
+        /// </summary>
+        private void RectZoomIn()
+        {
+            DataRect selectedRect = new DataRect(
+                pbZoom.Location.X, pbZoom.Location.X + pbZoom.Width,
+                pbZoom.Location.Y, pbZoom.Location.Y + pbZoom.Height);
+            DataRect zoomInRect = ZoomInSelectedRect(selectedRect);
+
+            if (zoomInRect.XRange >= XDataAccuracy && zoomInRect.YRange >= YDataAccuracy)
+            {
+                SetDisplayRect(zoomInRect);
+                MsgOutput = "Zoom in normally";
+            }
+            else if (zoomInRect.XRange >= XDataAccuracy)
+            {
+                SetDisplayRect(zoomInRect.XMin, zoomInRect.XMax,
+                    (zoomInRect.YMin + zoomInRect.YMax - YDataAccuracy)/2F,
+                    (zoomInRect.YMin + zoomInRect.YMax + YDataAccuracy)/2F);
+                MsgOutput = "Zoom in to the Y data accuracy";
+            }
+            else if (zoomInRect.YRange >= YDataAccuracy)
+            {
+                SetDisplayRect(
+                    (zoomInRect.XMin + zoomInRect.XMax - XDataAccuracy)/2F,
+                    (zoomInRect.XMin + zoomInRect.XMax + XDataAccuracy)/2F,
+                    zoomInRect.YMin, zoomInRect.YMax);
+                MsgOutput = "Zoom in to the X data accuracy";
+            }
+            else
+            {
+                SetDisplayRect(
+                    (zoomInRect.XMin + zoomInRect.XMax - XDataAccuracy)/2F,
+                    (zoomInRect.XMin + zoomInRect.XMax + XDataAccuracy)/2F,
+                    (zoomInRect.YMin + zoomInRect.YMax - YDataAccuracy)/2F,
+                    (zoomInRect.YMin + zoomInRect.YMax + YDataAccuracy)/2F);
+                MsgOutput = "Zoom in to all data accuracy";
+            }
+        }
+
+        /// <summary>设置坐标轴范围
+        /// </summary>
+        /// <param name="xS">更新后的 X 轴左端点</param>
+        /// <param name="xE">更新后的 X 轴右端点</param>
+        /// <param name="yS">更新后的 Y 轴下端点</param>
+        /// <param name="yE">更新后的 Y 轴上端点</param>
+        private void SetDisplayRect(float xS, float xE, float yS, float yE)
+        {
+            graphData.DisplayRect.UpdateRect(xS, xE, yS, yE);
+        }
+
+        private void SetDisplayRect(DataRect newRect)
+        {
+            graphData.DisplayRect.UpdateRect(newRect);
+        }
+
+        private DataRect ZoomInSelectedRect(DataRect selectedRect)
+        {
+            return new DataRect
+            {
+                XMin = graphData.DisplayRect.XMin +
+                       selectedRect.XMin*graphData.DisplayRect.XRange/curveWidth,
+                XMax = graphData.DisplayRect.XMin +
+                       selectedRect.XMax*graphData.DisplayRect.XRange/curveWidth,
+                YMin = graphData.DisplayRect.YMax -
+                       selectedRect.YMax*graphData.DisplayRect.YRange/curveHeight,
+                YMax = graphData.DisplayRect.YMax -
+                       selectedRect.YMin*graphData.DisplayRect.YRange/curveHeight
+            };
+        }
+
+        private void pbCurve_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (GraphStyle == GraphMode.FixMoveMode)
+            {
+                float xDiff = graphData.DisplayRect.XRange;
+                float xDelta = e.Delta/1200F;
+                graphData.DisplayRect.XMin -= xDiff*xDelta;
+                graphData.DisplayRect.XMax += xDiff*xDelta;
+                pbCurve.Refresh();
+            }
+        }
+
+        private void pbCurve_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (GraphStyle == GraphMode.FixMoveMode
+                && e.Button == MouseButtons.Middle)
+            {
+                graphData.DisplayRect.XMax = dataRect.XMax;
+                graphData.DisplayRect.XMin = ((graphData.DisplayRect.XMax - initialRect.XRange) > InitialMinX)
+                    ? (graphData.DisplayRect.XMax - initialRect.XRange)
+                    : InitialMinX;
+            }
+        }
+
+        #endregion
     }
 }
