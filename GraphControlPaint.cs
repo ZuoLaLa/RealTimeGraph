@@ -9,75 +9,50 @@ namespace RealTimeGraph
     {
         private void pbCurve_Paint(object sender, PaintEventArgs e)
         {
-            UpdateDisplayRect();
+            UpdateDrawAreaSize();
+            graphData.UpdateDataRect();
+            graphData.UpdateDisplayRect(initialRect, GraphStyle);
             UpdateAxisScale();
-            UpdateCurveSize();
 
             Graphics g = e.Graphics;
             if (IsShowGrid)
             {
-                Gridding(g);
+                DrawGrid(g);
             }
             pbAxisX.Refresh();
             pbAxisY.Refresh();
             DrawCurve(g);
         }
 
-        /// <summary>根据画图模式和数据调整坐标显示
-        /// </summary>
-        private void UpdateDisplayRect()
+        private void UpdateDrawAreaSize()
         {
-            if (XDataList != null)
-            {
-                if (GraphStyle == GraphMode.GlobalMode)
-                {
-                    graphData.DisplayRect.XMin = (dataRect.XMin < InitialMinX)
-                            ? dataRect.XMin : InitialMinX;
-                    graphData.DisplayRect.XMax = (dataRect.XMax > InitialMaxX)
-                        ? dataRect.XMax : InitialMaxX;
-                    graphData.DisplayRect.YMin = (dataRect.YMin < InitialMinY)
-                        ? dataRect.YMin : InitialMinY;
-                    graphData.DisplayRect.YMax = (dataRect.YMax > InitialMaxY)
-                        ? dataRect.YMax : InitialMaxY;
-                }
-                else if (GraphStyle == GraphMode.FixMoveMode)
-                {
-                    if (dataRect.XMax > graphData.DisplayRect.XMax)
-                    {
-                        graphData.DisplayRect.XMin += dataRect.XMax - graphData.DisplayRect.XMax;
-                        graphData.DisplayRect.XMax = dataRect.XMax;
-                    }
-
-                    graphData.DisplayRect.YMin = (dataRect.YMin < graphData.DisplayRect.YMin)
-                        ? dataRect.YMin : graphData.DisplayRect.YMin;
-                    graphData.DisplayRect.YMax = (dataRect.YMax > graphData.DisplayRect.YMax)
-                        ? dataRect.YMax : graphData.DisplayRect.YMax;
-                }
-            }
+            drawAreaSize.Height = pbCurve.Height -
+                2 * graphProperties.CurveHeightPadding;
+            drawAreaSize.Width = pbCurve.Width;
         }
 
         /// <summary>根据坐标范围调整坐标刻度参数。
         /// </summary>
         private void UpdateAxisScale()
         {
-            scaleX = curveWidth / graphData.DisplayRect.XRange;
+            scaleX = drawAreaSize.Width / graphData.DisplayRect.XRange;
             getScale1Limits(graphData.DisplayRect.XMin, graphData.DisplayRect.XMax,
                 out xScale1Min, out xScale1Max, out xScale1);
-            xScale1Num = getScaleNum(curveWidth * xScale1 / graphData.DisplayRect.XRange,
+            xScale1Num = getScaleNum(drawAreaSize.Width * xScale1 / graphData.DisplayRect.XRange,
                 graphProperties.FirstScaleInterval);
             xScale1Sum = (int)((xScale1Max - xScale1Min) / xScale1 * xScale1Num);
-            xScale1Length = curveWidth * xScale1
+            xScale1Length = drawAreaSize.Width * xScale1
                 / (graphData.DisplayRect.XRange * xScale1Num);
             xScale2Num = getScaleNum(xScale1Length, graphProperties.SecondScaleInterval);
             xScale2Length = xScale1Length / xScale2Num;
 
-            scaleY = curveHeight / graphData.DisplayRect.YRange;
+            scaleY = drawAreaSize.Height / graphData.DisplayRect.YRange;
             getScale1Limits(graphData.DisplayRect.YMin, graphData.DisplayRect.YMax, out yScale1Min,
                 out yScale1Max, out yScale1);
-            yScale1Num = getScaleNum(curveHeight * yScale1 / graphData.DisplayRect.YRange,
+            yScale1Num = getScaleNum(drawAreaSize.Height * yScale1 / graphData.DisplayRect.YRange,
                 graphProperties.FirstScaleInterval);
             yScale1Sum = (int)(yScale1Num * (yScale1Max - yScale1Min) / yScale1);
-            yScale1Length = curveHeight * yScale1
+            yScale1Length = drawAreaSize.Height * yScale1
                 / (graphData.DisplayRect.YRange * yScale1Num);
             yScale2Num = getScaleNum(yScale1Length, graphProperties.SecondScaleInterval);
             yScale2Length = yScale1Length / yScale2Num;
@@ -145,16 +120,10 @@ namespace RealTimeGraph
             return scaleNum;
         }
 
-        private void UpdateCurveSize()
-        {
-            curveHeight = pbCurve.Height - 2 * graphProperties.CurveHeightPadding;
-            curveWidth = pbCurve.Width;
-        }
-
         /// <summary>绘制网格
         /// </summary>
         /// <param name="g"></param>
-        private void Gridding(Graphics g)
+        private void DrawGrid(Graphics g)
         {
             float xGrid1Start = (xScale1Min - graphData.DisplayRect.XMin) * scaleX;
 
@@ -225,7 +194,7 @@ namespace RealTimeGraph
         {
             TranslateToCartesian(g);
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            PointF[] points = graphData.GetPointsToDraw(curveWidth, curveHeight);
+            PointF[] points = graphData.GetPointsToDraw(drawAreaSize.Width, drawAreaSize.Height);
             if (points != null && points.Length > 1)
             {
                 g.DrawLines(graphProperties.CurvePen, points);
@@ -545,25 +514,25 @@ namespace RealTimeGraph
             else if (zoomInRect.XRange >= XDataAccuracy)
             {
                 SetDisplayRect(zoomInRect.XMin, zoomInRect.XMax,
-                    (zoomInRect.YMin + zoomInRect.YMax - YDataAccuracy)/2F,
-                    (zoomInRect.YMin + zoomInRect.YMax + YDataAccuracy)/2F);
+                    (zoomInRect.YMin + zoomInRect.YMax - YDataAccuracy) / 2F,
+                    (zoomInRect.YMin + zoomInRect.YMax + YDataAccuracy) / 2F);
                 MsgOutput = "Zoom in to the Y data accuracy";
             }
             else if (zoomInRect.YRange >= YDataAccuracy)
             {
                 SetDisplayRect(
-                    (zoomInRect.XMin + zoomInRect.XMax - XDataAccuracy)/2F,
-                    (zoomInRect.XMin + zoomInRect.XMax + XDataAccuracy)/2F,
+                    (zoomInRect.XMin + zoomInRect.XMax - XDataAccuracy) / 2F,
+                    (zoomInRect.XMin + zoomInRect.XMax + XDataAccuracy) / 2F,
                     zoomInRect.YMin, zoomInRect.YMax);
                 MsgOutput = "Zoom in to the X data accuracy";
             }
             else
             {
                 SetDisplayRect(
-                    (zoomInRect.XMin + zoomInRect.XMax - XDataAccuracy)/2F,
-                    (zoomInRect.XMin + zoomInRect.XMax + XDataAccuracy)/2F,
-                    (zoomInRect.YMin + zoomInRect.YMax - YDataAccuracy)/2F,
-                    (zoomInRect.YMin + zoomInRect.YMax + YDataAccuracy)/2F);
+                    (zoomInRect.XMin + zoomInRect.XMax - XDataAccuracy) / 2F,
+                    (zoomInRect.XMin + zoomInRect.XMax + XDataAccuracy) / 2F,
+                    (zoomInRect.YMin + zoomInRect.YMax - YDataAccuracy) / 2F,
+                    (zoomInRect.YMin + zoomInRect.YMax + YDataAccuracy) / 2F);
                 MsgOutput = "Zoom in to all data accuracy";
             }
         }
@@ -589,13 +558,13 @@ namespace RealTimeGraph
             return new DataRect
             {
                 XMin = graphData.DisplayRect.XMin +
-                       selectedRect.XMin*graphData.DisplayRect.XRange/curveWidth,
+                       selectedRect.XMin * graphData.DisplayRect.XRange / drawAreaSize.Width,
                 XMax = graphData.DisplayRect.XMin +
-                       selectedRect.XMax*graphData.DisplayRect.XRange/curveWidth,
+                       selectedRect.XMax * graphData.DisplayRect.XRange / drawAreaSize.Width,
                 YMin = graphData.DisplayRect.YMax -
-                       selectedRect.YMax*graphData.DisplayRect.YRange/curveHeight,
+                       selectedRect.YMax * graphData.DisplayRect.YRange / drawAreaSize.Height,
                 YMax = graphData.DisplayRect.YMax -
-                       selectedRect.YMin*graphData.DisplayRect.YRange/curveHeight
+                       selectedRect.YMin * graphData.DisplayRect.YRange / drawAreaSize.Height
             };
         }
 
@@ -604,9 +573,9 @@ namespace RealTimeGraph
             if (GraphStyle == GraphMode.FixMoveMode)
             {
                 float xDiff = graphData.DisplayRect.XRange;
-                float xDelta = e.Delta/1200F;
-                graphData.DisplayRect.XMin -= xDiff*xDelta;
-                graphData.DisplayRect.XMax += xDiff*xDelta;
+                float xDelta = e.Delta / 1200F;
+                graphData.DisplayRect.XMin -= xDiff * xDelta;
+                graphData.DisplayRect.XMax += xDiff * xDelta;
                 pbCurve.Refresh();
             }
         }
@@ -616,10 +585,7 @@ namespace RealTimeGraph
             if (GraphStyle == GraphMode.FixMoveMode
                 && e.Button == MouseButtons.Middle)
             {
-                graphData.DisplayRect.XMax = dataRect.XMax;
-                graphData.DisplayRect.XMin = ((graphData.DisplayRect.XMax - initialRect.XRange) > InitialMinX)
-                    ? (graphData.DisplayRect.XMax - initialRect.XRange)
-                    : InitialMinX;
+                graphData.ResetDisplayRectWidthToInitial(initialRect);
             }
         }
 

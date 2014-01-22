@@ -64,6 +64,7 @@ namespace RealTimeGraph
             YDataList = new List<float>();
             pointsList = new List<PointF>();
             DisplayRect = new DataRect();
+            dataRect = new DataRect();
         }
 
         /// <summary>数据转换为待绘制区域上的点集
@@ -95,6 +96,57 @@ namespace RealTimeGraph
             return pointsList.ToArray();
         }
 
+        private DataRect dataRect;
 
+        public void UpdateDataRect()
+        {
+            if (XDataList.Count > 0)
+            {
+                dataRect.XMin = XDataList.Min();
+                dataRect.XMax = XDataList.Max();
+                dataRect.YMin = YDataList.Min();
+                dataRect.YMax = YDataList.Max();
+            }
+        }
+        /// <summary>根据画图模式和数据调整坐标显示
+        /// </summary>
+        public void UpdateDisplayRect(DataRect initialRect, GraphMode graphStyle)
+        {
+            if (XDataList != null)
+            {
+                if (graphStyle == GraphMode.GlobalMode)
+                {
+                    DisplayRect.XMin = (dataRect.XMin < initialRect.XMin)
+                        ? dataRect.XMin : initialRect.XMin;
+                    DisplayRect.XMax = (dataRect.XMax > initialRect.XMax)
+                        ? dataRect.XMax : initialRect.XMax;
+                    DisplayRect.YMin = (dataRect.YMin < initialRect.YMin)
+                        ? dataRect.YMin : initialRect.YMin;
+                    DisplayRect.YMax = (dataRect.YMax > initialRect.YMax)
+                        ? dataRect.YMax : initialRect.YMax;
+                }
+                else if (graphStyle == GraphMode.FixMoveMode)
+                {
+                    if (dataRect.XMax > DisplayRect.XMax)
+                    {
+                        DisplayRect.XMin += dataRect.XMax - DisplayRect.XMax;
+                        DisplayRect.XMax = dataRect.XMax;
+                    }
+
+                    DisplayRect.YMin = (dataRect.YMin < DisplayRect.YMin)
+                        ? dataRect.YMin : DisplayRect.YMin;
+                    DisplayRect.YMax = (dataRect.YMax > DisplayRect.YMax)
+                        ? dataRect.YMax : DisplayRect.YMax;
+                }
+            }
+        }
+
+        public void ResetDisplayRectWidthToInitial(DataRect initialRect)
+        {
+            DisplayRect.XMax = dataRect.XMax;
+            DisplayRect.XMin = ((DisplayRect.XMax - initialRect.XRange) > initialRect.XMin)
+                ? (DisplayRect.XMax - initialRect.XRange)
+                : initialRect.XMin;
+        }
     }
 }

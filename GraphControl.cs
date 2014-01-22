@@ -17,7 +17,6 @@ namespace RealTimeGraph
             graphProperties = new GraphProperties();
             graphData = new DataGraph();
             initialRect = new DataRect();
-            dataRect = new DataRect();
 
             // 默认初始处于滚动模式
             GraphStyle = GraphMode.FixMoveMode;

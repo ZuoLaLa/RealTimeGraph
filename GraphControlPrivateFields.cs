@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace RealTimeGraph
 {
     public partial class GraphControl
     {
-        // 所有数据的范围
-        private DataRect dataRect;
-
         private Point startPoint; // 用于记录拖动操作时鼠标按下的位置
 
         private Point pbZoomStart; // 框选放大框的左上角位置
@@ -34,9 +30,7 @@ namespace RealTimeGraph
         int yScale2Num;
         float yScale2Length;
 
-        private int curveHeight;
-        private int curveWidth;
-
+        private Size drawAreaSize;
         private GraphProperties graphProperties;
     }
 }
