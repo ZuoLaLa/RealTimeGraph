@@ -61,6 +61,11 @@ namespace RealTimeGraph
             get { return DisplayRect.WeightX; }
         }
 
+        public decimal DisplayWeightY
+        {
+            get { return DisplayRect.WeightY; }
+        }
+
         public DataGraph()
         {
             XDataAccuracy = DEFAULT_DATA_X_ACCURACY;

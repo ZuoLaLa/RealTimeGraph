@@ -8,8 +8,8 @@ namespace RealTimeGraph
         public const int BORDER_LENGTH = 15;  // 坐标边界刻度线的长度
         public const int FIRST_SCALE_LENGTH = 10; // 一级坐标刻度线的长度
         public const int SECOND_SCALE_LENGTH = 8;
-        public const int FIRST_SCALE_MIN_LENGTH = 100; // 一级坐标刻度线的最小间隔
-        public const int SECOND_SCALE_MIN_LENGTH = 15;
+        public const int FIRST_SCALE_MIN_INTERVAL = 100; // 一级坐标刻度线的最小间隔
+        public const int SECOND_SCALE_MIN_INTERVAL = 15;
         public const int CURVE_HEIGHT_PADDING = 10;
 
         public Pen BorderPen;    // 边界刻度所用钢笔

@@ -31,112 +31,15 @@ namespace RealTimeGraph
             drawAreaSize.Width = pbCurve.Width;
         }
 
-        float scaleX;       // X 轴比例尺（单位长度的像素数）
-        float scaleY;
-        float xScale1Min;   // X 轴上一级刻度的最小值
-        float xScale1Max;
-        int xScale1Num;      // 单位权值内的一级刻度划分数
-        int xScale1Sum;      // 一级刻度划分总数
-        float xScale1Length;// 一级刻度间隔
-        int xScale2Num;      // 一级刻度内的二级刻度划分数
-        float xScale2Length;
+        private DataAxis axisX = new DataAxis();
+        private DataAxis axisY = new DataAxis();
+
         /// <summary>根据坐标范围调整坐标刻度参数。
         /// </summary>
         private void UpdateAxisScale()
         {
-            scaleX = drawAreaSize.Width / graphData.DisplayRect.XRange;
-            GetScale1Limits();
-            xScale1Num = getScaleNum(drawAreaSize.Width * (float)graphData.DisplayWeightX
-                / graphData.DisplayRect.XRange,
-                GraphProperties.FIRST_SCALE_MIN_LENGTH);
-            xScale1Sum = (int)((xScale1Max - xScale1Min) / (float)graphData.DisplayWeightX * xScale1Num);
-            xScale1Length = drawAreaSize.Width * (float)graphData.DisplayWeightX
-                / (graphData.DisplayRect.XRange * xScale1Num);
-            xScale2Num = getScaleNum(xScale1Length, GraphProperties.SECOND_SCALE_MIN_LENGTH);
-            xScale2Length = xScale1Length / xScale2Num;
-
-            scaleY = drawAreaSize.Height / graphData.DisplayRect.YRange;
-            getScale1Limits(graphData.DisplayRect.YMin, graphData.DisplayRect.YMax, out yScale1Min,
-                out yScale1Max, out yScale1);
-            yScale1Num = getScaleNum(drawAreaSize.Height * yScale1 / graphData.DisplayRect.YRange,
-                GraphProperties.FIRST_SCALE_MIN_LENGTH);
-            yScale1Sum = (int)(yScale1Num * (yScale1Max - yScale1Min) / yScale1);
-            yScale1Length = drawAreaSize.Height * yScale1
-                / (graphData.DisplayRect.YRange * yScale1Num);
-            yScale2Num = getScaleNum(yScale1Length, GraphProperties.SECOND_SCALE_MIN_LENGTH);
-            yScale2Length = yScale1Length / yScale2Num;
-        }
-
-        private void GetScale1Limits()
-        {
-            xScale1Max = Convert.ToSingle(
-                Math.Ceiling(Convert.ToDecimal(graphData.DisplayRect.XMax)
-                / graphData.DisplayWeightX) * graphData.DisplayWeightX);
-            xScale1Min = Convert.ToSingle(
-                Math.Floor(Convert.ToDecimal(graphData.DisplayRect.XMin)
-                / graphData.DisplayWeightX) * graphData.DisplayWeightX);
-        }
-
-        /// <summary>获取友好坐标系统下的一级坐标显示范围。
-        /// 显示坐标的最小值不大于显示数据点的最小值，
-        /// 最大值不小于显示数据点的最大值，且均取整（广义上的）。
-        /// </summary>
-        /// <param name="dataMin">待绘制的数据最小值</param>
-        /// <param name="dataMax">待绘制的数据最大值</param>
-        /// <param name="scale1Min">计算得到的一级坐标最小值</param>
-        /// <param name="scale1Max">计算得到的一级坐标最大值</param>
-        /// <param name="scale1">计算得到的一级坐标的分度值</param>
-        private void getScale1Limits(double dataMin, double dataMax,
-            out float scale1Min, out float scale1Max, out float scale1)
-        {
-            decimal dataDiff = Convert.ToDecimal(dataMax - dataMin);
-            decimal scale = 1;
-
-            if (dataDiff >= 1)
-            {
-                while ((dataDiff /= 10) >= 1)
-                {
-                    scale *= 10;
-                }
-            }
-            else if (dataDiff > 0 && dataDiff < 1)
-            {
-                do
-                {
-                    scale /= 10;
-                    dataDiff *= 10;
-                } while (dataDiff < 1);
-            }
-
-            scale1Max = Convert.ToSingle(
-                Math.Ceiling(Convert.ToDecimal(dataMax) / scale) * scale);
-            scale1Min = Convert.ToSingle(
-                Math.Floor(Convert.ToDecimal(dataMin) / scale) * scale);
-            scale1 = Convert.ToSingle(scale);
-        }
-
-        /// <summary>获取刻度划分数
-        /// </summary>
-        /// <param name="totalWidth">待划分的上级刻度长度</param>
-        /// <param name="scaleInterval">本级刻度最小间隔</param>
-        /// <returns>刻度划分数（10，5，2，1）</returns>
-        private int getScaleNum(double totalWidth, int scaleInterval)
-        {
-            int scaleNum = 1;
-            if (totalWidth / 10 >= scaleInterval)
-            {
-                scaleNum = 10;
-            }
-            else if (totalWidth / 5 >= scaleInterval)
-            {
-                scaleNum = 5;
-            }
-            else if (totalWidth / 2 >= scaleInterval)
-            {
-                scaleNum = 2;
-            }
-
-            return scaleNum;
+            axisX.Update(graphData.DisplayRect.XAxisRange, drawAreaSize.Width);
+            axisY.Update(graphData.DisplayRect.YAxisRange, drawAreaSize.Height);
         }
 
         /// <summary>绘制网格
@@ -144,11 +47,11 @@ namespace RealTimeGraph
         /// <param name="g"></param>
         private void DrawGrid(Graphics g)
         {
-            float xGrid1Start = (xScale1Min - graphData.DisplayRect.XMin) * scaleX;
+            float xGrid1Start = (axisX.FirstScaleRange.Min - graphData.DisplayRect.XMin) * axisX.UnitLenght;
 
-            for (int i = 0; i < xScale1Sum; i++)
+            for (int i = 0; i < axisX.SumOfFirstScale; i++)
             {
-                float xGrid1Pos = xGrid1Start + xScale1Length * i;
+                float xGrid1Pos = xGrid1Start + axisX.FirstScaleInterval * i;
                 if (IsInCurveX(xGrid1Pos))
                 {
                     g.DrawLine(graphProperties.FirstGridPen, xGrid1Pos, 0,
@@ -156,9 +59,9 @@ namespace RealTimeGraph
                 }
 
 
-                for (int j = 1; j < xScale2Num; j++)
+                for (int j = 1; j < axisX.NumOfSecondScalePerFirstScale; j++)
                 {
-                    float xGrid2Pos = xGrid1Pos + xScale2Length * j;
+                    float xGrid2Pos = xGrid1Pos + axisX.SecondScaleInterval * j;
                     if (IsInCurveX(xGrid2Pos))
                     {
                         g.DrawLine(graphProperties.SecondGridPen, xGrid2Pos, 0,
@@ -168,19 +71,19 @@ namespace RealTimeGraph
             }
 
             float yGrid1Start = pbCurve.Height - GraphProperties.CURVE_HEIGHT_PADDING
-                - (yScale1Min - graphData.DisplayRect.YMin) * scaleY;
-            for (int i = 0; i <= yScale1Sum; i++)
+                - (axisY.FirstScaleRange.Min - graphData.DisplayRect.YMin) * axisY.UnitLenght;
+            for (int i = 0; i <= axisY.SumOfFirstScale; i++)
             {
-                float yGrid1Pos = yGrid1Start - yScale1Length * i;
+                float yGrid1Pos = yGrid1Start - axisY.FirstScaleInterval * i;
                 if (IsInCurveY(yGrid1Pos))
                 {
                     g.DrawLine(graphProperties.FirstGridPen, 0, yGrid1Pos,
                         pbCurve.Width, yGrid1Pos);
                 }
 
-                for (int j = 1; j < yScale2Num; j++)
+                for (int j = 1; j < axisY.NumOfSecondScalePerFirstScale; j++)
                 {
-                    float yGrid2Pos = yGrid1Pos - yScale2Length * j;
+                    float yGrid2Pos = yGrid1Pos - axisY.SecondScaleInterval * j;
                     if (IsInCurveY(yGrid2Pos))
                     {
                         g.DrawLine(graphProperties.SecondGridPen, 0, yGrid2Pos,
@@ -248,23 +151,23 @@ namespace RealTimeGraph
             StringFormat centerFormat = new StringFormat();
             centerFormat.Alignment = StringAlignment.Center;
             // 绘制其他各级刻度线， 以及1级刻度值
-            float xScale1Start = pbAxisY.Width + (xScale1Min - graphData.DisplayRect.XMin) * scaleX;
-            for (int i = 0; i < xScale1Sum; i++)
+            float xScale1Start = pbAxisY.Width + (axisX.FirstScaleRange.Min - graphData.DisplayRect.XMin) * axisX.UnitLenght;
+            for (int i = 0; i < axisX.SumOfFirstScale; i++)
             {
-                float xScale1Pos = xScale1Start + xScale1Length * i;   // 1级刻度坐标位置
+                float xScale1Pos = xScale1Start + axisX.FirstScaleInterval * i;   // 1级刻度坐标位置
                 if (IsInAxisX(xScale1Pos))
                 {
                     g.DrawLine(graphProperties.FirstScalePen, xScale1Pos, 0,
                     xScale1Pos, GraphProperties.FIRST_SCALE_LENGTH);
-                    float xScale1Value = xScale1Min + (float)graphData.DisplayWeightX * i / xScale1Num;  // 1级刻度处坐标值
+                    float xScale1Value = axisX.FirstScaleRange.Min + (float)graphData.DisplayWeightX * i / axisX.NumOfFirstScalePerWeight;  // 1级刻度处坐标值
                     g.DrawString(xScale1Value.ToString(), graphProperties.FirstScaleFont, Brushes.Black,
                         xScale1Pos, GraphProperties.BORDER_LENGTH, centerFormat);
                 }
 
 
-                for (int j = 1; j < xScale2Num; j++)
+                for (int j = 1; j < axisX.NumOfSecondScalePerFirstScale; j++)
                 {
-                    float xScale2Pos = xScale1Pos + xScale2Length * j;
+                    float xScale2Pos = xScale1Pos + axisX.SecondScaleInterval * j;
                     if (IsInAxisX(xScale2Pos))
                     {
                         g.DrawLine(graphProperties.SecondScalePen, xScale2Pos, 0,
@@ -318,22 +221,22 @@ namespace RealTimeGraph
             scaleYFormat.Alignment = StringAlignment.Far;
             scaleYFormat.LineAlignment = StringAlignment.Center;
             float yScale1Start = pbAxisY.Height - GraphProperties.CURVE_HEIGHT_PADDING
-                - (yScale1Min - graphData.DisplayRect.YMin) * scaleY;
-            for (int i = 0; i < yScale1Sum; i++)
+                - (axisY.FirstScaleRange.Min - graphData.DisplayRect.YMin) * axisY.UnitLenght;
+            for (int i = 0; i < axisY.SumOfFirstScale; i++)
             {
-                float yScale1Pos = yScale1Start - yScale1Length * i;   // 1级刻度坐标位置
+                float yScale1Pos = yScale1Start - axisY.FirstScaleInterval * i;   // 1级刻度坐标位置
                 if (IsInAxisY(yScale1Pos))
                 {
                     g.DrawLine(graphProperties.FirstScalePen, pbAxisY.Width - 1 - GraphProperties.FIRST_SCALE_LENGTH, yScale1Pos,
                     pbAxisY.Width - 1, yScale1Pos);
-                    double yScale1Value = yScale1Min + yScale1 * i / yScale1Num;  // 1级刻度处坐标值
+                    double yScale1Value = axisY.FirstScaleRange.Min + (float)graphData.DisplayWeightY * i / axisY.NumOfFirstScalePerWeight;  // 1级刻度处坐标值
                     g.DrawString(yScale1Value.ToString("#0.##"), graphProperties.FirstScaleFont, Brushes.Black,
                         pbAxisY.Width - 1 - GraphProperties.BORDER_LENGTH, yScale1Pos, scaleYFormat);
                 }
 
-                for (int j = 1; j < yScale2Num; j++)
+                for (int j = 1; j < axisY.NumOfSecondScalePerFirstScale; j++)
                 {
-                    float yScale2Pos = yScale1Pos - yScale2Length * j;
+                    float yScale2Pos = yScale1Pos - axisY.SecondScaleInterval * j;
                     if (IsInAxisY(yScale2Pos))
                     {
                         g.DrawLine(graphProperties.SecondScalePen, pbAxisY.Width - 1, yScale2Pos,

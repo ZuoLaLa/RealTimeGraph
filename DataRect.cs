@@ -7,63 +7,63 @@ namespace RealTimeGraph
 {
     class DataRect
     {
-        private DataRange axisX;
-        private DataRange axisY;
+        public DataRange XAxisRange { set; get; }
+        public DataRange YAxisRange { set; get; }
 
         public float XMin
         {
-            get { return axisX.Min; }
-            set { axisX.Min = value; }
+            get { return XAxisRange.Min; }
+            set { XAxisRange.Min = value; }
         }
 
         public float XMax
         {
-            get { return axisX.Max; }
-            set { axisX.Max = value; }
+            get { return XAxisRange.Max; }
+            set { XAxisRange.Max = value; }
         }
 
         public float YMin
         {
-            get { return axisY.Min; }
-            set { axisY.Min = value; }
+            get { return YAxisRange.Min; }
+            set { YAxisRange.Min = value; }
         }
 
         public float YMax
         {
-            get { return axisY.Max; }
-            set { axisY.Max = value; }
+            get { return YAxisRange.Max; }
+            set { YAxisRange.Max = value; }
         }
 
         public float XRange
         {
-            get { return axisX.Range; }
+            get { return XAxisRange.Range; }
         }
 
         public float YRange
         {
-            get { return axisY.Range; }
+            get { return YAxisRange.Range; }
         }
 
         public decimal WeightX
         {
-            get { return axisX.Weight; }
+            get { return XAxisRange.Weight; }
         }
 
         public decimal WeightY
         {
-            get { return axisY.Weight; }
+            get { return YAxisRange.Weight; }
         }
 
         public DataRect()
         {
-            axisX = new DataRange();
-            axisY = new DataRange();
+            XAxisRange = new DataRange();
+            YAxisRange = new DataRange();
         }
 
         public DataRect(float xMin, float xMax, float yMin, float yMax)
         {
-            axisX = new DataRange(xMin, xMax);
-            axisY = new DataRange(yMin, yMax);
+            XAxisRange = new DataRange(xMin, xMax);
+            YAxisRange = new DataRange(yMin, yMax);
         }
 
         public void UpdateRect(float xMin, float xMax, float yMin, float yMax)

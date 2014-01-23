@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataAxis.cs" />
     <Compile Include="DataGraph.cs" />
     <Compile Include="DataRange.cs" />
     <Compile Include="DataRect.cs" />
