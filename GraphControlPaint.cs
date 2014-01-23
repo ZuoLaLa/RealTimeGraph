@@ -35,7 +35,6 @@ namespace RealTimeGraph
         float scaleY;
         float xScale1Min;   // X 轴上一级刻度的最小值
         float xScale1Max;
-        float xScale1;      // X 轴权值
         int xScale1Num;      // 单位权值内的一级刻度划分数
         int xScale1Sum;      // 一级刻度划分总数
         float xScale1Length;// 一级刻度间隔
@@ -46,12 +45,12 @@ namespace RealTimeGraph
         private void UpdateAxisScale()
         {
             scaleX = drawAreaSize.Width / graphData.DisplayRect.XRange;
-            getScale1Limits(graphData.DisplayRect.XMin, graphData.DisplayRect.XMax,
-                out xScale1Min, out xScale1Max, out xScale1);
-            xScale1Num = getScaleNum(drawAreaSize.Width * xScale1 / graphData.DisplayRect.XRange,
+            GetScale1Limits();
+            xScale1Num = getScaleNum(drawAreaSize.Width * (float)graphData.DisplayWeightX
+                / graphData.DisplayRect.XRange,
                 GraphProperties.FIRST_SCALE_MIN_LENGTH);
-            xScale1Sum = (int)((xScale1Max - xScale1Min) / xScale1 * xScale1Num);
-            xScale1Length = drawAreaSize.Width * xScale1
+            xScale1Sum = (int)((xScale1Max - xScale1Min) / (float)graphData.DisplayWeightX * xScale1Num);
+            xScale1Length = drawAreaSize.Width * (float)graphData.DisplayWeightX
                 / (graphData.DisplayRect.XRange * xScale1Num);
             xScale2Num = getScaleNum(xScale1Length, GraphProperties.SECOND_SCALE_MIN_LENGTH);
             xScale2Length = xScale1Length / xScale2Num;
@@ -66,6 +65,16 @@ namespace RealTimeGraph
                 / (graphData.DisplayRect.YRange * yScale1Num);
             yScale2Num = getScaleNum(yScale1Length, GraphProperties.SECOND_SCALE_MIN_LENGTH);
             yScale2Length = yScale1Length / yScale2Num;
+        }
+
+        private void GetScale1Limits()
+        {
+            xScale1Max = Convert.ToSingle(
+                Math.Ceiling(Convert.ToDecimal(graphData.DisplayRect.XMax)
+                / graphData.DisplayWeightX) * graphData.DisplayWeightX);
+            xScale1Min = Convert.ToSingle(
+                Math.Floor(Convert.ToDecimal(graphData.DisplayRect.XMin)
+                / graphData.DisplayWeightX) * graphData.DisplayWeightX);
         }
 
         /// <summary>获取友好坐标系统下的一级坐标显示范围。
@@ -247,7 +256,7 @@ namespace RealTimeGraph
                 {
                     g.DrawLine(graphProperties.FirstScalePen, xScale1Pos, 0,
                     xScale1Pos, GraphProperties.FIRST_SCALE_LENGTH);
-                    float xScale1Value = xScale1Min + xScale1 * i / xScale1Num;  // 1级刻度处坐标值
+                    float xScale1Value = xScale1Min + (float)graphData.DisplayWeightX * i / xScale1Num;  // 1级刻度处坐标值
                     g.DrawString(xScale1Value.ToString(), graphProperties.FirstScaleFont, Brushes.Black,
                         xScale1Pos, GraphProperties.BORDER_LENGTH, centerFormat);
                 }

@@ -56,6 +56,11 @@ namespace RealTimeGraph
         // 当前显示波形的数据范围
         public DataRect DisplayRect;
 
+        public decimal DisplayWeightX
+        {
+            get { return DisplayRect.WeightX; }
+        }
+
         public DataGraph()
         {
             XDataAccuracy = DEFAULT_DATA_X_ACCURACY;

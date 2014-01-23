@@ -44,6 +44,16 @@ namespace RealTimeGraph
             get { return axisY.Range; }
         }
 
+        public decimal WeightX
+        {
+            get { return axisX.Weight; }
+        }
+
+        public decimal WeightY
+        {
+            get { return axisY.Weight; }
+        }
+
         public DataRect()
         {
             axisX = new DataRange();
