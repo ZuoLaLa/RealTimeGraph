@@ -47,69 +47,46 @@ namespace RealTimeGraph
         /// <param name="g"></param>
         private void DrawGrid(Graphics g)
         {
-            float xGrid1Start = (axisX.FirstScaleRange.Min - graphData.DisplayRect.XMin) * axisX.UnitLenght;
+            DrawVerticalGrid(g);
+            DrawHorizontalGrid(g);
+        }
 
+        private void DrawVerticalGrid(Graphics g)
+        {
+            float xGrid1Start =
+                (axisX.FirstScaleRange.Min - graphData.DisplayRect.XMin)
+                *axisX.UnitLenght;
             for (int i = 0; i < axisX.SumOfFirstScale; i++)
             {
-                float xGrid1Pos = xGrid1Start + axisX.FirstScaleInterval * i;
-                if (IsInCurveX(xGrid1Pos))
-                {
-                    g.DrawLine(graphProperties.FirstGridPen, xGrid1Pos, 0,
-                        xGrid1Pos, pbCurve.Height);
-                }
-
-
+                float xGrid1Pos = xGrid1Start + axisX.FirstScaleInterval*i;
+                g.DrawLine(graphProperties.FirstGridPen, xGrid1Pos, 0,
+                    xGrid1Pos, pbCurve.Height);
                 for (int j = 1; j < axisX.NumOfSecondScalePerFirstScale; j++)
                 {
-                    float xGrid2Pos = xGrid1Pos + axisX.SecondScaleInterval * j;
-                    if (IsInCurveX(xGrid2Pos))
-                    {
-                        g.DrawLine(graphProperties.SecondGridPen, xGrid2Pos, 0,
-                            xGrid2Pos, pbCurve.Height);
-                    }
+                    float xGrid2Pos = xGrid1Pos + axisX.SecondScaleInterval*j;
+                    g.DrawLine(graphProperties.SecondGridPen, xGrid2Pos, 0,
+                        xGrid2Pos, pbCurve.Height);
                 }
             }
+        }
 
+        private void DrawHorizontalGrid(Graphics g)
+        {
             float yGrid1Start = pbCurve.Height - GraphProperties.CURVE_HEIGHT_PADDING
-                - (axisY.FirstScaleRange.Min - graphData.DisplayRect.YMin) * axisY.UnitLenght;
+                                - (axisY.FirstScaleRange.Min - graphData.DisplayRect.YMin)
+                                *axisY.UnitLenght;
             for (int i = 0; i <= axisY.SumOfFirstScale; i++)
             {
-                float yGrid1Pos = yGrid1Start - axisY.FirstScaleInterval * i;
-                if (IsInCurveY(yGrid1Pos))
-                {
-                    g.DrawLine(graphProperties.FirstGridPen, 0, yGrid1Pos,
-                        pbCurve.Width, yGrid1Pos);
-                }
-
+                float yGrid1Pos = yGrid1Start - axisY.FirstScaleInterval*i;
+                g.DrawLine(graphProperties.FirstGridPen, 0, yGrid1Pos,
+                    pbCurve.Width, yGrid1Pos);
                 for (int j = 1; j < axisY.NumOfSecondScalePerFirstScale; j++)
                 {
-                    float yGrid2Pos = yGrid1Pos - axisY.SecondScaleInterval * j;
-                    if (IsInCurveY(yGrid2Pos))
-                    {
-                        g.DrawLine(graphProperties.SecondGridPen, 0, yGrid2Pos,
-                            pbCurve.Width, yGrid2Pos);
-                    }
+                    float yGrid2Pos = yGrid1Pos - axisY.SecondScaleInterval*j;
+                    g.DrawLine(graphProperties.SecondGridPen, 0, yGrid2Pos,
+                        pbCurve.Width, yGrid2Pos);
                 }
             }
-        }
-
-        /// <summary>判断纵向网格位置是否位于可绘制区域内
-        /// </summary>
-        /// <param name="scalePos">纵向网格位置</param>
-        /// <returns>若坐标位置位于可绘制区域内，则返回true.</returns>
-        private bool IsInCurveX(float scalePos)
-        {
-            return scalePos > 0 && scalePos < pbCurve.Width - 1;
-        }
-
-        /// <summary>判断横向网格位置是否位于可绘制区域内
-        /// </summary>
-        /// <param name="scalePos">横向网格位置</param>
-        /// <returns>若坐标位置位于可绘制区域内，则返回true.</returns>
-        private bool IsInCurveY(float scalePos)
-        {
-            return scalePos >= 1 &&
-                scalePos <= pbCurve.Height - 1;
         }
 
         private void DrawCurve(Graphics g)
