@@ -64,9 +64,6 @@
     <Compile Include="GraphControlPaint.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GraphControlPrivateFields.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="GraphControlProperties.cs">
       <SubType>UserControl</SubType>
     </Compile>

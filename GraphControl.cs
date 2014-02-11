@@ -6,6 +6,8 @@ namespace RealTimeGraph
 {
     public partial class GraphControl : UserControl
     {
+        private GraphProperties graphProperties;
+
         public GraphControl()
         {
             InitializeComponent();
