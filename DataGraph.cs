@@ -24,10 +24,7 @@ namespace RealTimeGraph
                     throw new ArgumentException(
                         "The data accuracy must be greater than zero!");
                 }
-                else
-                {
-                    xDataAccuracy = value;
-                }
+                xDataAccuracy = value;
             }
         }
 
@@ -42,18 +39,12 @@ namespace RealTimeGraph
                     throw new ArgumentException(
                         "The data accuracy must be greater than zero!");
                 }
-                else
-                {
-                    yDataAccuracy = value;
-                }
+                yDataAccuracy = value;
             }
         }
 
-        /// <summary>待绘制的数据点集
-        /// </summary>
-        private List<PointF> pointsList;
-
         // 当前显示波形的数据范围
+
         public DataRect DisplayRect;
 
         public decimal DisplayWeightX
@@ -66,16 +57,9 @@ namespace RealTimeGraph
             get { return DisplayRect.WeightY; }
         }
 
-        public DataGraph()
-        {
-            XDataAccuracy = DEFAULT_DATA_X_ACCURACY;
-            YDataAccuracy = DEFAULT_DATA_Y_ACCURACY;
-            XDataList = new List<float>();
-            YDataList = new List<float>();
-            pointsList = new List<PointF>();
-            DisplayRect = new DataRect();
-            dataRect = new DataRect();
-        }
+        /// <summary>待绘制的数据点集
+        /// </summary>
+        private List<PointF> pointsList;
 
         /// <summary>数据转换为待绘制区域上的点集
         /// </summary>
@@ -118,6 +102,7 @@ namespace RealTimeGraph
                 dataRect.YMax = YDataList.Max();
             }
         }
+
         /// <summary>根据画图模式和数据调整坐标显示
         /// </summary>
         public void UpdateDisplayRect(DataRect initialRect, GraphMode graphStyle)
@@ -155,12 +140,23 @@ namespace RealTimeGraph
             }
         }
 
-        public void ResetDisplayRectWidthToInitial(DataRect initialRect)
+        public void ResetDisplayRectWidth(DataRect initialRect)
         {
             DisplayRect.XMax = dataRect.XMax;
             DisplayRect.XMin = ((DisplayRect.XMax - initialRect.XRange) > initialRect.XMin)
                 ? (DisplayRect.XMax - initialRect.XRange)
                 : initialRect.XMin;
+        }
+
+        public DataGraph()
+        {
+            XDataAccuracy = DEFAULT_DATA_X_ACCURACY;
+            YDataAccuracy = DEFAULT_DATA_Y_ACCURACY;
+            XDataList = new List<float>();
+            YDataList = new List<float>();
+            pointsList = new List<PointF>();
+            DisplayRect = new DataRect();
+            dataRect = new DataRect();
         }
     }
 }

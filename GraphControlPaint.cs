@@ -532,7 +532,7 @@ namespace RealTimeGraph
             if (GraphStyle == GraphMode.FixMoveMode
                 && e.Button == MouseButtons.Middle)
             {
-                graphData.ResetDisplayRectWidthToInitial(initialRect);
+                graphData.ResetDisplayRectWidth(initialRect);
             }
         }
 
