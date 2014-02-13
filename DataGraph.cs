@@ -10,8 +10,7 @@ namespace RealTimeGraph
     {
         public const float DEFAULT_DATA_X_ACCURACY = 1F;
         public const float DEFAULT_DATA_Y_ACCURACY = 0.1F;
-        public List<float> XDataList { get; set; }
-        public List<float> YDataList { get; set; }
+        public DataPairList<float> DataList { get; set; }
 
         private float xDataAccuracy;
         public float XDataAccuracy
@@ -68,23 +67,19 @@ namespace RealTimeGraph
         public PointF[] GetPointsToDraw(int width, int height)
         {
             pointsList.Clear();
-            if (DisplayRect.XRange > 0.9F * XDataAccuracy ||
-                DisplayRect.YRange > 0.9F * YDataAccuracy)
+            if ((DisplayRect.XRange > 0.9F * XDataAccuracy ||
+                 DisplayRect.YRange > 0.9F * YDataAccuracy)
+                 && !DataList.IsNullOrEmpty())
             {
-                if (XDataList != null)
+                foreach (DataPair<float> dataPair in DataList)
                 {
-                    PointF currentPointF = new PointF();
-                    for (int i = 0; i < XDataList.Count; i++)
+                    pointsList.Add(new PointF
                     {
-
-                        // 转换为像素坐标
-                        currentPointF.X = (XDataList[i] - DisplayRect.XMin) *
-                            (width - 1) / DisplayRect.XRange;
-                        currentPointF.Y = (YDataList[i] - DisplayRect.YMin) *
-                            (height - 1) / DisplayRect.YRange;
-                        // 装载坐标
-                        pointsList.Add(currentPointF);
-                    }
+                        X = (dataPair.X - DisplayRect.XMin) * (width - 1)
+                                / DisplayRect.XRange,
+                        Y = (dataPair.Y - DisplayRect.YMin) * (height - 1)
+                                / DisplayRect.YRange
+                    });
                 }
             }
             return pointsList.ToArray();
@@ -94,20 +89,17 @@ namespace RealTimeGraph
 
         public void UpdateDataRect()
         {
-            if (XDataList.Count > 0)
-            {
-                dataRect.XMin = XDataList.Min();
-                dataRect.XMax = XDataList.Max();
-                dataRect.YMin = YDataList.Min();
-                dataRect.YMax = YDataList.Max();
-            }
+            dataRect.XMin = DataList.MinX ?? 0;
+            dataRect.XMax = DataList.MaxX ?? 0;
+            dataRect.YMin = DataList.MinY ?? 0;
+            dataRect.YMax = DataList.MaxY ?? 0;
         }
 
         /// <summary>根据画图模式和数据调整坐标显示
         /// </summary>
         public void UpdateDisplayRect(DataRect initialRect, GraphMode graphStyle)
         {
-            if (XDataList != null && XDataList.Count > 0)
+            if (!DataList.IsNullOrEmpty())
             {
                 if (graphStyle == GraphMode.GlobalMode)
                 {
@@ -152,8 +144,7 @@ namespace RealTimeGraph
         {
             XDataAccuracy = DEFAULT_DATA_X_ACCURACY;
             YDataAccuracy = DEFAULT_DATA_Y_ACCURACY;
-            XDataList = new List<float>();
-            YDataList = new List<float>();
+            DataList = new DataPairList<float>();
             pointsList = new List<PointF>();
             DisplayRect = new DataRect();
             dataRect = new DataRect();
