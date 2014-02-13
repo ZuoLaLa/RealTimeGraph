@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 
 namespace RealTimeGraph
 {
     class DataGraph
     {
-        public DataPairList<float> DataList { get; set; }
+        public DataPairLists<float> DataLists { get; set; }
 
         /// <summary>
         /// 当前显示波形的数据范围
@@ -29,31 +27,31 @@ namespace RealTimeGraph
         /// </summary>
         public void UpdateDisplayRect(DataRect initialRect, GraphMode graphStyle)
         {
-            if (!DataList.IsNullOrEmpty())
+            if (DataLists.HasData())
             {
                 if (graphStyle == GraphMode.GlobalMode)
                 {
-                    DisplayRect.XMin = (DataList.MinX < initialRect.XMin)
-                        ? DataList.MinX : initialRect.XMin;
-                    DisplayRect.XMax = (DataList.MaxX > initialRect.XMax)
-                        ? DataList.MaxX : initialRect.XMax;
-                    DisplayRect.YMin = (DataList.MinY < initialRect.YMin)
-                        ? DataList.MinY : initialRect.YMin;
-                    DisplayRect.YMax = (DataList.MaxY > initialRect.YMax)
-                        ? DataList.MaxY : initialRect.YMax;
+                    DisplayRect.XMin = (DataLists.MinX < initialRect.XMin)
+                        ? DataLists.MinX : initialRect.XMin;
+                    DisplayRect.XMax = (DataLists.MaxX > initialRect.XMax)
+                        ? DataLists.MaxX : initialRect.XMax;
+                    DisplayRect.YMin = (DataLists.MinY < initialRect.YMin)
+                        ? DataLists.MinY : initialRect.YMin;
+                    DisplayRect.YMax = (DataLists.MaxY > initialRect.YMax)
+                        ? DataLists.MaxY : initialRect.YMax;
                 }
                 else if (graphStyle == GraphMode.FixMoveMode)
                 {
-                    if (DataList.MaxX > DisplayRect.XMax)
+                    if (DataLists.MaxX > DisplayRect.XMax)
                     {
-                        DisplayRect.XMin += DataList.MaxX - DisplayRect.XMax;
-                        DisplayRect.XMax = DataList.MaxX;
+                        DisplayRect.XMin += DataLists.MaxX - DisplayRect.XMax;
+                        DisplayRect.XMax = DataLists.MaxX;
                     }
 
-                    DisplayRect.YMin = (DataList.MinY < DisplayRect.YMin)
-                        ? DataList.MinY : DisplayRect.YMin;
-                    DisplayRect.YMax = (DataList.MaxY > DisplayRect.YMax)
-                        ? DataList.MaxY : DisplayRect.YMax;
+                    DisplayRect.YMin = (DataLists.MinY < DisplayRect.YMin)
+                        ? DataLists.MinY : DisplayRect.YMin;
+                    DisplayRect.YMax = (DataLists.MaxY > DisplayRect.YMax)
+                        ? DataLists.MaxY : DisplayRect.YMax;
                 }
             }
             else
@@ -64,47 +62,47 @@ namespace RealTimeGraph
 
         public void ResetDisplayRectWidth(DataRect initialRect)
         {
-            DisplayRect.XMax = DataList.MaxX;
+            DisplayRect.XMax = DataLists.MaxX;
             DisplayRect.XMin = ((DisplayRect.XMax - initialRect.XRange) > initialRect.XMin)
                 ? (DisplayRect.XMax - initialRect.XRange)
                 : initialRect.XMin;
         }
 
-        /// <summary>待绘制的数据点集
-        /// </summary>
-        private List<PointF> pointsList;
-
         /// <summary>数据转换为待绘制区域上的点集
         /// </summary>
         /// <param name="width">待绘制区域的宽度</param>
         /// <param name="height">待绘制区域的高度</param>
-        public PointF[] GetPointsToDraw(int width, int height)
+        public List<PointF[]> GetPointsToDraw(int width, int height)
         {
-            pointsList.Clear();
+            List<PointF[]> pointsLists = new List<PointF[]>();
             if ((DisplayRect.XRange > 0.9F * XDataAccuracy ||
                  DisplayRect.YRange > 0.9F * YDataAccuracy)
-                && !DataList.IsNullOrEmpty())
+                && DataLists.HasData())
             {
-                foreach (DataPair<float> dataPair in DataList)
+                foreach (DataPairList<float> dataList in DataLists)
                 {
-                    pointsList.Add(new PointF
+                    List<PointF> points = new List<PointF>();
+                    foreach (DataPair<float> dataPair in dataList)
                     {
-                        X = (dataPair.X - DisplayRect.XMin) * (width - 1)
-                            / DisplayRect.XRange,
-                        Y = (dataPair.Y - DisplayRect.YMin) * (height - 1)
-                            / DisplayRect.YRange
-                    });
+                        points.Add(new PointF
+                        {
+                            X = (dataPair.X - DisplayRect.XMin) * (width - 1)
+                                / DisplayRect.XRange,
+                            Y = (dataPair.Y - DisplayRect.YMin) * (height - 1)
+                                / DisplayRect.YRange
+                        });
+                    }
+                    pointsLists.Add(points.ToArray());
                 }
             }
-            return pointsList.ToArray();
+            return pointsLists;
         }
 
         public DataGraph()
         {
             XDataAccuracy = DEFAULT_DATA_X_ACCURACY;
             YDataAccuracy = DEFAULT_DATA_Y_ACCURACY;
-            DataList = new DataPairList<float>();
-            pointsList = new List<PointF>();
+            DataLists = new DataPairLists<float>();
             DisplayRect = new DataRect();
         }
 

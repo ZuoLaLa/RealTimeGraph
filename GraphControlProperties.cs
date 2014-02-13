@@ -25,10 +25,10 @@ namespace RealTimeGraph
         }
 
         private DataGraph graphData;
-        public DataPairList<float> DataList
+        public DataPairLists<float> DataLists
         {
-            get { return graphData.DataList; }
-            set { graphData.DataList = value; }
+            get { return graphData.DataLists; }
+            set { graphData.DataLists = value; }
         }
 
         // 初始状态下的 X, Y 起始和终止坐标

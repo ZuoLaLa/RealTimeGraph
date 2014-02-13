@@ -47,6 +47,7 @@
     <Compile Include="DataGraph.cs" />
     <Compile Include="DataPair.cs" />
     <Compile Include="DataPairList.cs" />
+    <Compile Include="DataPairLists.cs" />
     <Compile Include="DataRange.cs" />
     <Compile Include="DataRect.cs" />
     <Compile Include="GraphProperties.cs" />

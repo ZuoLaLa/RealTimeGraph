@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -94,10 +96,16 @@ namespace RealTimeGraph
         {
             TranslateToCartesian(g);
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            PointF[] points = graphData.GetPointsToDraw(drawAreaSize.Width, drawAreaSize.Height);
-            if (points != null && points.Length > 1)
+            List<PointF[]> pointsLists = graphData.GetPointsToDraw(
+                drawAreaSize.Width, drawAreaSize.Height);
+            for (int i = 0; i < pointsLists.Count; i++)
             {
-                g.DrawLines(graphProperties.CurvePen, points);
+                if (pointsLists[i] != null && pointsLists[i].Length > 1)
+                {
+                    g.DrawLines(
+                        graphProperties.CurvePens[i % graphProperties.CurvePens.Count()],
+                        pointsLists[i]);
+                }
             }
         }
 
