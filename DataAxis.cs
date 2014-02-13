@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 
 namespace RealTimeGraph
 {
@@ -16,27 +12,28 @@ namespace RealTimeGraph
         public float FirstScaleInterval { get; set; }
         public float SecondScaleInterval { get; set; }
 
-        public DataAxis()
-        {
-            FirstScaleRange = new DataRange();
-        }
-
         public void Update(DataRange axisRange, int axisLength)
         {
             UnitLenght = axisLength / axisRange.Range;
-            FirstScaleRange.Min = Convert.ToSingle(
-                Math.Floor(Convert.ToDecimal(axisRange.Min)
-                / axisRange.Weight) * axisRange.Weight);
-            FirstScaleRange.Max = Convert.ToSingle(
-                Math.Ceiling(Convert.ToDecimal(axisRange.Max)
-                / axisRange.Weight) * axisRange.Weight);
-            NumOfFirstScalePerWeight = GetScaleNum(axisLength * (float)axisRange.Weight
-                / axisRange.Range,
+            FirstScaleRange = new DataRange
+            {
+                Min = Convert.ToSingle(
+                    Math.Floor(Convert.ToDecimal(axisRange.Min)
+                    / axisRange.Weight) * axisRange.Weight),
+                Max = Convert.ToSingle(
+                    Math.Ceiling(Convert.ToDecimal(axisRange.Max)
+                    / axisRange.Weight) * axisRange.Weight)
+
+            };
+            NumOfFirstScalePerWeight = GetScaleNum(
+                axisLength * (float)axisRange.Weight / axisRange.Range,
                 GraphProperties.FIRST_SCALE_MIN_INTERVAL);
-            SumOfFirstScale = (int)(FirstScaleRange.Range / (float)axisRange.Weight * NumOfFirstScalePerWeight);
+            SumOfFirstScale = (int)(FirstScaleRange.Range * NumOfFirstScalePerWeight
+                / (float)axisRange.Weight);
             FirstScaleInterval = axisLength * (float)axisRange.Weight
                 / (axisRange.Range * NumOfFirstScalePerWeight);
-            NumOfSecondScalePerFirstScale = GetScaleNum(FirstScaleInterval, GraphProperties.SECOND_SCALE_MIN_INTERVAL);
+            NumOfSecondScalePerFirstScale = GetScaleNum(
+                FirstScaleInterval, GraphProperties.SECOND_SCALE_MIN_INTERVAL);
             SecondScaleInterval = FirstScaleInterval / NumOfSecondScalePerFirstScale;
         }
 

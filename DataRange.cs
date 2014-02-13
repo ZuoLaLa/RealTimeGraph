@@ -3,18 +3,14 @@ using System.IO;
 
 namespace RealTimeGraph
 {
-    public class DataRange
+    public struct DataRange
     {
-        public float Min { get; set; }
-        public float Max { get; set; }
+        public float Min;
+        public float Max;
 
         public float Range
         {
             get { return Max - Min; }
-        }
-
-        public DataRange()
-        {
         }
 
         public DataRange(float min, float max)
@@ -23,11 +19,8 @@ namespace RealTimeGraph
             {
                 throw new ArgumentException("Min can not be larger than max.");
             }
-            else
-            {
-                Min = min;
-                Max = max;
-            }
+            Min = min;
+            Max = max;
         }
 
         /// <summary>

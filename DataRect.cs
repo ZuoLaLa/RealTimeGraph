@@ -13,25 +13,45 @@ namespace RealTimeGraph
         public float XMin
         {
             get { return XAxisRange.Min; }
-            set { XAxisRange.Min = value; }
+            set
+            {
+                DataRange xDataRange = XAxisRange;
+                xDataRange.Min = value;
+                XAxisRange = xDataRange;
+            }
         }
 
         public float XMax
         {
             get { return XAxisRange.Max; }
-            set { XAxisRange.Max = value; }
+            set
+            {
+                DataRange xDataRange = XAxisRange;
+                xDataRange.Max = value;
+                XAxisRange = xDataRange;
+            }
         }
 
         public float YMin
         {
             get { return YAxisRange.Min; }
-            set { YAxisRange.Min = value; }
+            set
+            {
+                DataRange yDataRange = YAxisRange;
+                yDataRange.Min = value;
+                YAxisRange = yDataRange;
+            }
         }
 
         public float YMax
         {
             get { return YAxisRange.Max; }
-            set { YAxisRange.Max = value; }
+            set
+            {
+                DataRange yDataRange = YAxisRange;
+                yDataRange.Max = value;
+                YAxisRange = yDataRange;
+            }
         }
 
         public float XRange
@@ -56,8 +76,6 @@ namespace RealTimeGraph
 
         public DataRect()
         {
-            XAxisRange = new DataRange();
-            YAxisRange = new DataRange();
         }
 
         public DataRect(float xMin, float xMax, float yMin, float yMax)
