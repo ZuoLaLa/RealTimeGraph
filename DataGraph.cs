@@ -8,42 +8,20 @@ namespace RealTimeGraph
 {
     class DataGraph
     {
-        public const float DEFAULT_DATA_X_ACCURACY = 1F;
-        public const float DEFAULT_DATA_Y_ACCURACY = 0.1F;
         public DataPairList<float> DataList { get; set; }
+        private DataRect dataRect;
 
-        private float xDataAccuracy;
-        public float XDataAccuracy
+        public void UpdateDataRect()
         {
-            get { return xDataAccuracy; }
-            set
-            {
-                if (value <= 0)
-                {
-                    throw new ArgumentException(
-                        "The data accuracy must be greater than zero!");
-                }
-                xDataAccuracy = value;
-            }
+            dataRect.XMin = DataList.MinX ?? 0;
+            dataRect.XMax = DataList.MaxX ?? 0;
+            dataRect.YMin = DataList.MinY ?? 0;
+            dataRect.YMax = DataList.MaxY ?? 0;
         }
 
-        private float yDataAccuracy;
-        public float YDataAccuracy
-        {
-            get { return yDataAccuracy; }
-            set
-            {
-                if (value <= 0)
-                {
-                    throw new ArgumentException(
-                        "The data accuracy must be greater than zero!");
-                }
-                yDataAccuracy = value;
-            }
-        }
-
-        // 当前显示波形的数据范围
-
+        /// <summary>
+        /// 当前显示波形的数据范围
+        /// </summary>
         public DataRect DisplayRect;
 
         public decimal DisplayWeightX
@@ -54,45 +32,6 @@ namespace RealTimeGraph
         public decimal DisplayWeightY
         {
             get { return DisplayRect.WeightY; }
-        }
-
-        /// <summary>待绘制的数据点集
-        /// </summary>
-        private List<PointF> pointsList;
-
-        /// <summary>数据转换为待绘制区域上的点集
-        /// </summary>
-        /// <param name="width">待绘制区域的宽度</param>
-        /// <param name="height">待绘制区域的高度</param>
-        public PointF[] GetPointsToDraw(int width, int height)
-        {
-            pointsList.Clear();
-            if ((DisplayRect.XRange > 0.9F * XDataAccuracy ||
-                 DisplayRect.YRange > 0.9F * YDataAccuracy)
-                 && !DataList.IsNullOrEmpty())
-            {
-                foreach (DataPair<float> dataPair in DataList)
-                {
-                    pointsList.Add(new PointF
-                    {
-                        X = (dataPair.X - DisplayRect.XMin) * (width - 1)
-                                / DisplayRect.XRange,
-                        Y = (dataPair.Y - DisplayRect.YMin) * (height - 1)
-                                / DisplayRect.YRange
-                    });
-                }
-            }
-            return pointsList.ToArray();
-        }
-
-        private DataRect dataRect;
-
-        public void UpdateDataRect()
-        {
-            dataRect.XMin = DataList.MinX ?? 0;
-            dataRect.XMax = DataList.MaxX ?? 0;
-            dataRect.YMin = DataList.MinY ?? 0;
-            dataRect.YMax = DataList.MaxY ?? 0;
         }
 
         /// <summary>根据画图模式和数据调整坐标显示
@@ -140,6 +79,35 @@ namespace RealTimeGraph
                 : initialRect.XMin;
         }
 
+        /// <summary>待绘制的数据点集
+        /// </summary>
+        private List<PointF> pointsList;
+
+        /// <summary>数据转换为待绘制区域上的点集
+        /// </summary>
+        /// <param name="width">待绘制区域的宽度</param>
+        /// <param name="height">待绘制区域的高度</param>
+        public PointF[] GetPointsToDraw(int width, int height)
+        {
+            pointsList.Clear();
+            if ((DisplayRect.XRange > 0.9F * XDataAccuracy ||
+                 DisplayRect.YRange > 0.9F * YDataAccuracy)
+                && !DataList.IsNullOrEmpty())
+            {
+                foreach (DataPair<float> dataPair in DataList)
+                {
+                    pointsList.Add(new PointF
+                    {
+                        X = (dataPair.X - DisplayRect.XMin) * (width - 1)
+                            / DisplayRect.XRange,
+                        Y = (dataPair.Y - DisplayRect.YMin) * (height - 1)
+                            / DisplayRect.YRange
+                    });
+                }
+            }
+            return pointsList.ToArray();
+        }
+
         public DataGraph()
         {
             XDataAccuracy = DEFAULT_DATA_X_ACCURACY;
@@ -148,6 +116,38 @@ namespace RealTimeGraph
             pointsList = new List<PointF>();
             DisplayRect = new DataRect();
             dataRect = new DataRect();
+        }
+
+        private const float DEFAULT_DATA_X_ACCURACY = 1F;
+        private const float DEFAULT_DATA_Y_ACCURACY = 0.1F;
+        private float xDataAccuracy;
+        public float XDataAccuracy
+        {
+            get { return xDataAccuracy; }
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentException(
+                        "The data accuracy must be greater than zero!");
+                }
+                xDataAccuracy = value;
+            }
+        }
+
+        private float yDataAccuracy;
+        public float YDataAccuracy
+        {
+            get { return yDataAccuracy; }
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentException(
+                        "The data accuracy must be greater than zero!");
+                }
+                yDataAccuracy = value;
+            }
         }
     }
 }
