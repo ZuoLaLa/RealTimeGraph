@@ -10,7 +10,6 @@ namespace RealTimeGraph
         private void pbCurve_Paint(object sender, PaintEventArgs e)
         {
             UpdateDrawAreaSize();
-            graphData.UpdateDataRect();
             graphData.UpdateDisplayRect(initialRect, GraphStyle);
             UpdateAxisScale();
 

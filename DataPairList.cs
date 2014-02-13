@@ -12,52 +12,24 @@ namespace RealTimeGraph
         public List<T> XDataList { get; set; }
         public List<T> YDataList { get; set; }
 
-        public T? MinX
+        public T MinX
         {
-            get
-            {
-                if (XDataList.IsNullOrEmpty())
-                {
-                    return null;
-                }
-                return XDataList.Min();
-            }
+            get { return XDataList.Min(); }
         }
 
-        public T? MaxX
+        public T MaxX
         {
-            get
-            {
-                if (XDataList.IsNullOrEmpty())
-                {
-                    return null;
-                }
-                return XDataList.Max();
-            }
+            get { return XDataList.Max(); }
         }
 
-        public T? MinY
+        public T MinY
         {
-            get
-            {
-                if (YDataList.IsNullOrEmpty())
-                {
-                    return null;
-                }
-                return YDataList.Min();
-            }
+            get { return YDataList.Min(); }
         }
 
-        public T? MaxY
+        public T MaxY
         {
-            get
-            {
-                if (YDataList.IsNullOrEmpty())
-                {
-                    return null;
-                }
-                return YDataList.Max();
-            }
+            get { return YDataList.Max(); }
         }
 
         public DataPairList()

@@ -9,15 +9,6 @@ namespace RealTimeGraph
     class DataGraph
     {
         public DataPairList<float> DataList { get; set; }
-        private DataRect dataRect;
-
-        public void UpdateDataRect()
-        {
-            dataRect.XMin = DataList.MinX ?? 0;
-            dataRect.XMax = DataList.MaxX ?? 0;
-            dataRect.YMin = DataList.MinY ?? 0;
-            dataRect.YMax = DataList.MaxY ?? 0;
-        }
 
         /// <summary>
         /// 当前显示波形的数据范围
@@ -42,27 +33,27 @@ namespace RealTimeGraph
             {
                 if (graphStyle == GraphMode.GlobalMode)
                 {
-                    DisplayRect.XMin = (dataRect.XMin < initialRect.XMin)
-                        ? dataRect.XMin : initialRect.XMin;
-                    DisplayRect.XMax = (dataRect.XMax > initialRect.XMax)
-                        ? dataRect.XMax : initialRect.XMax;
-                    DisplayRect.YMin = (dataRect.YMin < initialRect.YMin)
-                        ? dataRect.YMin : initialRect.YMin;
-                    DisplayRect.YMax = (dataRect.YMax > initialRect.YMax)
-                        ? dataRect.YMax : initialRect.YMax;
+                    DisplayRect.XMin = (DataList.MinX < initialRect.XMin)
+                        ? DataList.MinX : initialRect.XMin;
+                    DisplayRect.XMax = (DataList.MaxX > initialRect.XMax)
+                        ? DataList.MaxX : initialRect.XMax;
+                    DisplayRect.YMin = (DataList.MinY < initialRect.YMin)
+                        ? DataList.MinY : initialRect.YMin;
+                    DisplayRect.YMax = (DataList.MaxY > initialRect.YMax)
+                        ? DataList.MaxY : initialRect.YMax;
                 }
                 else if (graphStyle == GraphMode.FixMoveMode)
                 {
-                    if (dataRect.XMax > DisplayRect.XMax)
+                    if (DataList.MaxX > DisplayRect.XMax)
                     {
-                        DisplayRect.XMin += dataRect.XMax - DisplayRect.XMax;
-                        DisplayRect.XMax = dataRect.XMax;
+                        DisplayRect.XMin += DataList.MaxX - DisplayRect.XMax;
+                        DisplayRect.XMax = DataList.MaxX;
                     }
 
-                    DisplayRect.YMin = (dataRect.YMin < DisplayRect.YMin)
-                        ? dataRect.YMin : DisplayRect.YMin;
-                    DisplayRect.YMax = (dataRect.YMax > DisplayRect.YMax)
-                        ? dataRect.YMax : DisplayRect.YMax;
+                    DisplayRect.YMin = (DataList.MinY < DisplayRect.YMin)
+                        ? DataList.MinY : DisplayRect.YMin;
+                    DisplayRect.YMax = (DataList.MaxY > DisplayRect.YMax)
+                        ? DataList.MaxY : DisplayRect.YMax;
                 }
             }
             else
@@ -73,7 +64,7 @@ namespace RealTimeGraph
 
         public void ResetDisplayRectWidth(DataRect initialRect)
         {
-            DisplayRect.XMax = dataRect.XMax;
+            DisplayRect.XMax = DataList.MaxX;
             DisplayRect.XMin = ((DisplayRect.XMax - initialRect.XRange) > initialRect.XMin)
                 ? (DisplayRect.XMax - initialRect.XRange)
                 : initialRect.XMin;
@@ -115,7 +106,6 @@ namespace RealTimeGraph
             DataList = new DataPairList<float>();
             pointsList = new List<PointF>();
             DisplayRect = new DataRect();
-            dataRect = new DataRect();
         }
 
         private const float DEFAULT_DATA_X_ACCURACY = 1F;
