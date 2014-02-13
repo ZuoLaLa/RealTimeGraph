@@ -45,10 +45,13 @@
   <ItemGroup>
     <Compile Include="DataAxis.cs" />
     <Compile Include="DataGraph.cs" />
+    <Compile Include="DataPair.cs" />
+    <Compile Include="DataPairList.cs" />
     <Compile Include="DataRange.cs" />
     <Compile Include="DataRect.cs" />
     <Compile Include="GraphProperties.cs" />
     <Compile Include="GraphMode.cs" />
+    <Compile Include="ListUtil.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
