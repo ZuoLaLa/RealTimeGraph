@@ -74,11 +74,10 @@
             // 
             // pbAxisX
             // 
-            this.pbAxisX.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.pbAxisX.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbAxisX.BackColor = System.Drawing.Color.Blue;
-            this.pbAxisX.Location = new System.Drawing.Point(0, 240);
             this.pbAxisX.BackColor = System.Drawing.Color.Gainsboro;
+            this.pbAxisX.Location = new System.Drawing.Point(0, 240);
             this.pbAxisX.Margin = new System.Windows.Forms.Padding(0);
             this.pbAxisX.Name = "pbAxisX";
             this.pbAxisX.Size = new System.Drawing.Size(400, 60);
@@ -88,9 +87,8 @@
             // 
             // pbRight
             // 
-            this.pbRight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.pbRight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbRight.BackColor = System.Drawing.Color.Yellow;
             this.pbRight.BackColor = System.Drawing.Color.Gainsboro;
             this.pbRight.Location = new System.Drawing.Point(360, 0);
             this.pbRight.Margin = new System.Windows.Forms.Padding(0);
@@ -101,9 +99,8 @@
             // 
             // pbTitle
             // 
-            this.pbTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.pbTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbTitle.BackColor = System.Drawing.SystemColors.Control;
             this.pbTitle.BackColor = System.Drawing.Color.Gainsboro;
             this.pbTitle.Location = new System.Drawing.Point(80, 0);
             this.pbTitle.Margin = new System.Windows.Forms.Padding(0);
@@ -115,9 +112,8 @@
             // 
             // pbAxisY
             // 
-            this.pbAxisY.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.pbAxisY.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.pbAxisY.BackColor = System.Drawing.Color.Red;
             this.pbAxisY.BackColor = System.Drawing.Color.Gainsboro;
             this.pbAxisY.Location = new System.Drawing.Point(0, 0);
             this.pbAxisY.Margin = new System.Windows.Forms.Padding(0);
@@ -129,8 +125,8 @@
             // 
             // pbCurve
             // 
-            this.pbCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.pbCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pbCurve.BackColor = System.Drawing.Color.Black;
             this.pbCurve.Location = new System.Drawing.Point(80, 40);
@@ -143,6 +139,7 @@
             this.pbCurve.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseDoubleClick);
             this.pbCurve.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseDown);
             this.pbCurve.MouseEnter += new System.EventHandler(this.pbCurve_MouseEnter);
+            this.pbCurve.MouseLeave += new System.EventHandler(this.pbCurve_MouseLeave);
             this.pbCurve.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseMove);
             this.pbCurve.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseUp);
             this.pbCurve.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseWheel);
