@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panelGraph = new System.Windows.Forms.Panel();
             this.pbZoom = new System.Windows.Forms.PictureBox();
             this.pbAxisX = new System.Windows.Forms.PictureBox();
@@ -35,6 +36,14 @@
             this.pbTitle = new System.Windows.Forms.PictureBox();
             this.pbAxisY = new System.Windows.Forms.PictureBox();
             this.pbCurve = new System.Windows.Forms.PictureBox();
+            this.ctxGraphMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.graphStyleMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.globalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fixedMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.zoomInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dragToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showGridMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.screenShotMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.panelGraph.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbZoom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAxisX)).BeginInit();
@@ -42,6 +51,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pbTitle)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAxisY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbCurve)).BeginInit();
+            this.ctxGraphMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelGraph
@@ -129,6 +139,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pbCurve.BackColor = System.Drawing.Color.Black;
+            this.pbCurve.ContextMenuStrip = this.ctxGraphMenu;
             this.pbCurve.Location = new System.Drawing.Point(80, 40);
             this.pbCurve.Margin = new System.Windows.Forms.Padding(0);
             this.pbCurve.Name = "pbCurve";
@@ -143,6 +154,71 @@
             this.pbCurve.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseMove);
             this.pbCurve.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseUp);
             this.pbCurve.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pbCurve_MouseWheel);
+            // 
+            // ctxGraphMenu
+            // 
+            this.ctxGraphMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.graphStyleMenu,
+            this.showGridMenu,
+            this.screenShotMenu});
+            this.ctxGraphMenu.Name = "ctxGraphMenu";
+            this.ctxGraphMenu.Size = new System.Drawing.Size(153, 92);
+            this.ctxGraphMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ctxGraphMenu_Opening);
+            // 
+            // graphStyleMenu
+            // 
+            this.graphStyleMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.globalToolStripMenuItem,
+            this.fixedMoveToolStripMenuItem,
+            this.zoomInToolStripMenuItem,
+            this.dragToolStripMenuItem});
+            this.graphStyleMenu.Name = "graphStyleMenu";
+            this.graphStyleMenu.Size = new System.Drawing.Size(152, 22);
+            this.graphStyleMenu.Text = "Graph Style";
+            this.graphStyleMenu.DropDownOpening += new System.EventHandler(this.graphStyleMenu_DropDownOpening);
+            this.graphStyleMenu.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.graphStyleMenu_DropDownItemClicked);
+            // 
+            // globalToolStripMenuItem
+            // 
+            this.globalToolStripMenuItem.Name = "globalToolStripMenuItem";
+            this.globalToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.globalToolStripMenuItem.Tag = "GlobalMode";
+            this.globalToolStripMenuItem.Text = "Global";
+            // 
+            // fixedMoveToolStripMenuItem
+            // 
+            this.fixedMoveToolStripMenuItem.Name = "fixedMoveToolStripMenuItem";
+            this.fixedMoveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fixedMoveToolStripMenuItem.Tag = "FixMoveMode";
+            this.fixedMoveToolStripMenuItem.Text = "Fixed Move";
+            // 
+            // zoomInToolStripMenuItem
+            // 
+            this.zoomInToolStripMenuItem.Name = "zoomInToolStripMenuItem";
+            this.zoomInToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.zoomInToolStripMenuItem.Tag = "RectZoomInMode";
+            this.zoomInToolStripMenuItem.Text = "Zoom In";
+            // 
+            // dragToolStripMenuItem
+            // 
+            this.dragToolStripMenuItem.Name = "dragToolStripMenuItem";
+            this.dragToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.dragToolStripMenuItem.Tag = "DragMode";
+            this.dragToolStripMenuItem.Text = "Drag";
+            // 
+            // showGridMenu
+            // 
+            this.showGridMenu.Name = "showGridMenu";
+            this.showGridMenu.Size = new System.Drawing.Size(152, 22);
+            this.showGridMenu.Text = "Show Grid";
+            this.showGridMenu.Click += new System.EventHandler(this.showGridMenu_Click);
+            // 
+            // screenShotMenu
+            // 
+            this.screenShotMenu.Name = "screenShotMenu";
+            this.screenShotMenu.Size = new System.Drawing.Size(152, 22);
+            this.screenShotMenu.Text = "Screen Shot";
+            this.screenShotMenu.Click += new System.EventHandler(this.screenShotMenu_Click);
             // 
             // GraphControl
             // 
@@ -159,6 +235,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pbTitle)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAxisY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbCurve)).EndInit();
+            this.ctxGraphMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -172,5 +249,13 @@
         private System.Windows.Forms.PictureBox pbAxisX;
         private System.Windows.Forms.PictureBox pbRight;
         private System.Windows.Forms.PictureBox pbZoom;
+        private System.Windows.Forms.ContextMenuStrip ctxGraphMenu;
+        private System.Windows.Forms.ToolStripMenuItem graphStyleMenu;
+        private System.Windows.Forms.ToolStripMenuItem globalToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fixedMoveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem zoomInToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dragToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showGridMenu;
+        private System.Windows.Forms.ToolStripMenuItem screenShotMenu;
     }
 }
