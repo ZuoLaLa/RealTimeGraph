@@ -171,6 +171,7 @@
             this.graphStyleMenu.Size = new System.Drawing.Size(134, 22);
             this.graphStyleMenu.Text = "Graph Style";
             this.graphStyleMenu.DropDownOpening += new System.EventHandler(this.graphStyleMenu_DropDownOpening);
+            this.graphStyleMenu.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.graphStyleMenu_DropDownItemClicked);
             // 
             // globalToolStripMenuItem
             // 

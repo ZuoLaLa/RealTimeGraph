@@ -53,5 +53,18 @@ namespace RealTimeGraph
                 }
             }
         }
+
+        private void graphStyleMenu_DropDownItemClicked(
+            object sender, ToolStripItemClickedEventArgs e)
+        {
+            ToolStripItem item = e.ClickedItem;
+            string graphStyleStr = item.Tag as string;
+            if (graphStyleStr != null)
+            {
+                this.GraphStyle = (GraphMode)Enum.Parse(
+                    typeof(GraphMode), graphStyleStr);
+                this.Refresh();
+            }
+        }
     }
 }
