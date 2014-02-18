@@ -40,5 +40,18 @@ namespace RealTimeGraph
             pbTitle.Refresh();
             pbCurve.Refresh();
         }
+
+        private void graphStyleMenu_DropDownOpening(object sender, EventArgs e)
+        {
+            ToolStripDropDownItem parent = sender as ToolStripDropDownItem;
+            if (parent != null)
+            {
+                string graphStyleStr = this.GraphStyle.ToString();
+                foreach (ToolStripMenuItem item in parent.DropDownItems)
+                {
+                    item.Checked = item.Tag.Equals(graphStyleStr);
+                }
+            }
+        }
     }
 }
