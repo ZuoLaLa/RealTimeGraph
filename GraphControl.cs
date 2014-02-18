@@ -78,5 +78,10 @@ namespace RealTimeGraph
             IsShowGrid = !IsShowGrid;
             this.Refresh();
         }
+
+        private void screenShotMenu_Click(object sender, EventArgs e)
+        {
+            this.ScreenShot();
+        }
     }
 }

@@ -43,6 +43,7 @@
             this.zoomInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dragToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showGridMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.screenShotMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.panelGraph.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbZoom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAxisX)).BeginInit();
@@ -158,9 +159,10 @@
             // 
             this.ctxGraphMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.graphStyleMenu,
-            this.showGridMenu});
+            this.showGridMenu,
+            this.screenShotMenu});
             this.ctxGraphMenu.Name = "ctxGraphMenu";
-            this.ctxGraphMenu.Size = new System.Drawing.Size(153, 70);
+            this.ctxGraphMenu.Size = new System.Drawing.Size(153, 92);
             this.ctxGraphMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ctxGraphMenu_Opening);
             // 
             // graphStyleMenu
@@ -179,28 +181,28 @@
             // globalToolStripMenuItem
             // 
             this.globalToolStripMenuItem.Name = "globalToolStripMenuItem";
-            this.globalToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.globalToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.globalToolStripMenuItem.Tag = "GlobalMode";
             this.globalToolStripMenuItem.Text = "Global";
             // 
             // fixedMoveToolStripMenuItem
             // 
             this.fixedMoveToolStripMenuItem.Name = "fixedMoveToolStripMenuItem";
-            this.fixedMoveToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.fixedMoveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.fixedMoveToolStripMenuItem.Tag = "FixMoveMode";
             this.fixedMoveToolStripMenuItem.Text = "Fixed Move";
             // 
             // zoomInToolStripMenuItem
             // 
             this.zoomInToolStripMenuItem.Name = "zoomInToolStripMenuItem";
-            this.zoomInToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.zoomInToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.zoomInToolStripMenuItem.Tag = "RectZoomInMode";
             this.zoomInToolStripMenuItem.Text = "Zoom In";
             // 
             // dragToolStripMenuItem
             // 
             this.dragToolStripMenuItem.Name = "dragToolStripMenuItem";
-            this.dragToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.dragToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.dragToolStripMenuItem.Tag = "DragMode";
             this.dragToolStripMenuItem.Text = "Drag";
             // 
@@ -210,6 +212,13 @@
             this.showGridMenu.Size = new System.Drawing.Size(152, 22);
             this.showGridMenu.Text = "Show Grid";
             this.showGridMenu.Click += new System.EventHandler(this.showGridMenu_Click);
+            // 
+            // screenShotMenu
+            // 
+            this.screenShotMenu.Name = "screenShotMenu";
+            this.screenShotMenu.Size = new System.Drawing.Size(152, 22);
+            this.screenShotMenu.Text = "Screen Shot";
+            this.screenShotMenu.Click += new System.EventHandler(this.screenShotMenu_Click);
             // 
             // GraphControl
             // 
@@ -247,5 +256,6 @@
         private System.Windows.Forms.ToolStripMenuItem zoomInToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dragToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showGridMenu;
+        private System.Windows.Forms.ToolStripMenuItem screenShotMenu;
     }
 }
