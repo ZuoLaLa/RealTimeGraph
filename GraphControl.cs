@@ -66,5 +66,17 @@ namespace RealTimeGraph
                 this.Refresh();
             }
         }
+
+        private void ctxGraphMenu_Opening(
+            object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            showGridMenu.Checked = IsShowGrid;
+        }
+
+        private void showGridMenu_Click(object sender, EventArgs e)
+        {
+            IsShowGrid = !IsShowGrid;
+            this.Refresh();
+        }
     }
 }

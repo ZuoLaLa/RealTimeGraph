@@ -42,6 +42,7 @@
             this.fixedMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zoomInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dragToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showGridMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.panelGraph.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbZoom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAxisX)).BeginInit();
@@ -156,9 +157,11 @@
             // ctxGraphMenu
             // 
             this.ctxGraphMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.graphStyleMenu});
+            this.graphStyleMenu,
+            this.showGridMenu});
             this.ctxGraphMenu.Name = "ctxGraphMenu";
-            this.ctxGraphMenu.Size = new System.Drawing.Size(135, 26);
+            this.ctxGraphMenu.Size = new System.Drawing.Size(153, 70);
+            this.ctxGraphMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ctxGraphMenu_Opening);
             // 
             // graphStyleMenu
             // 
@@ -168,7 +171,7 @@
             this.zoomInToolStripMenuItem,
             this.dragToolStripMenuItem});
             this.graphStyleMenu.Name = "graphStyleMenu";
-            this.graphStyleMenu.Size = new System.Drawing.Size(134, 22);
+            this.graphStyleMenu.Size = new System.Drawing.Size(152, 22);
             this.graphStyleMenu.Text = "Graph Style";
             this.graphStyleMenu.DropDownOpening += new System.EventHandler(this.graphStyleMenu_DropDownOpening);
             this.graphStyleMenu.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.graphStyleMenu_DropDownItemClicked);
@@ -176,30 +179,37 @@
             // globalToolStripMenuItem
             // 
             this.globalToolStripMenuItem.Name = "globalToolStripMenuItem";
-            this.globalToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.globalToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.globalToolStripMenuItem.Tag = "GlobalMode";
             this.globalToolStripMenuItem.Text = "Global";
             // 
             // fixedMoveToolStripMenuItem
             // 
             this.fixedMoveToolStripMenuItem.Name = "fixedMoveToolStripMenuItem";
-            this.fixedMoveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fixedMoveToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.fixedMoveToolStripMenuItem.Tag = "FixMoveMode";
             this.fixedMoveToolStripMenuItem.Text = "Fixed Move";
             // 
             // zoomInToolStripMenuItem
             // 
             this.zoomInToolStripMenuItem.Name = "zoomInToolStripMenuItem";
-            this.zoomInToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.zoomInToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.zoomInToolStripMenuItem.Tag = "RectZoomInMode";
             this.zoomInToolStripMenuItem.Text = "Zoom In";
             // 
             // dragToolStripMenuItem
             // 
             this.dragToolStripMenuItem.Name = "dragToolStripMenuItem";
-            this.dragToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.dragToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.dragToolStripMenuItem.Tag = "DragMode";
             this.dragToolStripMenuItem.Text = "Drag";
+            // 
+            // showGridMenu
+            // 
+            this.showGridMenu.Name = "showGridMenu";
+            this.showGridMenu.Size = new System.Drawing.Size(152, 22);
+            this.showGridMenu.Text = "Show Grid";
+            this.showGridMenu.Click += new System.EventHandler(this.showGridMenu_Click);
             // 
             // GraphControl
             // 
@@ -236,5 +246,6 @@
         private System.Windows.Forms.ToolStripMenuItem fixedMoveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zoomInToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dragToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showGridMenu;
     }
 }
