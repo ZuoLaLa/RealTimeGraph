@@ -544,5 +544,18 @@ namespace RealTimeGraph
         }
 
         #endregion
+
+        public void ScreenShot()
+        {
+            Bitmap pic = new Bitmap(this.Width, this.Height);
+            Graphics g = Graphics.FromImage(pic);
+            g.CompositingQuality = CompositingQuality.HighQuality;
+            g.CopyFromScreen(this.PointToScreen(Point.Empty),
+                Point.Empty, this.Size);
+            string saveName = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") + ".png";
+            pic.Save(saveName);
+            MessageBox.Show("截图已保存至程序所在目录。");
+            this.Refresh();
+        }
     }
 }
