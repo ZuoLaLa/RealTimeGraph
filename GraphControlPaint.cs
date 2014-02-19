@@ -34,7 +34,7 @@ namespace RealTimeGraph
         }
 
         private DataAxisX axisX = new DataAxisX();
-        private DataAxisX axisY = new DataAxisX();
+        private DataAxisY axisY = new DataAxisY();
 
         /// <summary>根据坐标范围调整坐标刻度参数。
         /// </summary>
@@ -84,61 +84,31 @@ namespace RealTimeGraph
 
         private void DrawVerticalGrid(Graphics g)
         {
-            foreach (var xGrid1Pos in GetFirstGridPositions())
+            foreach (var xGrid1Pos in axisX.GetFirstGridPositions())
             {
                 g.DrawLine(graphProperties.FirstGridPen, xGrid1Pos, 0,
                     xGrid1Pos, pbCurve.Height);
             }
-            foreach (var xGrid2Pos in GetSecondGridPositions())
+            foreach (var xGrid2Pos in axisX.GetSecondGridPositions())
             {
                 g.DrawLine(graphProperties.SecondGridPen, xGrid2Pos, 0,
                         xGrid2Pos, pbCurve.Height);
             }
         }
 
-        private IEnumerable<float> GetFirstGridPositions()
-        {
-            float xGrid1Start =
-                (axisX.FirstScaleRange.Min - axisX.Min)
-                * axisX.UnitLenght;
-            for (int i = 0; i < axisX.SumOfFirstScale; i++)
-            {
-                yield return xGrid1Start + axisX.FirstScaleInterval * i;
-            }
-        }
-
-        private IEnumerable<float> GetSecondGridPositions()
-        {
-            float xGrid1Start =
-                (axisX.FirstScaleRange.Min - axisX.Min)
-                * axisX.UnitLenght;
-            for (int i = 0; i < axisX.SumOfFirstScale; i++)
-            {
-                float xGrid1Pos = xGrid1Start + axisX.FirstScaleInterval * i;
-                for (int j = 1; j < axisX.NumOfSecondScalePerFirstScale; j++)
-                {
-                    float xGrid2Pos = xGrid1Pos + axisX.SecondScaleInterval * j;
-                    yield return xGrid2Pos;
-                }
-            }
-        }
-
         private void DrawHorizontalGrid(Graphics g)
         {
-            float yGrid1Start = pbCurve.Height - GraphProperties.CURVE_HEIGHT_PADDING
-                                - (axisY.FirstScaleRange.Min - axisY.Min)
-                                * axisY.UnitLenght;
-            for (int i = 0; i <= axisY.SumOfFirstScale; i++)
+            foreach (var yGrid1Pos in axisY.GetFirstGridPositions(
+                pbCurve.Height - GraphProperties.CURVE_HEIGHT_PADDING))
             {
-                float yGrid1Pos = yGrid1Start - axisY.FirstScaleInterval * i;
                 g.DrawLine(graphProperties.FirstGridPen, 0, yGrid1Pos,
                     pbCurve.Width, yGrid1Pos);
-                for (int j = 1; j < axisY.NumOfSecondScalePerFirstScale; j++)
-                {
-                    float yGrid2Pos = yGrid1Pos - axisY.SecondScaleInterval * j;
-                    g.DrawLine(graphProperties.SecondGridPen, 0, yGrid2Pos,
+            }
+            foreach (var yGrid2Pos in axisY.GetSecondGridPositions(
+                pbCurve.Height - GraphProperties.CURVE_HEIGHT_PADDING))
+            {
+                g.DrawLine(graphProperties.SecondGridPen, 0, yGrid2Pos,
                         pbCurve.Width, yGrid2Pos);
-                }
             }
         }
 
