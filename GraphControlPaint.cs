@@ -56,19 +56,41 @@ namespace RealTimeGraph
 
         private void DrawVerticalGrid(Graphics g)
         {
+            foreach (var xGrid1Pos in GetFirstGridPositions())
+            {
+                g.DrawLine(graphProperties.FirstGridPen, xGrid1Pos, 0,
+                    xGrid1Pos, pbCurve.Height);
+            }
+            foreach (var xGrid2Pos in GetSecondGridPositions())
+            {
+                g.DrawLine(graphProperties.SecondGridPen, xGrid2Pos, 0,
+                        xGrid2Pos, pbCurve.Height);
+            }
+        }
+
+        private IEnumerable<float> GetFirstGridPositions()
+        {
+            float xGrid1Start =
+                (axisX.FirstScaleRange.Min - graphData.DisplayRect.XMin)
+                * axisX.UnitLenght;
+            for (int i = 0; i < axisX.SumOfFirstScale; i++)
+            {
+                yield return xGrid1Start + axisX.FirstScaleInterval * i;
+            }
+        }
+
+        private IEnumerable<float> GetSecondGridPositions()
+        {
             float xGrid1Start =
                 (axisX.FirstScaleRange.Min - graphData.DisplayRect.XMin)
                 * axisX.UnitLenght;
             for (int i = 0; i < axisX.SumOfFirstScale; i++)
             {
                 float xGrid1Pos = xGrid1Start + axisX.FirstScaleInterval * i;
-                g.DrawLine(graphProperties.FirstGridPen, xGrid1Pos, 0,
-                    xGrid1Pos, pbCurve.Height);
                 for (int j = 1; j < axisX.NumOfSecondScalePerFirstScale; j++)
                 {
                     float xGrid2Pos = xGrid1Pos + axisX.SecondScaleInterval * j;
-                    g.DrawLine(graphProperties.SecondGridPen, xGrid2Pos, 0,
-                        xGrid2Pos, pbCurve.Height);
+                    yield return xGrid2Pos;
                 }
             }
         }
