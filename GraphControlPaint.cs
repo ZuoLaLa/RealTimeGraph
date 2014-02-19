@@ -33,8 +33,8 @@ namespace RealTimeGraph
             drawAreaSize.Width = pbCurve.Width;
         }
 
-        private DataAxis axisX = new DataAxis();
-        private DataAxis axisY = new DataAxis();
+        private DataAxisX axisX = new DataAxisX();
+        private DataAxisX axisY = new DataAxisX();
 
         /// <summary>根据坐标范围调整坐标刻度参数。
         /// </summary>
@@ -51,28 +51,18 @@ namespace RealTimeGraph
             {
                 if (GraphStyle == GraphMode.GlobalMode)
                 {
-                    axisX.Min = (DataLists.MinX < initialRect.XMin)
-                        ? DataLists.MinX : initialRect.XMin;
-                    axisX.Max = (DataLists.MaxX > initialRect.XMax)
-                        ? DataLists.MaxX : initialRect.XMax;
-                    axisY.Min = (DataLists.MinY < initialRect.YMin)
-                        ? DataLists.MinY : initialRect.YMin;
-                    axisY.Max = (DataLists.MaxY > initialRect.YMax)
-                        ? DataLists.MaxY : initialRect.YMax;
+                    axisX.UpdateGlobalRange(initialRect.XAxisRange,
+                        new DataRange(DataLists.MinX, DataLists.MaxX));
+                    axisY.UpdateGlobalRange(initialRect.YAxisRange,
+                        new DataRange(DataLists.MinY, DataLists.MaxY));
                 }
-                else if (GraphStyle == GraphMode.FixMoveMode)
+                else if (GraphStyle == GraphMode.FixMoveMode
+                    && DataLists.MaxX > axisX.Max)
                 {
-                    if (DataLists.MaxX > axisX.Max)
-                    {
-                        axisX.Min += DataLists.MaxX - axisX.Max;
-                        axisX.Max = DataLists.MaxX;
-                    }
-
-                    axisY.Min = (DataLists.MinY < axisY.Min)
-                        ? DataLists.MinY : axisY.Min;
-                    axisY.Max = (DataLists.MaxY > axisY.Max)
-                        ? DataLists.MaxY : axisY.Max;
+                    axisX.UpdateFixMoveRange(DataLists.MaxX);
                 }
+                axisY.UpdateGlobalRange(initialRect.YAxisRange,
+                      new DataRange(DataLists.MinY, DataLists.MaxY));
             }
             else
             {
