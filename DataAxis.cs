@@ -11,8 +11,31 @@ namespace RealTimeGraph
         public int NumOfSecondScalePerFirstScale { get; set; }
         public float FirstScaleInterval { get; set; }
         public float SecondScaleInterval { get; set; }
+        private DataRange axisRange;
 
-        public void Update(DataRange axisRange, int axisLength)
+        public float Min
+        {
+            get { return axisRange.Min; }
+            set { axisRange.Min = value; }
+        }
+
+        public float Max
+        {
+            get { return axisRange.Max; }
+            set { axisRange.Max = value; }
+        }
+
+        public float Range
+        {
+            get { return axisRange.Range; }
+        }
+
+        public decimal Weight
+        {
+            get { return axisRange.Weight; }
+        }
+
+        public void Update(int axisLength)
         {
             UnitLenght = axisLength / axisRange.Range;
             FirstScaleRange = new DataRange

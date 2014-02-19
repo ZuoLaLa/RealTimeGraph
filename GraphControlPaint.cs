@@ -12,8 +12,7 @@ namespace RealTimeGraph
         private void pbCurve_Paint(object sender, PaintEventArgs e)
         {
             UpdateDrawAreaSize();
-            graphData.UpdateDisplayRect(initialRect, GraphStyle);
-            UpdateAxisScale();
+            UpdateAxis();
 
             Graphics g = e.Graphics;
             if (IsShowGrid)
@@ -39,10 +38,49 @@ namespace RealTimeGraph
 
         /// <summary>根据坐标范围调整坐标刻度参数。
         /// </summary>
-        private void UpdateAxisScale()
+        private void UpdateAxis()
         {
-            axisX.Update(graphData.DisplayRect.XAxisRange, drawAreaSize.Width);
-            axisY.Update(graphData.DisplayRect.YAxisRange, drawAreaSize.Height);
+            UpdateAxisRange();
+            axisX.Update(drawAreaSize.Width);
+            axisY.Update(drawAreaSize.Height);
+        }
+
+        private void UpdateAxisRange()
+        {
+            if (DataLists.HasData())
+            {
+                if (GraphStyle == GraphMode.GlobalMode)
+                {
+                    axisX.Min = (DataLists.MinX < initialRect.XMin)
+                        ? DataLists.MinX : initialRect.XMin;
+                    axisX.Max = (DataLists.MaxX > initialRect.XMax)
+                        ? DataLists.MaxX : initialRect.XMax;
+                    axisY.Min = (DataLists.MinY < initialRect.YMin)
+                        ? DataLists.MinY : initialRect.YMin;
+                    axisY.Max = (DataLists.MaxY > initialRect.YMax)
+                        ? DataLists.MaxY : initialRect.YMax;
+                }
+                else if (GraphStyle == GraphMode.FixMoveMode)
+                {
+                    if (DataLists.MaxX > axisX.Max)
+                    {
+                        axisX.Min += DataLists.MaxX - axisX.Max;
+                        axisX.Max = DataLists.MaxX;
+                    }
+
+                    axisY.Min = (DataLists.MinY < axisY.Min)
+                        ? DataLists.MinY : axisY.Min;
+                    axisY.Max = (DataLists.MaxY > axisY.Max)
+                        ? DataLists.MaxY : axisY.Max;
+                }
+            }
+            else
+            {
+                axisX.Min = initialRect.XMin;
+                axisY.Min = initialRect.YMin;
+                axisX.Max = initialRect.XMax;
+                axisY.Max = initialRect.YMax;
+            }
         }
 
         /// <summary>绘制网格
@@ -71,7 +109,7 @@ namespace RealTimeGraph
         private IEnumerable<float> GetFirstGridPositions()
         {
             float xGrid1Start =
-                (axisX.FirstScaleRange.Min - graphData.DisplayRect.XMin)
+                (axisX.FirstScaleRange.Min - axisX.Min)
                 * axisX.UnitLenght;
             for (int i = 0; i < axisX.SumOfFirstScale; i++)
             {
@@ -82,7 +120,7 @@ namespace RealTimeGraph
         private IEnumerable<float> GetSecondGridPositions()
         {
             float xGrid1Start =
-                (axisX.FirstScaleRange.Min - graphData.DisplayRect.XMin)
+                (axisX.FirstScaleRange.Min - axisX.Min)
                 * axisX.UnitLenght;
             for (int i = 0; i < axisX.SumOfFirstScale; i++)
             {
@@ -98,7 +136,7 @@ namespace RealTimeGraph
         private void DrawHorizontalGrid(Graphics g)
         {
             float yGrid1Start = pbCurve.Height - GraphProperties.CURVE_HEIGHT_PADDING
-                                - (axisY.FirstScaleRange.Min - graphData.DisplayRect.YMin)
+                                - (axisY.FirstScaleRange.Min - axisY.Min)
                                 * axisY.UnitLenght;
             for (int i = 0; i <= axisY.SumOfFirstScale; i++)
             {
@@ -118,7 +156,7 @@ namespace RealTimeGraph
         {
             TranslateToCartesian(g);
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            List<PointF[]> pointsLists = graphData.GetPointsToDraw(
+            List<PointF[]> pointsLists = GetPointsToDraw(
                 drawAreaSize.Width, drawAreaSize.Height);
             for (int i = 0; i < pointsLists.Count; i++)
             {
@@ -129,6 +167,36 @@ namespace RealTimeGraph
                         pointsLists[i]);
                 }
             }
+        }
+
+        /// <summary>数据转换为待绘制区域上的点集
+        /// </summary>
+        /// <param name="width">待绘制区域的宽度</param>
+        /// <param name="height">待绘制区域的高度</param>
+        public List<PointF[]> GetPointsToDraw(int width, int height)
+        {
+            List<PointF[]> pointsLists = new List<PointF[]>();
+            if ((axisX.Range > 0.9F * XDataAccuracy ||
+                 axisY.Range > 0.9F * YDataAccuracy)
+                && DataLists.HasData())
+            {
+                foreach (DataPairList<float> dataList in DataLists)
+                {
+                    List<PointF> points = new List<PointF>();
+                    foreach (DataPair<float> dataPair in dataList)
+                    {
+                        points.Add(new PointF
+                        {
+                            X = (dataPair.X - axisX.Min) * (width - 1)
+                                / axisX.Range,
+                            Y = (dataPair.Y - axisY.Min) * (height - 1)
+                                / axisY.Range
+                        });
+                    }
+                    pointsLists.Add(points.ToArray());
+                }
+            }
+            return pointsLists;
         }
 
         private void TranslateToCartesian(Graphics g)
@@ -179,7 +247,7 @@ namespace RealTimeGraph
             };
             // 绘制其他各级刻度线， 以及1级刻度值
             float xScale1Start = pbAxisY.Width +
-                (axisX.FirstScaleRange.Min - graphData.DisplayRect.XMin)
+                (axisX.FirstScaleRange.Min - axisX.Min)
                     * axisX.UnitLenght;
             for (int i = 0; i < axisX.SumOfFirstScale; i++)
             {
@@ -189,7 +257,7 @@ namespace RealTimeGraph
                     g.DrawLine(graphProperties.FirstScalePen, xScale1Pos, 0,
                         xScale1Pos, GraphProperties.FIRST_SCALE_LENGTH);
                     float xScale1Value = axisX.FirstScaleRange.Min +
-                        (float)graphData.DisplayWeightX * i / axisX.NumOfFirstScalePerWeight; // 1级刻度处坐标值
+                        (float)axisX.Weight * i / axisX.NumOfFirstScalePerWeight; // 1级刻度处坐标值
                     g.DrawString(xScale1Value.ToString(), graphProperties.FirstScaleFont, Brushes.Black,
                         xScale1Pos, GraphProperties.BORDER_LENGTH, centerFormat);
                 }
@@ -222,14 +290,14 @@ namespace RealTimeGraph
             {
                 Alignment = StringAlignment.Center
             };
-            String strMin = graphData.DisplayRect.XMin.ToString("#0.##");
+            String strMin = axisX.Min.ToString("#0.##");
             SizeF strMinSize = g.MeasureString(strMin, graphProperties.BorderFont);
             g.FillRectangle(brush, pbAxisY.Width - strMinSize.Width / 2, GraphProperties.BORDER_LENGTH,
                 strMinSize.Width, strMinSize.Height); // 防止坐标的重叠
             g.DrawString(strMin, graphProperties.BorderFont, Brushes.Black,
                 pbAxisY.Width, GraphProperties.BORDER_LENGTH, centerFormat);
 
-            string strMax = graphData.DisplayRect.XMax.ToString("#0.##");
+            string strMax = axisX.Max.ToString("#0.##");
             SizeF strMaxSize = g.MeasureString(strMax, graphProperties.BorderFont);
             g.FillRectangle(brush, pbAxisY.Width + pbCurve.Width - strMaxSize.Width / 2, GraphProperties.BORDER_LENGTH,
                 strMaxSize.Width, strMaxSize.Height);
@@ -261,7 +329,7 @@ namespace RealTimeGraph
             scaleYFormat.Alignment = StringAlignment.Far;
             scaleYFormat.LineAlignment = StringAlignment.Center;
             float yScale1Start = pbAxisY.Height - GraphProperties.CURVE_HEIGHT_PADDING
-                                 - (axisY.FirstScaleRange.Min - graphData.DisplayRect.YMin) * axisY.UnitLenght;
+                                 - (axisY.FirstScaleRange.Min - axisY.Min) * axisY.UnitLenght;
             for (int i = 0; i < axisY.SumOfFirstScale; i++)
             {
                 float yScale1Pos = yScale1Start - axisY.FirstScaleInterval * i; // 1级刻度坐标位置
@@ -270,7 +338,7 @@ namespace RealTimeGraph
                     g.DrawLine(graphProperties.FirstScalePen, pbAxisY.Width - 1 - GraphProperties.FIRST_SCALE_LENGTH, yScale1Pos,
                         pbAxisY.Width - 1, yScale1Pos);
                     double yScale1Value = axisY.FirstScaleRange.Min +
-                                          (float)graphData.DisplayWeightY * i / axisY.NumOfFirstScalePerWeight; // 1级刻度处坐标值
+                                          (float)axisY.Weight * i / axisY.NumOfFirstScalePerWeight; // 1级刻度处坐标值
                     g.DrawString(yScale1Value.ToString("#0.##"), graphProperties.FirstScaleFont, Brushes.Black,
                         pbAxisY.Width - 1 - GraphProperties.BORDER_LENGTH, yScale1Pos, scaleYFormat);
                 }
@@ -305,7 +373,7 @@ namespace RealTimeGraph
             borderYFormat.LineAlignment = StringAlignment.Center;
             SolidBrush b = new SolidBrush(pbAxisY.BackColor);
 
-            String str = graphData.DisplayRect.YMin.ToString("#0.###");
+            String str = axisY.Min.ToString("#0.###");
             SizeF sf = g.MeasureString(str, graphProperties.BorderFont);
             g.FillRectangle(b, pbAxisY.Width - GraphProperties.BORDER_LENGTH - sf.Width,
                 pbTitle.Height + pbCurve.Height - GraphProperties.CURVE_HEIGHT_PADDING - sf.Height / 2F,
@@ -314,7 +382,7 @@ namespace RealTimeGraph
                 pbAxisY.Width - GraphProperties.BORDER_LENGTH, pbAxisY.Height - GraphProperties.CURVE_HEIGHT_PADDING,
                 borderYFormat);
 
-            str = graphData.DisplayRect.YMax.ToString("#0.###");
+            str = axisY.Max.ToString("#0.###");
             sf = g.MeasureString(str, graphProperties.BorderFont);
             g.FillRectangle(b, pbAxisY.Width - GraphProperties.BORDER_LENGTH - sf.Width,
                 pbTitle.Height + GraphProperties.CURVE_HEIGHT_PADDING - sf.Height / 2F,
@@ -417,11 +485,12 @@ namespace RealTimeGraph
         /// <param name="yDiff">Y 轴方向上的拖动量</param>
         private void DragMove(float xDiff, float yDiff)
         {
-            float xMove = xDiff * graphData.DisplayRect.XRange / (pbCurve.Width - 1);
-            float yMove = yDiff * graphData.DisplayRect.YRange / (pbCurve.Height - 1);
-            graphData.DisplayRect = new DataRect(
-                graphData.DisplayRect.XMin - xMove, graphData.DisplayRect.XMax - xMove,
-                graphData.DisplayRect.YMin + yMove, graphData.DisplayRect.YMax + yMove);
+            float xMove = xDiff * axisX.Range / (pbCurve.Width - 1);
+            float yMove = yDiff * axisY.Range / (pbCurve.Height - 1);
+            axisX.Min -= xMove;
+            axisX.Max -= xMove;
+            axisY.Min += yMove;
+            axisY.Max += yMove;
         }
 
         private void UpdatePictureBoxZoom(Point end)
@@ -517,14 +586,14 @@ namespace RealTimeGraph
         {
             return new DataRect
             {
-                XMin = graphData.DisplayRect.XMin +
-                       selectedRect.XMin * graphData.DisplayRect.XRange / drawAreaSize.Width,
-                XMax = graphData.DisplayRect.XMin +
-                       selectedRect.XMax * graphData.DisplayRect.XRange / drawAreaSize.Width,
-                YMin = graphData.DisplayRect.YMax -
-                       selectedRect.YMax * graphData.DisplayRect.YRange / drawAreaSize.Height,
-                YMax = graphData.DisplayRect.YMax -
-                       selectedRect.YMin * graphData.DisplayRect.YRange / drawAreaSize.Height
+                XMin = axisX.Min +
+                       selectedRect.XMin * axisX.Range / drawAreaSize.Width,
+                XMax = axisX.Min +
+                       selectedRect.XMax * axisX.Range / drawAreaSize.Width,
+                YMin = axisY.Max -
+                       selectedRect.YMax * axisY.Range / drawAreaSize.Height,
+                YMax = axisY.Max -
+                       selectedRect.YMin * axisY.Range / drawAreaSize.Height
             };
         }
 
@@ -536,22 +605,28 @@ namespace RealTimeGraph
         /// <param name="yE">更新后的 Y 轴上端点</param>
         private void SetDisplayRect(float xS, float xE, float yS, float yE)
         {
-            graphData.DisplayRect.UpdateRect(xS, xE, yS, yE);
+            axisX.Min = xS;
+            axisX.Max = xE;
+            axisY.Min = yS;
+            axisY.Max = yE;
         }
 
         private void SetDisplayRect(DataRect newRect)
         {
-            graphData.DisplayRect.UpdateRect(newRect);
+            axisX.Min = newRect.XMin;
+            axisX.Max = newRect.XMax;
+            axisY.Min = newRect.YMin;
+            axisY.Max = newRect.YMax;
         }
 
         private void pbCurve_MouseWheel(object sender, MouseEventArgs e)
         {
             if (GraphStyle == GraphMode.FixMoveMode)
             {
-                float xDiff = graphData.DisplayRect.XRange;
+                float xDiff = axisX.Range;
                 float xDelta = e.Delta / 1200F;
-                graphData.DisplayRect.XMin -= xDiff * xDelta;
-                graphData.DisplayRect.XMax += xDiff * xDelta;
+                axisX.Min -= xDiff * xDelta;
+                axisX.Max += xDiff * xDelta;
                 pbCurve.Refresh();
             }
         }
@@ -561,7 +636,10 @@ namespace RealTimeGraph
             if (GraphStyle == GraphMode.FixMoveMode
                 && e.Button == MouseButtons.Middle)
             {
-                graphData.ResetDisplayRectWidth(initialRect);
+                axisX.Max = DataLists.MaxX;
+                axisX.Min = ((axisX.Max - initialRect.XRange) > initialRect.XMin)
+                    ? (axisX.Max - initialRect.XRange)
+                    : initialRect.XMin;
             }
         }
 
