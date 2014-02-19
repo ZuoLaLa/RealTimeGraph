@@ -56,20 +56,20 @@ namespace RealTimeGraph
                     axisY.UpdateGlobalRange(initialRect.YAxisRange,
                         new DataRange(DataLists.MinY, DataLists.MaxY));
                 }
-                else if (GraphStyle == GraphMode.FixMoveMode
-                    && DataLists.MaxX > axisX.Max)
+                else if (GraphStyle == GraphMode.FixMoveMode)
                 {
-                    axisX.UpdateFixMoveRange(DataLists.MaxX);
+                    if (DataLists.MaxX > axisX.Max)
+                    {
+                        axisX.UpdateFixMoveRange(DataLists.MaxX);
+                    }
+                    axisY.UpdateGlobalRange(initialRect.YAxisRange,
+                            new DataRange(DataLists.MinY, DataLists.MaxY));
                 }
-                axisY.UpdateGlobalRange(initialRect.YAxisRange,
-                      new DataRange(DataLists.MinY, DataLists.MaxY));
             }
             else
             {
-                axisX.Min = initialRect.XMin;
-                axisY.Min = initialRect.YMin;
-                axisX.Max = initialRect.XMax;
-                axisY.Max = initialRect.YMax;
+                axisX.InitialAxisRange(initialRect.XAxisRange);
+                axisY.InitialAxisRange(initialRect.YAxisRange);
             }
         }
 

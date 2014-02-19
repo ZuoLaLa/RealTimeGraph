@@ -60,11 +60,16 @@ namespace RealTimeGraph
             SecondScaleInterval = FirstScaleInterval / NumOfSecondScalePerFirstScale;
         }
 
+        public void InitialAxisRange(DataRange initialRange)
+        {
+            axisRange = initialRange;
+        }
+
         public void UpdateGlobalRange(
             DataRange initialRange, DataRange newRange)
         {
-            this.Min = Math.Min(initialRange.Min, newRange.Min);
-            this.Max = Math.Max(initialRange.Max, newRange.Max);
+            Min = Math.Min(initialRange.Min, newRange.Min);
+            Max = Math.Max(initialRange.Max, newRange.Max);
         }
 
         private int GetScaleNum(double scaleLength, int scaleInterval)
