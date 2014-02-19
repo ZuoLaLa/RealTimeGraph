@@ -114,30 +114,25 @@ namespace RealTimeGraph
 
         private void DrawCurve(Graphics g)
         {
+            List<PointF[]> pointsLists = GetPointsToDraw();
             TranslateToCartesian(g);
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            List<PointF[]> pointsLists = GetPointsToDraw(
-                drawAreaSize.Width, drawAreaSize.Height);
             for (int i = 0; i < pointsLists.Count; i++)
             {
                 if (pointsLists[i] != null && pointsLists[i].Length > 1)
                 {
                     g.DrawLines(
-                        graphProperties.CurvePens[i % graphProperties.CurvePens.Count()],
+                        graphProperties.CurvePens[i % graphProperties.CurvePens.Length],
                         pointsLists[i]);
                 }
             }
         }
 
-        /// <summary>数据转换为待绘制区域上的点集
-        /// </summary>
-        /// <param name="width">待绘制区域的宽度</param>
-        /// <param name="height">待绘制区域的高度</param>
-        public List<PointF[]> GetPointsToDraw(int width, int height)
+        private List<PointF[]> GetPointsToDraw()
         {
             List<PointF[]> pointsLists = new List<PointF[]>();
-            if ((axisX.Range > 0.9F * XDataAccuracy ||
-                 axisY.Range > 0.9F * YDataAccuracy)
+            if ((axisX.Range > 0.9F * XDataAccuracy
+                || axisY.Range > 0.9F * YDataAccuracy)
                 && DataLists.HasData())
             {
                 foreach (DataPairList<float> dataList in DataLists)
@@ -147,9 +142,9 @@ namespace RealTimeGraph
                     {
                         points.Add(new PointF
                         {
-                            X = (dataPair.X - axisX.Min) * (width - 1)
+                            X = (dataPair.X - axisX.Min) * (drawAreaSize.Width - 1)
                                 / axisX.Range,
-                            Y = (dataPair.Y - axisY.Min) * (height - 1)
+                            Y = (dataPair.Y - axisY.Min) * (drawAreaSize.Height - 1)
                                 / axisY.Range
                         });
                     }
@@ -174,7 +169,7 @@ namespace RealTimeGraph
             DrawAxisXScales(g);
             // 注意先绘制其他各级刻度值，最后再绘制边界刻度值，
             // 以保证当数字重叠时，边界刻度值覆盖其他各级刻度值。
-            DrawAxisXBorderValue(g);
+            DrawAxisXBorderValues(g);
         }
 
         private void DrawAxisXTitle(Graphics g)
@@ -206,29 +201,24 @@ namespace RealTimeGraph
                 Alignment = StringAlignment.Center
             };
             // 绘制其他各级刻度线， 以及1级刻度值
-            float xScale1Start = pbAxisY.Width +
-                (axisX.FirstScaleRange.Min - axisX.Min)
-                    * axisX.UnitLenght;
-            for (int i = 0; i < axisX.SumOfFirstScale; i++)
+            foreach (DataPair<float> positionAndValue in
+                axisX.GetFirstScalePositionsAndValues(pbAxisY.Width))
             {
-                float xScale1Pos = xScale1Start + axisX.FirstScaleInterval * i; // 1级刻度坐标位置
-                if (IsInAxisX(xScale1Pos))
+                if (IsInAxisX(positionAndValue.X))
                 {
-                    g.DrawLine(graphProperties.FirstScalePen, xScale1Pos, 0,
-                        xScale1Pos, GraphProperties.FIRST_SCALE_LENGTH);
-                    float xScale1Value = axisX.FirstScaleRange.Min +
-                        (float)axisX.Weight * i / axisX.NumOfFirstScalePerWeight; // 1级刻度处坐标值
-                    g.DrawString(xScale1Value.ToString(), graphProperties.FirstScaleFont, Brushes.Black,
-                        xScale1Pos, GraphProperties.BORDER_LENGTH, centerFormat);
+                    g.DrawLine(graphProperties.FirstScalePen, positionAndValue.X, 0,
+                        positionAndValue.X, GraphProperties.FIRST_SCALE_LENGTH);
+                    g.DrawString(positionAndValue.Y.ToString(),
+                        graphProperties.FirstScaleFont, Brushes.Black,
+                        positionAndValue.X, GraphProperties.BORDER_LENGTH, centerFormat);
                 }
-                for (int j = 1; j < axisX.NumOfSecondScalePerFirstScale; j++)
+            }
+            foreach (float position in axisX.GetSecondScalePositions(pbAxisY.Width))
+            {
+                if (IsInAxisX(position))
                 {
-                    float xScale2Pos = xScale1Pos + axisX.SecondScaleInterval * j;
-                    if (IsInAxisX(xScale2Pos))
-                    {
-                        g.DrawLine(graphProperties.SecondScalePen, xScale2Pos, 0,
-                            xScale2Pos, GraphProperties.SECOND_SCALE_LENGTH);
-                    }
+                    g.DrawLine(graphProperties.SecondScalePen, position, 0,
+                            position, GraphProperties.SECOND_SCALE_LENGTH);
                 }
             }
         }
@@ -243,26 +233,26 @@ namespace RealTimeGraph
                    scalePos < pbAxisY.Width + pbCurve.Width - 1;
         }
 
-        private void DrawAxisXBorderValue(Graphics g)
+        private void DrawAxisXBorderValues(Graphics g)
+        {
+            DrawAxisXBorderValue(g, axisX.Min, pbAxisY.Width);
+            DrawAxisXBorderValue(g, axisX.Max, pbAxisY.Width + pbCurve.Width);
+        }
+
+        private void DrawAxisXBorderValue(Graphics g, float borderValue, float borderPos)
         {
             SolidBrush brush = new SolidBrush(pbAxisX.BackColor);
             StringFormat centerFormat = new StringFormat()
             {
                 Alignment = StringAlignment.Center
             };
-            String strMin = axisX.Min.ToString("#0.##");
-            SizeF strMinSize = g.MeasureString(strMin, graphProperties.BorderFont);
-            g.FillRectangle(brush, pbAxisY.Width - strMinSize.Width / 2, GraphProperties.BORDER_LENGTH,
-                strMinSize.Width, strMinSize.Height); // 防止坐标的重叠
-            g.DrawString(strMin, graphProperties.BorderFont, Brushes.Black,
-                pbAxisY.Width, GraphProperties.BORDER_LENGTH, centerFormat);
-
-            string strMax = axisX.Max.ToString("#0.##");
-            SizeF strMaxSize = g.MeasureString(strMax, graphProperties.BorderFont);
-            g.FillRectangle(brush, pbAxisY.Width + pbCurve.Width - strMaxSize.Width / 2, GraphProperties.BORDER_LENGTH,
-                strMaxSize.Width, strMaxSize.Height);
-            g.DrawString(strMax, graphProperties.BorderFont, Brushes.Black,
-                pbAxisY.Width + pbCurve.Width, GraphProperties.BORDER_LENGTH, centerFormat);
+            String strValue = borderValue.ToString("#0.##");
+            SizeF strSize = g.MeasureString(strValue, graphProperties.BorderFont);
+            g.FillRectangle(brush,
+                borderPos - strSize.Width / 2, GraphProperties.BORDER_LENGTH,
+                strSize.Width, strSize.Height); // 防止坐标的重叠
+            g.DrawString(strValue, graphProperties.BorderFont, Brushes.Black,
+                borderPos, GraphProperties.BORDER_LENGTH, centerFormat);
         }
 
         private void pbAxisY_Paint(object sender, PaintEventArgs e)
@@ -270,15 +260,17 @@ namespace RealTimeGraph
             Graphics g = e.Graphics;
             DrawAxisYBorder(g);
             DrawAxisYScales(g);
-            DrawAxisYBorderVaule(g);
+            DrawAxisYBorderVaules(g);
         }
 
         private void DrawAxisYBorder(Graphics g)
         {
-            g.DrawLine(graphProperties.BorderPen, pbAxisY.Width - GraphProperties.BORDER_LENGTH,
+            g.DrawLine(graphProperties.BorderPen,
+                pbAxisY.Width - GraphProperties.BORDER_LENGTH,
                 pbAxisY.Height - 1 - GraphProperties.CURVE_HEIGHT_PADDING,
                 pbAxisY.Width, pbAxisY.Height - 1 - GraphProperties.CURVE_HEIGHT_PADDING);
-            g.DrawLine(graphProperties.BorderPen, pbAxisY.Width - GraphProperties.BORDER_LENGTH,
+            g.DrawLine(graphProperties.BorderPen,
+                pbAxisY.Width - GraphProperties.BORDER_LENGTH,
                 pbTitle.Height + GraphProperties.CURVE_HEIGHT_PADDING,
                 pbAxisY.Width, pbTitle.Height + GraphProperties.CURVE_HEIGHT_PADDING);
         }
@@ -288,29 +280,29 @@ namespace RealTimeGraph
             StringFormat scaleYFormat = new StringFormat();
             scaleYFormat.Alignment = StringAlignment.Far;
             scaleYFormat.LineAlignment = StringAlignment.Center;
-            float yScale1Start = pbAxisY.Height - GraphProperties.CURVE_HEIGHT_PADDING
-                                 - (axisY.FirstScaleRange.Min - axisY.Min) * axisY.UnitLenght;
-            for (int i = 0; i < axisY.SumOfFirstScale; i++)
+            foreach (DataPair<float> positionAndValue in
+                axisY.GetFirstScalePositionsAndValues(
+                pbAxisY.Height - GraphProperties.CURVE_HEIGHT_PADDING))
             {
-                float yScale1Pos = yScale1Start - axisY.FirstScaleInterval * i; // 1级刻度坐标位置
-                if (IsInAxisY(yScale1Pos))
+                if (IsInAxisY(positionAndValue.X))
                 {
-                    g.DrawLine(graphProperties.FirstScalePen, pbAxisY.Width - 1 - GraphProperties.FIRST_SCALE_LENGTH, yScale1Pos,
-                        pbAxisY.Width - 1, yScale1Pos);
-                    double yScale1Value = axisY.FirstScaleRange.Min +
-                                          (float)axisY.Weight * i / axisY.NumOfFirstScalePerWeight; // 1级刻度处坐标值
-                    g.DrawString(yScale1Value.ToString("#0.##"), graphProperties.FirstScaleFont, Brushes.Black,
-                        pbAxisY.Width - 1 - GraphProperties.BORDER_LENGTH, yScale1Pos, scaleYFormat);
+                    g.DrawLine(graphProperties.FirstScalePen,
+                        pbAxisY.Width - 1 - GraphProperties.FIRST_SCALE_LENGTH, positionAndValue.X,
+                        pbAxisY.Width - 1, positionAndValue.X);
+                    g.DrawString(positionAndValue.Y.ToString("#0.##"),
+                        graphProperties.FirstScaleFont, Brushes.Black,
+                        pbAxisY.Width - 1 - GraphProperties.BORDER_LENGTH, positionAndValue.X,
+                        scaleYFormat);
                 }
-
-                for (int j = 1; j < axisY.NumOfSecondScalePerFirstScale; j++)
+            }
+            foreach (float position in axisY.GetSecondScalePositions(
+                pbAxisY.Height - GraphProperties.CURVE_HEIGHT_PADDING))
+            {
+                if (IsInAxisY(position))
                 {
-                    float yScale2Pos = yScale1Pos - axisY.SecondScaleInterval * j;
-                    if (IsInAxisY(yScale2Pos))
-                    {
-                        g.DrawLine(graphProperties.SecondScalePen, pbAxisY.Width - 1, yScale2Pos,
-                            pbAxisY.Width - 1 - GraphProperties.SECOND_SCALE_LENGTH, yScale2Pos);
-                    }
+                    g.DrawLine(graphProperties.SecondScalePen,
+                        pbAxisY.Width - 1, position,
+                        pbAxisY.Width - 1 - GraphProperties.SECOND_SCALE_LENGTH, position);
                 }
             }
         }
@@ -326,29 +318,29 @@ namespace RealTimeGraph
                 && scalePos < pbAxisY.Height - GraphProperties.CURVE_HEIGHT_PADDING - 1;
         }
 
-        private void DrawAxisYBorderVaule(Graphics g)
+        private void DrawAxisYBorderVaules(Graphics g)
+        {
+            DrawAxisYBorderValue(g, axisY.Min,
+                pbAxisY.Height - GraphProperties.CURVE_HEIGHT_PADDING);
+            DrawAxisYBorderValue(g, axisY.Max,
+                pbTitle.Height + GraphProperties.CURVE_HEIGHT_PADDING);
+        }
+
+        private void DrawAxisYBorderValue(Graphics g, float borderValue, float borderPos)
         {
             StringFormat borderYFormat = new StringFormat();
             borderYFormat.Alignment = StringAlignment.Far;
             borderYFormat.LineAlignment = StringAlignment.Center;
             SolidBrush b = new SolidBrush(pbAxisY.BackColor);
 
-            String str = axisY.Min.ToString("#0.###");
+            String str = borderValue.ToString("#0.###");
             SizeF sf = g.MeasureString(str, graphProperties.BorderFont);
-            g.FillRectangle(b, pbAxisY.Width - GraphProperties.BORDER_LENGTH - sf.Width,
-                pbTitle.Height + pbCurve.Height - GraphProperties.CURVE_HEIGHT_PADDING - sf.Height / 2F,
+            g.FillRectangle(b,
+                pbAxisY.Width - GraphProperties.BORDER_LENGTH - sf.Width,
+                borderPos - sf.Height / 2F,
                 sf.Width, sf.Height);
             g.DrawString(str, graphProperties.BorderFont, Brushes.Black,
-                pbAxisY.Width - GraphProperties.BORDER_LENGTH, pbAxisY.Height - GraphProperties.CURVE_HEIGHT_PADDING,
-                borderYFormat);
-
-            str = axisY.Max.ToString("#0.###");
-            sf = g.MeasureString(str, graphProperties.BorderFont);
-            g.FillRectangle(b, pbAxisY.Width - GraphProperties.BORDER_LENGTH - sf.Width,
-                pbTitle.Height + GraphProperties.CURVE_HEIGHT_PADDING - sf.Height / 2F,
-                sf.Width, sf.Height);
-            g.DrawString(str, graphProperties.BorderFont, Brushes.Black,
-                pbAxisY.Width - GraphProperties.BORDER_LENGTH, pbTitle.Height + GraphProperties.CURVE_HEIGHT_PADDING,
+                pbAxisY.Width - GraphProperties.BORDER_LENGTH, borderPos,
                 borderYFormat);
         }
 
